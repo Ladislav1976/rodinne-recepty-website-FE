@@ -4,7 +4,7 @@ import { createPostFood } from '../use-post';
 export const usePostFood = (
     axiosPrivate,
     setModalLoadingFlag,
-    handlerSetModalError,
+    showMessage,
     makeImagesRecord,
 ) => {
     const queryClient = useQueryClient();
@@ -14,11 +14,11 @@ export const usePostFood = (
         onError: (err, newFood, context) => {
             console.log('Error Post Food :', err);
             setModalLoadingFlag(false);
-            handlerSetModalError();
+            showMessage('⚠️ Dáta sa nepodarilo uložiť.', true);
             throw err;
         },
         onSuccess: (data, context) => {
-            console.log('PUT succeeded for food:', data.data);
+            console.log('POST succeeded for food:', data.data);
             const queryKey = ['foods', data?.data?.id];
 
             queryClient.setQueryData(queryKey, data?.data);

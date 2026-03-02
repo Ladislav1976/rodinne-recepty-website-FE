@@ -1,7 +1,9 @@
-import style from '../assets/styles/Reports/Save.module.css';
-import { useRef, useEffect } from 'react';
+import style from '../assets/styles/Reports/Delete.module.css';
+import { useRef, useEffect, useState } from 'react';
 
 export default function DeleteConfirm(props) {
+    const [isVisible, setIsVisible] = useState(false);
+    const setIsSaving = props.setIsSaving;
     const deleteRef = useRef();
     const cancelRef = useRef();
     const errRef = useRef();
@@ -15,41 +17,60 @@ export default function DeleteConfirm(props) {
         errRef.current.focus();
     }, [errMsg]);
 
-    function delKeyDown(event) {
-        if (event.key === 'ArrowRight') {
-            cancelRef.current.focus();
-        }
-        if (event.key === 'Enter') {
-            props.onDelete();
+    useEffect(() => {
+        setIsVisible(true);
+    }, []);
+    async function handleDelete() {
+        setIsSaving(true);
+        try {
+            const res = await props.onDelete();
+            if (res.status === 204) {
+                handleCloseShowMessage(
+                    `${props.item.charAt(0).toUpperCase() + props.item.slice(1)} bol vymazaný.`,
+                    false,
+                );
+            }
+        } catch (err) {
+            if (err.status && err.response.data.detail) {
+                handleCloseShowMessage(err.response.data.detail, true);
+            } else {
+                handleCloseShowMessage(`⚠️ Problem so serverom.`, true);
+            }
         }
     }
+    function handleCloseShowMessage(message, isError) {
+        setIsVisible(false);
 
-    function canKeyDown(event) {
-        if (event.key === 'ArrowLeft') {
-            deleteRef.current.focus();
-        }
-        if (event.key === 'Enter') {
+        setTimeout(() => {
+            props.handlerFoodDeleteConfirmed(message, isError);
+        }, 500);
+    }
+
+    function handleClose() {
+        setIsVisible(false);
+
+        setTimeout(() => {
             props.onDeleteCancel();
-        }
+        }, 500);
     }
     return (
         <>
             <div className={style.box}>
-                <h3>Vymazať : {props.item} ? </h3>
-                <div>
+                <h3>
+                    Tento {props.item} bude natrvalo vymazaný. <br />
+                    Chcete pokračovať?
+                </h3>
+
+                <div className={style.buttonContainer}>
                     <button
                         ref={deleteRef}
-                        onKeyDown={delKeyDown}
-                        id={style.yes_button13}
                         className={`${style.button} ${style.delete}`}
-                        onClick={props.onDelete}
+                        onClick={handleDelete}
                     >
                         ANO
                     </button>
                     <button
                         ref={cancelRef}
-                        onKeyDown={canKeyDown}
-                        id={style.nobutton13}
                         className={`${style.button} ${style.cancel}`}
                         onClick={props.onDeleteCancel}
                     >
@@ -63,6 +84,31 @@ export default function DeleteConfirm(props) {
                 >
                     {errMsg}
                 </p>
+            </div>
+            <div
+                className={`${style.boxOverlay} ${isVisible ? style.active : ''}`}
+                onClick={handleClose}
+            >
+                <div className={style.boxMobile}>
+                    <p>
+                        Tento {props.item} bude natrvalo vymazaný. <br />
+                        Chcete pokračovať?
+                    </p>
+                    <div className={style.buttonContainer}>
+                        <button
+                            className={`${style.button} ${style.delete}`}
+                            onClick={handleDelete}
+                        >
+                            ANO
+                        </button>
+                        <button
+                            className={`${style.button} ${style.cancel}`}
+                            onClick={handleClose}
+                        >
+                            NIE
+                        </button>
+                    </div>
+                </div>
             </div>
         </>
     );

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import style from '../assets/styles/Reports/ModalSearch.module.css';
+import style from '../assets/styles/Modals/ModalSearch.module.css';
 import { createPortal } from 'react-dom';
 
 export default function ModalSearch(props) {

@@ -5,15 +5,15 @@ import StepsInput from '../components/StepsInput';
 import SaveLoading from '../reports/SaveLoading';
 import SaveSaved from '../reports/SaveSaved';
 import SaveError from '../reports/SaveError';
-import SaveErrorMissing from '../reports/SaveErrorMissing';
+
 import Lightbox from '../components/Lightbox';
 import style from '../assets/styles/Pages/NewFood.module.css';
 import IngredientInput from '../components/IngredientInput';
 import LeftPanelFilter from '../components/LeftPanelFilter';
 import Image from '../components/Image';
 import UrlInput from '../components/UrlInput';
-import Modal from '../reports/Modal';
-import ModalPreview from '../reports/ModalPreview';
+import Modal from '../modals/Modal';
+import ModalPreview from '../modals/ModalPreview';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBackward, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 
@@ -26,9 +26,11 @@ import { usePostImage } from '../hooks/Mutations/usePostImage';
 
 import { useQueryClient } from '@tanstack/react-query';
 import MenuToggle from '../components/MenuToggle';
+import ModalDelete from '../modals/ModalDelete';
+import Message from '../reports/Message';
 
 function NewFood(props) {
-    const { auth, ordering, page, pageSize, search } = useAuth();
+    const { auth, ordering, pageSize, search } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const queryClient = useQueryClient();
     const component = 'newcomponent';
@@ -39,7 +41,13 @@ function NewFood(props) {
 
     let uniqueID = new Date().toISOString();
 
-    const nav = `/recepty?ordering=${ordering}&page=${page}&page_size=${pageSize}&search=${search}`;
+    const params = new URLSearchParams({
+        ordering: ordering,
+        page: 1,
+        page_size: pageSize,
+        search: search,
+    });
+    const nav = `/recepty?${params.toString()}`;
     const goBack = () => navigate(nav);
 
     const postImage = usePostImage(axiosPrivate);
@@ -56,18 +64,28 @@ function NewFood(props) {
     const [modalLoadingFlag, setModalLoadingFlag] = useState(false);
     const [modalSavedFlag, setModalSavedFlag] = useState(false);
     const [modalErrorFlag, setModalErrorFlag] = useState(false);
-    const [modalSaveErrorMissingFlag, setModalSaveErrorMissingFlag] =
-        useState(false);
-    const [errMsg, setErrMsg] = props.errMsg;
+    const [modalMessageFlag, setModalMessageFlag] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [message, setMessage] = useState('');
+
+    const [errMsg, setErrMsg] = useState(props.errMsg || '');
     const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
     const [isVisibleEdit, setIsVisibleEdit] = useState(false);
 
     const [toggle, setToggle] = useState(false);
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const postFood = usePostFood(
         axiosPrivate,
         setModalLoadingFlag,
-        handlerSetModalError,
+        showMessage,
         makeImagesRecord,
     );
 
@@ -441,19 +459,25 @@ function NewFood(props) {
     }
     async function makeImagesRecord(foodCreated) {
         try {
-            await Promise.all([imagiesForPostHandler(foodCreated)]);
-
-            handlerSetModalSave();
-            // goBack();
-
-            queryClient.invalidateQueries(['imageFood', foodCreated.id]);
+            const res = await imagiesForPostHandler(foodCreated);
+            if (res) {
+                queryClient.invalidateQueries(['imageFood', foodCreated.id]);
+                queryClient.invalidateQueries({
+                    queryKey: ['foodsList'],
+                });
+                queryClient.invalidateQueries({
+                    queryKey: ['foods', foodCreated.id],
+                });
+                handlerSetModalSave('Uložené', false);
+            }
         } catch (err) {
             console.log(
                 'ERROR POST request can not be executed! Posssible Error in the following post function: Imagies',
                 err,
             );
             setModalLoadingFlag(false);
-            handlerSetModalError();
+
+            showMessage('⚠️ Dáta sa nepodarilo uložiť.', true);
             throw err;
         }
     }
@@ -489,25 +513,35 @@ function NewFood(props) {
             }
         }
     }
+    function handlerSetModalSave(message, isError) {
+        setModalLoadingFlag(false);
+        showMessage(message, isError);
+        setTimeout(() => {
+            if (!isError) navigate(nav);
+        }, 3000);
+    }
+    function showMessage(message, isError) {
+        setIsError(isError);
+        setMessage(message);
+        setModalMessageFlag(true);
+        setTimeout(() => {
+            setModalMessageFlag(false);
+            setMessage('');
+        }, 3000);
+    }
 
-    function handlerSetModalSave() {
-        setModalSavedFlag(true);
-        setTimeout(() => {
-            setModalSavedFlag(false);
-            navigate(nav);
-        }, 1000);
-    }
-    function handlerSetModalError() {
-        setModalErrorFlag(true);
-        setTimeout(() => {
-            setModalErrorFlag(false);
-        }, 3000);
-    }
     function handlerSetModalErrorMissing(message) {
-        setErrMsg(message);
-        setTimeout(() => {
-            setErrMsg('');
-        }, 3000);
+        function handdlerMessage() {
+            setErrMsg(message);
+            setTimeout(() => {
+                setErrMsg('');
+            }, 3000);
+        }
+        if (!isMobile) {
+            handdlerMessage();
+        } else {
+            showMessage(message, true);
+        }
     }
 
     function closeModal(e) {
@@ -582,12 +616,9 @@ function NewFood(props) {
                         </button>
                         <div
                             className={style.foodButton}
-                            // datatooltip="Spať"
+                            onClick={() => goBack()}
                         >
-                            <FontAwesomeIcon
-                                onClick={() => goBack()}
-                                icon={faBackward}
-                            />
+                            <FontAwesomeIcon icon={faBackward} />
                         </div>
                     </div>
                 </div>
@@ -682,13 +713,13 @@ function NewFood(props) {
             </Modal>
             <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
                 <SaveError></SaveError>
-            </Modal>
-            <Modal
-                visible={modalSaveErrorMissingFlag}
-                setModalFlag={setModalSaveErrorMissingFlag}
+            </Modal>{' '}
+            <ModalDelete
+                visible={modalMessageFlag}
+                setModalFlag={setModalMessageFlag}
             >
-                <SaveErrorMissing modalMessage={errMsg} />
-            </Modal>
+                <Message item={message} isError={isError}></Message>
+            </ModalDelete>
             <ModalPreview
                 visible={modalLightboxFlag}
                 setModalFlag={setModalLightboxFlag}

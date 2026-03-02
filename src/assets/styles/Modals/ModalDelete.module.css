@@ -1,0 +1,40 @@
+.modalWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(124, 124, 124, 0.623);
+    z-index: 100;
+}
+
+.modal {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: auto;
+}
+@media (width <= 768px) {
+    .modalWrapper {
+        background-color: transparent;
+        /* align-items: flex-end; */
+    }
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+
+        margin: 0;
+
+        z-index: 100;
+    }
+}

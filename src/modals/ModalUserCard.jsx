@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import style from '../assets/styles/Reports/ModalProfile.module.css';
+import style from '../assets/styles/Modals/ModalUserCard.module.css';
 import { createPortal } from 'react-dom';
 
-export default function ModalProfile(props) {
+export default function ModalUserCard(props) {
     useEffect(() => {
         if (props.visible) {
             document.body.style.overflow = 'hidden';
@@ -18,7 +18,7 @@ export default function ModalProfile(props) {
 
     function onModalClose(e) {
         e.stopPropagation();
-        props.setModalFlag(false);
+        // props.setModalFlag(false);
     }
 
     function onModalContentClick(event) {

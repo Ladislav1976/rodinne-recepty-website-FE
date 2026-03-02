@@ -9,7 +9,7 @@ import {
     faPlus,
     faAngleDown,
 } from '@fortawesome/free-solid-svg-icons';
-import ModalStep from '../reports/ModalStep';
+import ModalStep from '../modals/ModalStep';
 import StepInputMobile from './StepInputMobile';
 
 function Step(props) {
@@ -242,7 +242,7 @@ export default function StepsInput(props) {
                     className={style.newStepText}
                     ref={props.stepRef}
                     onKeyDown={props.stepKeyDown}
-                    placeholder='"Vlozit dalsi postup"'
+                    placeholder="Napíšte postup prípravy..."
                     rows="10"
                     value={addedStep}
                     onChange={(e) => handleChangeStep(e.target.value)}

@@ -5,7 +5,7 @@ import SaveLoading from '../reports/SaveLoading';
 import SaveSaved from '../reports/SaveSaved';
 import DeleteConfirm from '../reports/DeleteConfirm';
 import SaveError from '../reports/SaveError';
-import SaveErrorMissing from '../reports/SaveErrorMissing';
+
 import Lightbox from '../components/Lightbox';
 import style from '../assets/styles/Pages/NewFood.module.css';
 import IngredientInput from '../components/IngredientInput';
@@ -13,8 +13,8 @@ import LeftPanelFilter from '../components/LeftPanelFilter';
 
 import Image from '../components/Image';
 import UrlInput from '../components/UrlInput';
-import Modal from '../reports/Modal';
-import ModalPreview from '../reports/ModalPreview';
+import Modal from '../modals/Modal';
+import ModalPreview from '../modals/ModalPreview';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faSpinner,
@@ -35,6 +35,8 @@ import { usePutImage } from '../hooks/Mutations/usePutImage';
 import { useDeleteImage } from '../hooks/Mutations/useDeleteImage';
 import useAuth from '../hooks/useAuth';
 import MenuToggle from '../components/MenuToggle';
+import ModalDelete from '../modals/ModalDelete';
+import Message from '../reports/Message';
 // import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
 
 function EditFood(props) {
@@ -46,12 +48,19 @@ function EditFood(props) {
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
     let uniqueID = new Date().toISOString();
-    const { setUsercont } = useAuth();
+    const { setUsercont, ordering, pageSize, search, setPage } = useAuth();
 
     const itemsDw = useItemsDownload(ID, axiosPrivate, isSaving);
 
     const queryClient = useQueryClient();
 
+    const params = new URLSearchParams({
+        ordering: ordering,
+        page: 1,
+        page_size: pageSize,
+        search: search,
+    });
+    const navFoods = `/recepty?${params.toString()}`;
     const nameRef = useRef();
     const urlRef = useRef();
     const stepRef = useRef();
@@ -94,28 +103,35 @@ function EditFood(props) {
     const [modalLoadingFlag, setModalLoadingFlag] = useState(false);
     const [modalSavedFlag, setModalSavedFlag] = useState(false);
     const [modalDeleteFlag, setModalDeleteFlag] = useState(false);
+    const [modalMessageFlag, setModalMessageFlag] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [message, setMessage] = useState('');
     const [modalErrorFlag, setModalErrorFlag] = useState(false);
-    const [modalSaveErrorMissingFlag, setModalSaveErrorMissingFlag] =
-        useState(false);
 
-    const [errMsg, setErrMsg] = props.errMsg;
-    // const [modalImageDeleteErrorFlag, setModalImageDeleteErrorFlag] =
-    //     useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const [errMsg, setErrMsg] = useState(props.errMsg || '');
+
     const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
     const [isVisibleEdit, setIsVisibleEdit] = useState(false);
 
     const putFood = usePutFood(
         axiosPrivate,
         setModalLoadingFlag,
-        handlerSetModalError,
+        showMessage,
         makeImagesRecord,
-        setIsSaving,
     );
     const deleteFood = useDeleteFood(
         axiosPrivate,
-        setModalLoadingFlag,
-        handlerSetModalError,
-        handlerFoodDeleteConfirmed,
+        // setModalLoadingFlag,
+        // handlerSetModalError,
+        // handlerFoodDeleteConfirmed,
     );
     const postImage = usePostImage(axiosPrivate);
     const putImage = usePutImage(axiosPrivate, controller);
@@ -484,17 +500,15 @@ function EditFood(props) {
             const res = await imagiesForPostHandler(foodCreated);
             // await Promise.all([imagiesForPostHandler(foodCreated)]);
             if (res) {
-                handlerSetModalSave();
-                setModalLoadingFlag(false);
-                setIsSaving(false);
                 queryClient.invalidateQueries(['imageFood', foodCreated.id]);
                 queryClient.invalidateQueries({
                     queryKey: ['foods', foodCreated.id],
                 });
                 queryClient.invalidateQueries({
-                    queryKey: ['foods'],
-                    exact: true,
+                    queryKey: ['foodsList'],
                 });
+                handlerSetModalSave('Uložené', false);
+                // handlerSetModalSave();
             }
         } catch (err) {
             console.log(
@@ -502,15 +516,16 @@ function EditFood(props) {
                 err,
             );
             setModalLoadingFlag(false);
+            showMessage('⚠️ Dáta sa nepodarilo uložiť.', true);
             setIsSaving(false);
-            handlerSetModalError();
+
             throw err;
         }
     }
-    function foodDelete() {
-        setModalDeleteFlag(false);
-        setModalLoadingFlag(true);
-        deleteFood.mutate({ id: foodID });
+    async function foodDelete() {
+        // setModalDeleteFlag(false);
+        // setModalLoadingFlag(true);
+        return await deleteFood.mutateAsync({ id: foodID });
     }
 
     function imageURLsUpdater(imageURLsList) {
@@ -553,30 +568,52 @@ function EditFood(props) {
         navigate(`/recepty/${id.id}/edit`);
     }
 
-    function handlerFoodDeleteConfirmed() {
-        setModalSavedFlag(true);
+    function handlerFoodDeleteConfirmed(message, isError) {
+        setModalDeleteFlag(false);
+        showMessage(message, isError);
         setTimeout(() => {
-            setModalSavedFlag(false);
-            navigate(`/recepty/?page_size=${20}`);
-        }, 1000);
+            if (!isError) {
+                setPage(1);
+                navigate(navFoods);
+            }
+            setIsSaving(false);
+        }, 3000);
     }
 
-    function handlerSetModalSave() {
-        navigate(`/recepty/${ID}/`);
-    }
-    function handlerSetModalError() {
-        setModalErrorFlag(true);
+    function handlerSetModalSave(message, isError) {
+        setModalLoadingFlag(false);
+        showMessage(message, isError);
         setTimeout(() => {
-            setModalErrorFlag(false);
+            setIsSaving(false);
+            if (!isError) navigate(`/recepty/${ID}/`);
+        }, 3000);
+    }
+
+    function showMessage(message, isError) {
+        setIsError(isError);
+        setMessage(message);
+        setModalMessageFlag(true);
+        setTimeout(() => {
+            setModalMessageFlag(false);
+            setMessage('');
         }, 3000);
     }
 
     function handlerSetModalErrorMissing(message) {
-        setErrMsg(message);
-        setTimeout(() => {
-            setErrMsg('');
-        }, 3000);
+        function handdlerMessage() {
+            setErrMsg(message);
+            setTimeout(() => {
+                setErrMsg('');
+            }, 3000);
+        }
+        if (!isMobile) {
+            handdlerMessage();
+        } else {
+            showMessage(message, true);
+            // handlerSetModalError(message);
+        }
     }
+
     function closeModal(e) {
         setModalLightboxFlag(false);
         setIsVisibleEdit(false);
@@ -663,18 +700,16 @@ function EditFood(props) {
                             <div
                                 className={style.foodButton}
                                 id={style.foodButtonDelete}
+                                onClick={handleFoodDelete}
                                 // datatooltip="Vymazať"
                             >
-                                <FontAwesomeIcon
-                                    icon={faTrash}
-                                    onClick={handleFoodDelete}
-                                />
+                                <FontAwesomeIcon icon={faTrash} />
                             </div>
-                            <div className={style.foodButton}>
-                                <FontAwesomeIcon
-                                    onClick={() => navigate(-1)}
-                                    icon={faBackward}
-                                />
+                            <div
+                                className={style.foodButton}
+                                onClick={() => navigate(-1)}
+                            >
+                                <FontAwesomeIcon icon={faBackward} />
                             </div>
                         </div>
                     </div>
@@ -773,23 +808,31 @@ function EditFood(props) {
             <Modal visible={modalSavedFlag} setModalFlag={setModalSavedFlag}>
                 <SaveSaved></SaveSaved>
             </Modal>
-            <Modal visible={modalDeleteFlag} setModalFlag={setModalDeleteFlag}>
+            <ModalDelete
+                visible={modalDeleteFlag}
+                setModalFlag={setModalDeleteFlag}
+            >
                 <DeleteConfirm
-                    item={name}
+                    item={'recept'}
                     errMsg={errMsg}
+                    handlerFoodDeleteConfirmed={handlerFoodDeleteConfirmed}
+                    showMessage={showMessage}
                     onDelete={foodDelete}
+                    setIsSaving={setIsSaving}
                     onDeleteCancel={handlerFoodDeleteCancel}
                 ></DeleteConfirm>
-            </Modal>
+            </ModalDelete>
+
+            <ModalDelete
+                visible={modalMessageFlag}
+                setModalFlag={setModalMessageFlag}
+            >
+                <Message item={message} isError={isError}></Message>
+            </ModalDelete>
             <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
                 <SaveError></SaveError>
             </Modal>
-            <Modal
-                visible={modalSaveErrorMissingFlag}
-                setModalFlag={setModalSaveErrorMissingFlag}
-            >
-                <SaveErrorMissing modalMessage={errMsg} />
-            </Modal>
+
             <ModalPreview
                 visible={modalLightboxFlag}
                 setModalFlag={setModalLightboxFlag}

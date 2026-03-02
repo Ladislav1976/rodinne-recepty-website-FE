@@ -4,9 +4,8 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 export const usePutFood = (
     axiosPrivate,
     setModalLoadingFlag,
-    handlerSetModalError,
+    showMessage,
     makeImagesRecord,
-    setIsSaving,
 ) => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -15,8 +14,7 @@ export const usePutFood = (
         onError: (err, updatedFood, context) => {
             console.log('Error Put Food :', err);
             setModalLoadingFlag(false);
-            setIsSaving(false);
-            handlerSetModalError();
+            showMessage('⚠️ Dáta sa nepodarilo uložiť.', true);
             throw err;
         },
         onSuccess: (data, context) => {

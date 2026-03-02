@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import style from '../assets/styles/Components/StepInputMobile.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function StepInputMobile(props) {
     const [step, setStep] = useState(props.step ? props.step : '');
@@ -32,21 +30,6 @@ export default function StepInputMobile(props) {
     return (
         <>
             <div className={style.main}>
-                <div
-                    className={style.iconSave}
-                    datatooltip="Uložiť"
-                    disabled={!step ? true : false}
-                    onClick={handleSave}
-                >
-                    <FontAwesomeIcon icon={faFloppyDisk} />
-                </div>
-                <div
-                    className={style.iconCancel}
-                    onClick={() => props.setModalFlag(false)}
-                    datatooltip="Zavrieť"
-                >
-                    <FontAwesomeIcon icon={faXmark} />
-                </div>
                 <div className={style.stepid}>{props.index}.</div>
 
                 <textarea
@@ -57,15 +40,21 @@ export default function StepInputMobile(props) {
                     autoComplete="off"
                     onChange={handleUpdateStep}
                 />
-                {/* <input
-                        type="text"
-                        className={style.searchInputMobile}
-                        placeholder="Hľadať ..."
-                        aria-label="Hľadať ..."
-                        value={searchedTag}
-                        onChange={handleChange}
-                        onKeyDown={handleKeyPress}
-                    /> */}
+                <div className={style.buttonContainer}>
+                    <button
+                        className={`${style.button} ${style.cancel}`}
+                        onClick={() => props.setModalFlag(false)}
+                    >
+                        Zrušiť
+                    </button>{' '}
+                    <button
+                        className={`${style.button} `}
+                        onClick={handleSave}
+                        disabled={!step ? true : false}
+                    >
+                        Uložiť
+                    </button>
+                </div>
             </div>
         </>
     );

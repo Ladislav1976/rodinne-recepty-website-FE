@@ -1,7 +1,7 @@
 import style from '../assets/styles/Pages/Foods.module.css';
 import { useState, useEffect } from 'react';
-import Modal from '../reports/Modal';
-import ModalSearch from '../reports/ModalSearch';
+import Modal from '../modals/Modal';
+import ModalSearch from '../modals/ModalSearch';
 import FoodItemList from '../components/FoodItemList';
 import TagInput from '../components/TagInput';
 import TagInputMobile from '../components/TagInputMobile';

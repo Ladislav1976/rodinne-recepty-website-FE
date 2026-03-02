@@ -6,6 +6,6 @@ export const useFood = (ID, axiosPrivate, isSaving) => {
         queryKey: ['foods', ID],
         queryFn: (queryKey) =>
             getDataPrivateID(axiosPrivate, queryKey.queryKey),
-        // enabled: !isSaving,
+        enabled: !isSaving,
     });
 };

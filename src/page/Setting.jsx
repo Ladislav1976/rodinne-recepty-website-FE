@@ -7,19 +7,24 @@ import { useUnit } from '../hooks/Queries/useUnit';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../reports/Modal';
+import Modal from '../modals/Modal';
 import DeleteConfirm from '../reports/DeleteConfirm';
 import { useDeleteTag } from '../hooks/Mutations/useDeleteTag';
 import { useDeleteGroup } from '../hooks/Mutations/useDeleteGroup';
 import { useDeleteUnit } from '../hooks/Mutations/useDeleteUnit';
 import { useState } from 'react';
+import ModalDelete from '../modals/ModalDelete';
+import Message from '../reports/Message';
 export default function Tags() {
     const [modalDeleteFlag, setModalDeleteFlag] = useState(false);
+    const [modalMessageFlag, setModalMessageFlag] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [message, setMessage] = useState('');
+
     const [tagToDelete, setTagToDelete] = useState('');
     const [groupToDelete, setGroupToDelete] = useState('');
     const [unitToDelete, setUnitToDelete] = useState('');
 
-    const [errMsg, setErrMsg] = useState('');
     const axiosPrivate = useAxiosPrivate();
     const tagGroupQf = useTagGroups(axiosPrivate);
     const unitQf = useUnit(axiosPrivate);
@@ -47,74 +52,83 @@ export default function Tags() {
         setModalDeleteFlag(true);
     }
 
-    function showErr(message) {
-        setErrMsg(message);
-
+    function showMessage(message, isError) {
+        setIsError(isError);
+        setModalDeleteFlag(false);
+        setMessage(message);
+        setModalMessageFlag(true);
         setTimeout(() => {
-            setErrMsg('');
+            setModalMessageFlag(false);
+            setMessage('');
         }, 3000);
     }
     function deleteTagCanceled() {
         setModalDeleteFlag(false);
+        setTagToDelete('');
+        setGroupToDelete('');
+        setUnitToDelete('');
     }
 
     async function handleDeleteTag() {
         const id = tagToDelete?.id;
         if (!Number.isInteger(id)) return;
-        try {
-            const res = await deleteTag.mutateAsync({ id: id });
-            if (res) {
-                setModalDeleteFlag(false);
-            }
-        } catch (err) {
-            if (err.status && err.response.data.detail) {
-                showErr(err.response.data.detail);
-            } else {
-                showErr(`Problem so serverom.`);
-            }
-        }
+        return await deleteTag.mutateAsync({ id: id });
+        // try {
+        //     const res = await deleteTag.mutateAsync({ id: id });
+        //     if (res) {
+        //         return res;
+        //     }
+        // } catch (err) {
+        //     if (err.status && err.response.data.detail) {
+        //         showErr(err.response.data.detail);
+        //     } else {
+        //         showErr(`Problem so serverom.`);
+        //     }
+        // }
     }
     async function handleDeleteGroup() {
         const id = groupToDelete?.id;
         if (!Number.isInteger(id)) return;
-        try {
-            const res = await deleteGroup.mutateAsync({ id: id });
-            if (res) {
-                setModalDeleteFlag(false);
-            }
-        } catch (err) {
-            if (err.status && err.response.data.detail) {
-                showErr(err.response.data.detail);
-            } else {
-                showErr(`Problem so serverom.`);
-            }
-        }
+        return await deleteGroup.mutateAsync({ id: id });
+        // try {
+        //     const res = await deleteGroup.mutateAsync({ id: id });
+        //     if (res) {
+        //         return res;
+        //     }
+        // } catch (err) {
+        //     if (err.status && err.response.data.detail) {
+        //         showErr(err.response.data.detail);
+        //     } else {
+        //         showErr(`Problem so serverom.`);
+        //     }
+        // }
     }
     async function handleDeleteUnit() {
         const id = unitToDelete?.id;
         if (!Number.isInteger(id)) return;
-        try {
-            const res = await deleteUnit.mutateAsync({ id: id });
-            if (res) {
-                setModalDeleteFlag(false);
-            }
-        } catch (err) {
-            if (err.status && err.response.data.detail) {
-                showErr(err.response.data.detail);
-            } else {
-                showErr(`Problem so serverom.`);
-            }
-        }
+        return await deleteUnit.mutateAsync({ id: id });
+        // try {
+        //     const res = await deleteUnit.mutateAsync({ id: id });
+        //     if (res) {
+        //         return res;
+        //     }
+        // } catch (err) {
+        //     if (err.status && err.response.data.detail) {
+        //         showErr(err.response.data.detail);
+        //     } else {
+        //         showErr(`Problem so serverom.`);
+        //     }
+        // }
     }
-    function handleDelete() {
+    async function handleDelete() {
         if (tagToDelete) {
-            handleDeleteTag();
+            return await handleDeleteTag();
         }
         if (groupToDelete) {
-            handleDeleteGroup();
+            return await handleDeleteGroup();
         }
         if (unitToDelete) {
-            handleDeleteUnit();
+            return await handleDeleteUnit();
         }
     }
     function sortingGroups(array) {
@@ -322,11 +336,18 @@ export default function Tags() {
                         groupToDelete.groupName ||
                         unitToDelete.unit
                     }
-                    errMsg={errMsg}
+                    showMessage={showMessage}
+                    setIsSaving={() => {}}
                     onDelete={handleDelete}
                     onDeleteCancel={deleteTagCanceled}
                 ></DeleteConfirm>
             </Modal>
+            <ModalDelete
+                visible={modalMessageFlag}
+                setModalFlag={setModalMessageFlag}
+            >
+                <Message item={message} isError={isError}></Message>
+            </ModalDelete>
         </>
     );
 }

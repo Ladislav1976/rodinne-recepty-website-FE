@@ -4,11 +4,7 @@ import { usePutUser } from '../hooks/Mutations/usePutUser';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import default_image from '../image/user_image.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faCamera,
-    faFloppyDisk,
-    faXmark,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
 
 export default function UserProfile({ userCard, imagePreview, closeModal }) {
     const [images, setImages] = useState([]);
@@ -213,9 +209,9 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                         </table>
                     </div>
                 </div>{' '}
-                <h4>Základné údaje</h4>
+                {/* <h4>Základnéee údaje</h4> */}
                 <div className={style.button_container}>
-                    <button
+                    {/* <button
                         type="submit"
                         className={style.iconSave}
                         datatooltip="Uložiť"
@@ -230,14 +226,14 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                         datatooltip="Zavrieť"
                     >
                         <FontAwesomeIcon icon={faXmark} />
-                    </div>
-                    <div
+                    </div> */}
+                    <button
                         type="button"
                         className={`${style.button} ${style.cancel}`}
                         onClick={closeModal}
                     >
                         Zrušiť
-                    </div>
+                    </button>
                     <button
                         type="submit"
                         className={`${style.button} ${style.save}`}
