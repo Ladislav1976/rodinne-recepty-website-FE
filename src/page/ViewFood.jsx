@@ -13,8 +13,8 @@ import MenuToggle from '../components/MenuToggle';
 
 import Image from '../components/Image';
 import UrlInput from '../components/UrlInput';
-import Modal from '../reports/Modal';
-import ModalPreview from '../reports/ModalPreview';
+import Modal from '../modals/Modal';
+import ModalPreview from '../modals/ModalPreview';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faSpinner,
@@ -39,8 +39,13 @@ function ViewFood(props) {
     const component = 'viewcomponent';
     const navigate = useNavigate();
 
-    const navFoods = `/recepty?ordering=${ordering}&page=${page}&page_size=${pageSize}&search=${search}`;
-    // const foods = location.state?.foods.pathname + location.state?.foods.search || "/";
+    const params = new URLSearchParams({
+        ordering: ordering,
+        page: page,
+        page_size: pageSize,
+        search: search,
+    });
+    const navFoods = `/recepty?${params.toString()}`;
 
     const goBack = () => navigate(navFoods);
 
@@ -119,14 +124,14 @@ function ViewFood(props) {
 
                         <div className={style.messagebox}>{props.errMsg}</div>
                         <div className={style.buttonBox}>
-                            <div className={style.foodButton}>
+                            <div
+                                className={style.foodButton}
+                                onClick={() =>
+                                    navigate(`/recepty/${id.id}/email`)
+                                }
+                            >
                                 {/* datatooltip="Upraviť" */}
-                                <FontAwesomeIcon
-                                    onClick={() =>
-                                        navigate(`/recepty/${id.id}/email`)
-                                    }
-                                    icon={faEnvelope}
-                                />
+                                <FontAwesomeIcon icon={faEnvelope} />
                             </div>
 
                             <div

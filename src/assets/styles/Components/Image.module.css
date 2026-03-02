@@ -41,34 +41,6 @@ input[type='file'] {
     height: 3rem;
 }
 
-.imageIcon::before,
-.imageIcon::after {
-    --scale: 0;
-    position: absolute;
-    font-size: 0.7rem;
-    top: -0.3rem;
-    left: 2.5rem;
-    transform: translateX(-50%) scale(var(--scale));
-    transition: 150ms tranform;
-}
-
-.imageIcon::before {
-    content: attr(datatooltip);
-    padding: 0.3rem;
-    margin-left: 30px;
-    color: var(--greydark);
-    background-color: white;
-    font-weight: bold;
-    border-radius: 0.3rem;
-}
-
-.imageIcon:hover:before {
-    --scale: 1;
-}
-
-.imageIcon:hover {
-    color: var(--orange);
-}
 .numOfFiles {
     text-align: center;
     margin: 5px 0 5px 0;
@@ -165,8 +137,39 @@ input[type='file'] {
     }
     .imageIconBox {
         border: 3px solid #ffffff;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
         border-radius: 50%;
-        background-color: #ccc;
+        background-color: rgb(228, 227, 227);
+        /* background-color: #ccc; */
+    }
+}
+
+@media (width >= 768px) {
+    .imageIcon::before,
+    .imageIcon::after {
+        --scale: 0;
+        position: absolute;
+        font-size: 0.7rem;
+        top: -0.3rem;
+        left: 2.5rem;
+        transform: translateX(-50%) scale(var(--scale));
+        transition: 150ms tranform;
+    }
+
+    .imageIcon::before {
+        content: attr(datatooltip);
+        padding: 0.3rem;
+        margin-left: 30px;
+        color: var(--greydark);
+        background-color: white;
+        font-weight: bold;
+        border-radius: 0.3rem;
+    }
+
+    .imageIcon:hover:before {
+        --scale: 1;
+    }
+
+    .imageIcon:hover {
+        color: var(--orange);
     }
 }

@@ -1,7 +1,3 @@
-h3 {
-    text-align: center;
-    color: white;
-}
 .main {
     position: relative;
     display: flex;
@@ -28,20 +24,23 @@ h3 {
     padding: 0;
     flex: 1 1 0;
     overflow-y: auto;
-    & h4:nth-last-of-type(1) {
+    & h4 {
+        color: white;
+    }
+    /* & h4:nth-last-of-type(1) {
         color: var(--greydark);
         display: none;
     }
     & h4:nth-last-of-type(2) {
         color: white;
-    }
+    } */
 }
 .user_info {
     position: relative;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     background-color: white;
     min-width: 100%;
 }
@@ -51,7 +50,7 @@ h3 {
     justify-content: center;
     flex-direction: column;
     align-items: flex-end;
-    margin: 3.5rem 2rem 1rem 2rem;
+    margin: 2rem 2rem 0 2rem;
 }
 .user_photo img {
     display: block;
@@ -70,7 +69,7 @@ h3 {
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-    padding: 1rem 0.5rem 1rem 0;
+    padding: 2rem 2rem 1rem 0;
 }
 .user_details table {
     width: 100%;
@@ -193,16 +192,16 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 8px;
+    align-items: center;
+    /* gap: 8px; */
     width: 100%;
     background-color: white;
-    border-bottom-right-radius: 1rem;
-    border-bottom-left-radius: 1rem;
-    padding: 1rem 0 1rem 0.5rem;
+
+    padding: 0 2rem;
 }
 
 .button {
-    width: 150px;
+    width: 120px;
     padding: 0.5rem;
     cursor: pointer;
     border-radius: 0.6rem;
@@ -210,9 +209,10 @@ input:checked + .slider:before {
 
     background-color: var(--greydark);
     color: white;
+    font-size: 0.8rem;
     font-weight: 500;
     text-align: center;
-    margin: 0;
+    margin: 1rem;
     &:hover {
         background-color: var(--orange);
 
@@ -282,60 +282,39 @@ input:checked + .slider:before {
     .user_info {
         grid-template-columns: auto;
         width: auto;
-        margin-bottom: 2rem;
     }
 }
+@media (width >= 768px) {
+    .button {
+        &:hover {
+            background-color: var(--orange);
 
+            color: white;
+        }
+    }
+}
 @media (width <= 768px) {
     .user_info {
         flex-direction: column;
+        margin-bottom: 2rem;
     }
 
     .form {
         width: 100%;
         height: 100%;
         border-radius: 0;
-        flex-direction: column-reverse;
+
         background-color: white;
-        & h4:nth-last-of-type(1) {
+        & h4 {
+            margin-top: 2rem;
             color: var(--greydark);
-            display: inline;
-        }
-        & h4:nth-last-of-type(2) {
-            color: white;
-            display: none;
         }
     }
     .button_container {
-        justify-content: flex-end;
-    }
-    .button_container .iconSave,
-    .button_container .iconCancel {
-        display: none;
-        color: rgba(26, 25, 25, 0.911);
-        background-color: rgb(228, 227, 227);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 3.5rem;
-        height: 3.5rem;
-        border: transparent;
-        border-radius: 50%;
-        font-size: 25px;
-        font-weight: lighter;
-        z-index: 15;
-    }
-    .iconSave {
-        margin: 0;
-        margin-right: 4rem;
+        justify-content: space-between;
+        margin-bottom: 2rem;
     }
 
-    .iconCancel {
-        margin-right: 1rem;
-    }
-    .button {
-        display: none;
-    }
     .imageIcon:hover {
         color: var(--greydark);
     }
@@ -348,6 +327,6 @@ input:checked + .slider:before {
         padding: 0 0.5rem;
     }
     .user_photo {
-        margin: 3rem 2rem 1rem;
+        margin: 1rem 2rem 1rem;
     }
 }

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 
 import UserProfile from './UserProfile';
 
-import ModalProfile from '../reports/ModalProfile';
+import ModalProfile from '../modals/ModalProfile';
 
 export default function UserInfo(props) {
     const { auth } = useAuth();

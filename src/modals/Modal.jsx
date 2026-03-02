@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import style from '../assets/styles/Reports/ModalStep.module.css';
+import style from '../assets/styles/Modals/Modal.module.css';
 import { createPortal } from 'react-dom';
+import { useEffect } from 'react';
 
-export default function ModalStep(props) {
+export default function Modal(props) {
     useEffect(() => {
         if (props.visible) {
             document.body.style.overflow = 'hidden';
@@ -17,7 +17,7 @@ export default function ModalStep(props) {
     if (!props.visible) return null;
     function onModalClose(e) {
         e.stopPropagation();
-        props.setModalFlag(false);
+        // props.setModalFlag(false);
     }
 
     function onModalContentClick(event) {

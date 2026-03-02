@@ -3,8 +3,6 @@ import style from '../assets/styles/Components/UserCard.module.css';
 import { usePutUser } from '../hooks/Mutations/usePutUser';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import default_image from '../image/user_image.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 export default function UserCard({ userCard, closeModal }) {
     const [role, setRole] = useState(userCard.role || 'User_readOnly');
     const [roleDefault, setRoleDefault] = useState('');
@@ -81,7 +79,7 @@ export default function UserCard({ userCard, closeModal }) {
 
     return (
         <div className={style.main} key={userCard.id}>
-            <h3>Základné údaje</h3>
+            <h4>Základné údaje</h4>
             <form className={style.form}>
                 <div className={style.user_info}>
                     <div className={style.user_photo}>
@@ -100,7 +98,6 @@ export default function UserCard({ userCard, closeModal }) {
                         </p>
                     </div>
                     <div className={style.user_details}>
-                        <h3>Základné údaje</h3>
                         <table>
                             <tbody>
                                 <tr>
@@ -295,22 +292,6 @@ export default function UserCard({ userCard, closeModal }) {
                 </div>
                 <div className={style.button_container}>
                     <button
-                        type="submit"
-                        className={style.iconSave}
-                        datatooltip="Uložiť"
-                        // disabled={!step ? true : false}
-                        // onClick={handleSave}
-                    >
-                        <FontAwesomeIcon icon={faFloppyDisk} />
-                    </button>
-                    <div
-                        className={style.iconCancel}
-                        onClick={closeModal}
-                        datatooltip="Zavrieť"
-                    >
-                        <FontAwesomeIcon icon={faXmark} />
-                    </div>
-                    <button
                         type="button"
                         className={`${style.button} ${style.cancel}`}
                         onClick={closeModal}
@@ -321,7 +302,6 @@ export default function UserCard({ userCard, closeModal }) {
                         type="submit"
                         className={`${style.button} ${style.save}`}
                         onClick={handlePostRole}
-                        // disabled={roleDefault || statusDefault === ''}
                     >
                         Uložiť
                     </button>

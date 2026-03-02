@@ -121,6 +121,9 @@ footer {
     background-color: var(--c-white);
     border-top: 1px solid var(--c-border);
 }
+.tsqd-parent-container {
+    display: none !important;
+}
 
 @font-face {
     font-family: Lobster;

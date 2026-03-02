@@ -138,11 +138,11 @@ export default function SubmitFood(props) {
                 <div className={styla.panel}>
                     <div className={styla.messagebox}>{props.errMsg}</div>
                     <div className={styla.buttonBox}>
-                        <div className={styla.foodButton}>
-                            <FontAwesomeIcon
-                                onClick={() => navigate(-1)}
-                                icon={faBackward}
-                            />
+                        <div
+                            className={styla.foodButton}
+                            onClick={() => navigate(-1)}
+                        >
+                            <FontAwesomeIcon icon={faBackward} />
                         </div>
                     </div>
                 </div>

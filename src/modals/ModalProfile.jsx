@@ -1,8 +1,8 @@
-import style from '../assets/styles/Reports/ModalPreview.module.css';
-import { createPortal } from 'react-dom';
 import { useEffect } from 'react';
-//props.visible -> says if modal should appear
-export default function ModalPreview(props) {
+import style from '../assets/styles/Modals/ModalProfile.module.css';
+import { createPortal } from 'react-dom';
+
+export default function ModalProfile(props) {
     useEffect(() => {
         if (props.visible) {
             document.body.style.overflow = 'hidden';
@@ -14,7 +14,6 @@ export default function ModalPreview(props) {
             document.body.style.overflow = 'unset';
         };
     }, [props.visible]);
-
     if (!props.visible) return null;
 
     function onModalClose(e) {

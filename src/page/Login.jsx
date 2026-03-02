@@ -14,6 +14,7 @@ import {
     faEyeSlash,
     faEnvelope,
 } from '@fortawesome/free-regular-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 const LOGIN_URL = 'login';
 const EMAIL_REGEX =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -34,13 +35,10 @@ export default function Login() {
     const [pwd, setPwd] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [showPwd, setShowPwd] = useState(false);
-    // const [validPwd, setValidPwd] = useState(false);
-    // const [pwdFocus, setPwdFocus] = useState(false);
 
     const [errMsg, setErrMsg] = useState('');
 
     const [validEmail, setValidEmail] = useState(false);
-    // const [emailFocus, setEmailFocus] = useState(false);
 
     // const [check, toggleCheck] = useToggle('persist', false);
     const togglePwdVisibility = () => {
@@ -133,7 +131,10 @@ export default function Login() {
                             <div className={style.lineTrans}></div>
                         </div>
                         <div className={style.receptyLogo}>
-                            <img src={receptyLogo} alt="" />
+                            <img
+                                src={receptyLogo}
+                                alt="Rodinné recepty - logo"
+                            />
                         </div>
                         <div className={style.loginContainer}>
                             {' '}
@@ -150,41 +151,11 @@ export default function Login() {
                                 <h1>Vitajte späť!</h1>
                                 <h4>Prihláste sa</h4>
                             </div>
-                            {/* <div
-                                    className={
-                                        isLoading
-                                            ? style.loadingContainer
-                                            : style.hide
-                                    }
-                                >
-                                    <FontAwesomeIcon
-                                        className={style.loadingIcon}
-                                        icon={faSpinner}
-                                        spin
-                                    ></FontAwesomeIcon>
-                                </div> */}
                             <form
                                 className={style.form}
                                 onSubmit={handleSubmit}
                             >
                                 <div className={style.inputContainer}>
-                                    {/* <label className={style.label} htmlFor="email">
-                            E-mail:
-                            <FontAwesomeIcon
-                                icon={faCheck}
-                                className={
-                                    validEmail ? style.valid : style.hide
-                                }
-                            />
-                            <FontAwesomeIcon
-                                icon={faTimes}
-                                className={
-                                    validEmail || !email
-                                        ? style.offScreen
-                                        : style.invalid
-                                }
-                            />
-                        </label> */}
                                     <div className={style.inputBox}>
                                         <input
                                             type="email"
@@ -194,40 +165,18 @@ export default function Login() {
                                             placeholder="Vložte svoj email"
                                             autoComplete="off"
                                             {...emailAttribs}
-                                            // onChange={(e) => setEmail(e.target.value)}
-                                            // value={email}
                                             required
                                             aria-invalid={
                                                 validEmail ? 'false' : 'true'
                                             }
                                             aria-describedby="uidnote"
-                                            // onFocus={() => setEmailFocus(true)}
-                                            // onBlur={() => setEmailFocus(false)}
                                         />
                                         <div className={style.icon}>
                                             <FontAwesomeIcon
                                                 icon={faEnvelope}
                                             />
                                         </div>{' '}
-                                        {/* <p
-                                        id="uidnote"
-                                        className={
-                                            emailFocus && email && !validEmail
-                                                ? style.instructions
-                                                : style.offscreen
-                                        }
-                                    >
-                                        <FontAwesomeIcon icon={faInfoCircle} />
-                                        Povolené znaky: <br />- písmená, číslice, bodky
-                                        <br />- symbol „@“,
-                                        <br />
-                                        - .sk .com, .org, .cc
-                                        <br />
-                                            </p> */}
                                     </div>
-                                    {/* <label className={style.label} htmlFor="password">
-                                    Heslo:
-                                     </label>{' '} */}
                                     <div className={style.inputBox}>
                                         <input
                                             type={showPwd ? 'text' : 'password'}
@@ -252,6 +201,19 @@ export default function Login() {
                                                 }}
                                             />
                                         </div>{' '}
+                                        <div
+                                            className={
+                                                isLoading
+                                                    ? style.loadingContainer
+                                                    : style.hide
+                                            }
+                                        >
+                                            <FontAwesomeIcon
+                                                className={style.loadingIcon}
+                                                icon={faSpinner}
+                                                spin
+                                            ></FontAwesomeIcon>
+                                        </div>
                                     </div>{' '}
                                     <button
                                         type="submit"
@@ -274,7 +236,6 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-            {/* )} */}
         </>
     );
 }

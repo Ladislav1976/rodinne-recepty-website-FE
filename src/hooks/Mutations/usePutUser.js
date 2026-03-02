@@ -39,11 +39,6 @@ export const usePutUser = ({
             if (context?.previousUsers) {
                 queryClient.setQueryData(queryKey, context.previousUsers);
             }
-            // queryClient.setQueryData(queryKey, (old) => {
-            //     return Array.isArray(old)
-            //         ? old.filter((u) => u.id !== newUser.id)
-            //         : [];
-            // });
 
             if (roleDefault) {
                 setRole(roleDefault);
@@ -67,7 +62,7 @@ export const usePutUser = ({
 
             const queryKey = ['users'];
             queryClient.invalidateQueries(queryKey);
-            // setRoleDefault('');
+
             if (!error) {
                 if (auth?.userRes?.id === updatedUser.id) {
                     setAuth((prev) => ({

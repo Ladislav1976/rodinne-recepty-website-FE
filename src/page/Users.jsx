@@ -7,7 +7,7 @@ import user_image from '../image/user_image.png';
 import { faSpinner, faCircle } from '@fortawesome/free-solid-svg-icons';
 
 import UserCard from '../components/UserCard';
-import ModalUserCard from '../reports/ModalUserCard';
+import ModalUserCard from '../modals/ModalUserCard';
 const ROLES = [
     { role: 'Admin', viewRole: 'Admin' },
     { role: 'User_readOnly', viewRole: 'Read' },

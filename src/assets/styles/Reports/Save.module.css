@@ -25,6 +25,13 @@
     text-align: center;
     color: var(--greydark);
 }
+.box h3,
+.box p {
+    margin: 0.5rem 0;
+}
+.buttonContainer {
+    margin-top: 1rem;
+}
 
 .saveIcon {
     font-size: 3rem;
@@ -48,28 +55,6 @@
     display: none;
 }
 
-.button {
-    width: 120px;
-    padding: 0.6rem;
-    cursor: pointer;
-    border-radius: 0.6rem;
-    border: 1px solid #ccc;
-
-    background-color: var(--greydark);
-    color: white;
-    font-weight: 500;
-    text-align: center;
-    margin: 1rem;
-    &:hover {
-        background-color: var(--orange);
-
-        color: white;
-    }
-}
-.delete {
-    background-color: #f9f9f9;
-    color: var(--greydark);
-}
 @media (width <= 768px) {
     .box {
         width: 100dvw;

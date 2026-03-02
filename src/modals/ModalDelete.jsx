@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import style from '../assets/styles/Reports/ModalUserCard.module.css';
+import style from '../assets/styles/Modals/ModalDelete.module.css';
 import { createPortal } from 'react-dom';
+import { useEffect } from 'react';
 
-export default function ModalUserCard(props) {
+export default function ModalDelete(props) {
     useEffect(() => {
         if (props.visible) {
             document.body.style.overflow = 'hidden';
@@ -15,10 +15,9 @@ export default function ModalUserCard(props) {
         };
     }, [props.visible]);
     if (!props.visible) return null;
-
     function onModalClose(e) {
         e.stopPropagation();
-        // props.setModalFlag(false);
+        props.setModalFlag(false);
     }
 
     function onModalContentClick(event) {
