@@ -6,11 +6,10 @@ export const useDeleteFood = (axiosPrivate, setModalLoadingFlag) => {
     return useMutation({
         mutationFn: (food) => createDeleteFood(axiosPrivate, food),
         onError: (error) => {
-            console.log('Error Delete Food :', error);
+            console.error('Error Delete Food :', error);
             setModalLoadingFlag(false);
         },
         onSuccess: (response, foodDeleted) => {
-            console.log('Food :', foodDeleted, 'sucsesfully deleted!');
             queryClient.removeQueries({
                 queryKey: ['foods', foodDeleted.id],
             });

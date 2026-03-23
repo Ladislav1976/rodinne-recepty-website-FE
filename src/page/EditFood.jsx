@@ -35,7 +35,7 @@ import { usePutImage } from '../hooks/Mutations/usePutImage';
 import { useDeleteImage } from '../hooks/Mutations/useDeleteImage';
 import useAuth from '../hooks/useAuth';
 import MenuToggle from '../components/MenuToggle';
-import ModalDelete from '../modals/ModalDelete';
+import ModalMessage from '../modals/ModalMessage';
 import Message from '../reports/Message';
 // import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
 
@@ -43,6 +43,8 @@ function EditFood(props) {
     const id = useParams();
     let ID = parseInt(id.id);
     const [isSaving, setIsSaving] = useState(false);
+    const [unitsDw, setUnitsDw] = useState([]);
+    const [tagGroupsDw, setTagGroupsDw] = useState([]);
     const controller = new AbortController();
     const component = 'editcomponent';
     const navigate = useNavigate();
@@ -62,11 +64,6 @@ function EditFood(props) {
     });
     const navFoods = `/recepty?${params.toString()}`;
     const nameRef = useRef();
-    const urlRef = useRef();
-    const stepRef = useRef();
-    const qtRef = useRef();
-    const unitRef = useRef();
-    const ingrRef = useRef();
 
     const [foodID, setFoodID] = useState('');
     const [user, setUser] = useState([]);
@@ -82,21 +79,24 @@ function EditFood(props) {
     const [toggle, setToggle] = useState(false);
 
     useEffect(() => {
-        if (!itemsDw.isLoading && itemsDw.data) {
+        if (!itemsDw.isLoading && itemsDw.data && !foodID) {
             setFoodID(itemsDw.data.id);
             setName(itemsDw.data.name);
             setFoodTagSet(itemsDw.data.tags);
             setStepsList(itemsDw.data.steps);
-            setIngredientsList(itemsDw.data.ingredients);
+            setIngredientsList(itemsDw.data.ingredientsGroup);
             setUrlList(itemsDw.data.urls);
             setDate(itemsDw.data.date);
             setImageURLsList(itemsDw.data.images);
             setUser(itemsDw.data.user);
             setUsercont(itemsDw.data.usercont);
+            setUnitsDw(itemsDw.data.units);
+            setTagGroupsDw(itemsDw.data.tagGroups);
+
             // nameRef.current?.focus();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [itemsDw.data]);
+    }, [itemsDw.data, foodID]);
 
     const [images, setImages] = useState([]);
 
@@ -136,40 +136,11 @@ function EditFood(props) {
     const postImage = usePostImage(axiosPrivate);
     const putImage = usePutImage(axiosPrivate, controller);
     const deleteImage = useDeleteImage(axiosPrivate);
-
-    function nameKeyDown(event) {
-        if (event.key === 'Enter') {
-            urlRef.current.focus();
-        }
-    }
-    function urlKeyDown(event) {
-        if (event.key === 'Enter') {
-            stepRef.current.focus();
-        }
-    }
-    function stepKeyDown(event) {
-        if (event.key === 'Enter') {
-            qtRef.current.focus();
-        }
-    }
-
-    function qrKeyDown(event) {
-        if (event.key === 'Enter') {
-            unitRef.current.focus();
-        }
-    }
-
-    function unitKeyDown(event) {
-        if (event.key === 'Enter') {
-            ingrRef.current.focus();
-        }
-    }
-
-    function ingKeyDown(event) {
-        if (event.key === 'Enter') {
+    useEffect(() => {
+        if (nameRef.current) {
             nameRef.current.focus();
         }
-    }
+    }, [itemsDw.isLoading]);
 
     function handleFoodDelete() {
         setModalDeleteFlag(true);
@@ -177,7 +148,7 @@ function EditFood(props) {
 
     function handleFoodSave(e) {
         e.preventDefault();
-
+        setIsSaving(true);
         const filterIngredients = ingredientsList.filter(
             (ingre) => ingre.position !== 'delete',
         );
@@ -270,13 +241,19 @@ function EditFood(props) {
                             urlname: res.urlname,
                         };
                     }),
-                ingredients: ingredientsList
+                ingredientsGroup: ingredientsList
                     ?.filter((i) => !i.statusDelete)
-                    .map((res, index) => {
+                    .map((group, index) => {
                         return {
-                            units: [res.unit.id],
-                            quantity: res.quantity,
-                            ingredientName: [res.ingredient.ingredient],
+                            ...group,
+                            ingredients: group.ingredients.map((res, index) => {
+                                return {
+                                    units: res.unit.id,
+                                    quantity: res.quantity,
+                                    ingredientName: res.ingredient.ingredient,
+                                    position: index + 1,
+                                };
+                            }),
                             position: index + 1,
                         };
                     }),
@@ -323,27 +300,65 @@ function EditFood(props) {
         setFoodTagSet(newFoodTagSet);
     }
 
-    function addToIngredientList(quantity, unit, ing) {
-        if (ing === '') {
+    function addToIngredientList(group, quantity, unit, ing) {
+        if (!group || !quantity || !unit || !ing) {
             return;
         }
+        let position = getPosition(group.id, ingredientsList);
+        let newIngredientsList = ingredientsList.slice();
+        newIngredientsList.splice(position, 1, {
+            ...group,
+            ingredients: [
+                ...group.ingredients,
+                {
+                    id: uniqueID,
+                    quantity: quantity,
+                    unit: unit,
+                    ingredient: ing,
+                    statusDelete: false,
+                },
+            ],
+        });
+        setIngredientsList(newIngredientsList);
+    }
+    function updateIngreNameInIngredientsList(group, groupName) {
+        if (!groupName || !group) return;
+        let position = getPosition(group.id, ingredientsList);
+        let newIngredientsList = ingredientsList.slice();
+        newIngredientsList.splice(position, 1, {
+            ...group,
+            groupName: groupName,
+        });
+        setIngredientsList(newIngredientsList);
+    }
+
+    function addIngreGroupToIngredientList(group) {
+        if (!group) return;
+
         let newIngredientsList = ingredientsList.slice();
 
         newIngredientsList.push({
             id: uniqueID,
-            quantity: quantity,
-            unit: unit,
-            ingredient: ing,
+            groupName: group,
+            ingredients: [],
             statusDelete: false,
         });
 
         setIngredientsList(newIngredientsList);
     }
 
-    function makeIngredientsDelete(ingre) {
+    function makeIngredientsDelete(group, ingre) {
+        let position = getPosition(group.id, ingredientsList);
+        let newIngredientsList = ingredientsList.slice();
+        newIngredientsList.splice(position, 1, {
+            ...group,
+            ingredients: makeItemDelete(ingre, group.ingredients),
+        });
+        setIngredientsList(newIngredientsList);
+    }
+    function makeIngreGroupDelete(ingre) {
         setIngredientsList(makeItemDelete(ingre, ingredientsList));
     }
-
     function makeSteptoDelete(step) {
         setStepsList(makeItemDelete(step, stepsList));
     }
@@ -429,49 +444,65 @@ function EditFood(props) {
 
         return array;
     }
+    function createFormData(foodId, folder, file, pos) {
+        const formData = new FormData();
+        formData.append('food', foodId);
+        formData.append('upload_folder', folder);
+        formData.append('image', file);
+        formData.append('position', pos);
+        return formData;
+    }
 
-    async function imagiesForPostHandler(food) {
+    function createSimpleFormData(foodId, pos) {
+        const formData = new FormData();
+        formData.append('food', foodId);
+        formData.append('position', pos);
+        return formData;
+    }
+    async function handlerImagiesForPost(food) {
         const newDate = new Date(date).toISOString().substring(0, 10);
         const seconds = new Date(date).getUTCMilliseconds();
         const results = [];
         for (const [index, res] of imageURLsList.entries()) {
-            const imageID = res.id;
             const isNewImage = typeof res.id === 'string';
-            const isToBeDeleted = res.statusDelete === true;
+            const isDeleted = res.statusDelete === true;
+            const folderName = `${food.name}-${newDate}-${seconds}`;
+            const position = index + 1;
 
-            let form = new FormData();
-            form.append('food', res.food);
-            form.append('position', index + 1);
-
-            let formdata = new FormData();
-            formdata.append('food', food.id);
-            formdata.append(
-                'upload_folder',
-                `${food.name}-${newDate}-${seconds}`,
-            );
-            formdata.append('image', res.imageForBackEnd);
-            formdata.append('position', index + 1);
-
-            const formdataPut = { id: imageID, imageForm: form };
+            const postData = {
+                imageFormForBackEnd: createFormData(
+                    food.id,
+                    folderName,
+                    res.imageForBackEnd,
+                    position,
+                ),
+                formdataForRCatch: {
+                    food: food.id,
+                    upload_folder: folderName,
+                    image: res.image,
+                    position,
+                },
+            };
+            const putData = {
+                id: res.id,
+                imageForm: createSimpleFormData(food.id, position),
+            };
 
             let response;
             try {
-                if (!isNewImage && isToBeDeleted) {
-                    response = await deleteImage.mutateAsync(
-                        formdataPut,
-                        // food.id,
-                    );
-                } else if (isNewImage && !isToBeDeleted) {
-                    response = await postImage.mutateAsync({ formdata });
-                } else if (isNewImage && isToBeDeleted) {
+                if (!isNewImage && isDeleted) {
+                    response = await deleteImage.mutateAsync(putData);
+                } else if (isNewImage && !isDeleted) {
+                    response = await postImage.mutateAsync(postData);
+                } else if (!isNewImage && !isDeleted) {
+                    response = await putImage.mutateAsync(putData);
+                } else {
                     response = { status: 204 };
-                } else if (!isNewImage && !isToBeDeleted) {
-                    response = await putImage.mutateAsync(formdataPut);
                 }
 
                 if (response) results.push(response);
             } catch (err) {
-                console.log('Error Imagies', err);
+                console.error('Error Imagies', err);
                 throw err;
             }
         }
@@ -483,22 +514,14 @@ function EditFood(props) {
     }
 
     function makeFoodRecord(food) {
-        setIsSaving(true);
         setModalLoadingFlag(true);
         putFood.mutate(food);
-        // try {
-        //     await
-        // } catch (err) {
-        //     setIsSaving(false);
-        //     setModalLoadingFlag(false);
-        //     throw err;
-        // }
     }
 
     async function makeImagesRecord(foodCreated) {
         try {
-            const res = await imagiesForPostHandler(foodCreated);
-            // await Promise.all([imagiesForPostHandler(foodCreated)]);
+            const res = await handlerImagiesForPost(foodCreated);
+
             if (res) {
                 queryClient.invalidateQueries(['imageFood', foodCreated.id]);
                 queryClient.invalidateQueries({
@@ -508,15 +531,11 @@ function EditFood(props) {
                     queryKey: ['foodsList'],
                 });
                 handlerSetModalSave('Uložené', false);
-                // handlerSetModalSave();
             }
         } catch (err) {
-            console.log(
-                'ERROR Put request can not be executed! Posssible Error in the following post function:Ingredients, Steps, Imagies',
-                err,
-            );
+            console.error('ERROR recept sa nepodarilo uložiť.', err);
             setModalLoadingFlag(false);
-            showMessage('⚠️ Dáta sa nepodarilo uložiť.', true);
+            showMessage('⚠️ Recept sa nepodarilo uložiť.', true);
             setIsSaving(false);
 
             throw err;
@@ -536,16 +555,37 @@ function EditFood(props) {
         setStepsList(itemMove(move, step, stepsList));
     }
 
-    function ingredientMove(move, ing) {
-        setIngredientsList(itemMove(move, ing, ingredientsList));
+    function ingredientMove(group, move, ing) {
+        if (!group || !move || !ing) return;
+        let position = getPosition(group.id, ingredientsList);
+
+        let newIngredientsList = ingredientsList.slice();
+        newIngredientsList.splice(position, 1, {
+            ...group,
+            ingredients: itemMove(move, ing, group.ingredients),
+        });
+        setIngredientsList(newIngredientsList);
+    }
+
+    function ingredientsGroupMove(group, move) {
+        if (!group || !move) return;
+        // let position = getPosition(group.id, ingredientsList);
+
+        // let newIngredientsList = ingredientsList.slice();
+        // newIngredientsList.splice(position, 1, {
+        //     ...group,
+        //     ingredients: itemMove(move, ing, group.ingredients),
+        // });
+        setIngredientsList(itemMove(move, group, ingredientsList));
     }
 
     function itemMove(move, item, array) {
+        if (!move || !item || !array) return;
         let position = getPosition(item.id, array);
         let newArray = array.slice();
         if (move > 0) {
             if (position === -1 + array.length) {
-                return newArray;
+                return array;
             } else {
                 newArray.splice(position, 1);
                 newArray.splice(position + move, 0, item);
@@ -554,7 +594,7 @@ function EditFood(props) {
         }
         if (move < 0) {
             if (position === 0) {
-                return newArray;
+                return array;
             } else {
                 newArray.splice(position, 1);
                 newArray.splice(position - 1, 0, item);
@@ -584,7 +624,6 @@ function EditFood(props) {
         setModalLoadingFlag(false);
         showMessage(message, isError);
         setTimeout(() => {
-            setIsSaving(false);
             if (!isError) navigate(`/recepty/${ID}/`);
         }, 3000);
     }
@@ -721,25 +760,27 @@ function EditFood(props) {
                                 foodTagsBox={null}
                                 component={component}
                                 toggle={[toggle, setToggle]}
-                                tagGroups={itemsDw?.data?.tagGroups || []}
+                                tagGroups={tagGroupsDw}
                             />
 
                             <IngredientInput
                                 addToIngredientList={addToIngredientList}
+                                addIngreGroupToIngredientList={
+                                    addIngreGroupToIngredientList
+                                }
+                                updateIngreNameInIngredientsList={
+                                    updateIngreNameInIngredientsList
+                                }
                                 ingredientMove={ingredientMove}
+                                ingredientsGroupMove={ingredientsGroupMove}
                                 ingredientsList={ingredientsList}
                                 handlerSetModalErrorMissing={
                                     handlerSetModalErrorMissing
                                 }
-                                removeFromIngredientList={makeIngredientsDelete}
+                                makeIngredientsDelete={makeIngredientsDelete}
+                                makeIngreGroupDelete={makeIngreGroupDelete}
                                 component={component}
-                                qtRef={qtRef}
-                                unitRef={unitRef}
-                                ingrRef={ingrRef}
-                                qrKeyDown={qrKeyDown}
-                                unitKeyDown={unitKeyDown}
-                                ingKeyDown={ingKeyDown}
-                                unitsDw={itemsDw?.data?.units || []}
+                                unitsDw={unitsDw}
                             ></IngredientInput>
                             <Image
                                 imageURLs={imageURLsList}
@@ -756,8 +797,9 @@ function EditFood(props) {
                                     deleteUrl={makeUrlToDelete}
                                     updateUrlList={updateUrlList}
                                     handleAddUrl={handleAddUrl}
-                                    urlRef={urlRef}
-                                    urlKeyDown={urlKeyDown}
+                                    handlerSetModalErrorMissing={
+                                        handlerSetModalErrorMissing
+                                    }
                                 ></UrlInput>
 
                                 <StepsInput
@@ -767,21 +809,23 @@ function EditFood(props) {
                                     stepsList={stepsList}
                                     deleteStep={makeSteptoDelete}
                                     component={component}
-                                    stepRef={stepRef}
-                                    stepKeyDown={stepKeyDown}
                                 ></StepsInput>
                             </div>
                             <div className={style.fooodnamebox}>
-                                <label className={style.name} htmlFor="name">
-                                    Nazov:
+                                <label
+                                    className={style.name}
+                                    htmlFor="NázovReceptu"
+                                >
+                                    Názov:
                                 </label>
                                 <input
                                     className={style.foodname}
-                                    id="name"
-                                    name="name"
+                                    id="NázovReceptu"
+                                    name="Názov receptu"
                                     ref={nameRef}
                                     value={name}
-                                    onKeyDown={nameKeyDown}
+                                    // onKeyDown={nameKeyDown}
+                                    tabIndex="1"
                                     type="text"
                                     maxLength="300"
                                     onChange={(e) => setName(e.target.value)}
@@ -808,7 +852,7 @@ function EditFood(props) {
             <Modal visible={modalSavedFlag} setModalFlag={setModalSavedFlag}>
                 <SaveSaved></SaveSaved>
             </Modal>
-            <ModalDelete
+            <ModalMessage
                 visible={modalDeleteFlag}
                 setModalFlag={setModalDeleteFlag}
             >
@@ -821,14 +865,14 @@ function EditFood(props) {
                     setIsSaving={setIsSaving}
                     onDeleteCancel={handlerFoodDeleteCancel}
                 ></DeleteConfirm>
-            </ModalDelete>
+            </ModalMessage>
 
-            <ModalDelete
+            <ModalMessage
                 visible={modalMessageFlag}
                 setModalFlag={setModalMessageFlag}
             >
                 <Message item={message} isError={isError}></Message>
-            </ModalDelete>
+            </ModalMessage>
             <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
                 <SaveError></SaveError>
             </Modal>

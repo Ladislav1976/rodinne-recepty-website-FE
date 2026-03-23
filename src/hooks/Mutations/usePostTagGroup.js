@@ -22,7 +22,7 @@ export const usePostTagGroup = (axiosPrivate) => {
         },
 
         onError: (err, newTag, context) => {
-            console.log('Error Post tagGroup :', err);
+            console.error('Error Post tagGroup :', err);
             if (context?.previousTags) {
                 queryClient.setQueryData(
                     context.queryKey,
@@ -37,8 +37,6 @@ export const usePostTagGroup = (axiosPrivate) => {
             }
         },
         onSettled: (data, error, newTag, context) => {
-            console.log('Post settled for tagGroup:', newTag);
-
             if (data?.data) {
                 queryClient.setQueryData(context.queryKey, (old) => {
                     if (!Array.isArray(old)) return [data.data];

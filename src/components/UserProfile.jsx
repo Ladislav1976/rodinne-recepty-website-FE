@@ -158,20 +158,20 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                             className={style.imageinput}
                             type="file"
                             accept="image/jpeg,image/png,image/gif"
-                            id="inpFile"
+                            aria-label="Pridať fotografiu"
+                            id="TlačidloPreFotografiu"
                             onChange={(e) => onImageChange(e)}
                             display="none"
                         />
                         <div className={style.imageLoadBox}>
                             <label
-                                htmlFor="inpFile"
+                                htmlFor="TlačidloPreFotografiu"
                                 className={style.imageIcon}
                                 datatooltip="Pridať fotografiu"
                             >
                                 {' '}
                                 <FontAwesomeIcon
                                     icon={faCamera}
-                                    id="inpFileIcon"
                                 ></FontAwesomeIcon>
                             </label>
                         </div>{' '}

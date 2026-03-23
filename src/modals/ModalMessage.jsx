@@ -2,7 +2,7 @@ import style from '../assets/styles/Modals/ModalDelete.module.css';
 import { createPortal } from 'react-dom';
 import { useEffect } from 'react';
 
-export default function ModalDelete(props) {
+export default function ModalMessage(props) {
     useEffect(() => {
         if (props.visible) {
             document.body.style.overflow = 'hidden';

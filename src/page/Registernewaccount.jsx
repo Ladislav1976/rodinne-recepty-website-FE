@@ -1,10 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
 
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import style from '../assets/styles/Pages/RegisterNewAccount.module.css';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import CSRFToken from './CSFRToken';
+import ModalMessage from '../modals/ModalMessage';
+import Message from '../reports/Message';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const EMAIL_REGEX =
@@ -13,11 +17,14 @@ const EMAIL_REGEX =
 const REGISTER_URL = 'register';
 
 export default function RegisterNewAccount() {
+    const { page, pageSize, ordering } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const [isLoading, setIsLoading] = useState(false);
+    const [modalMessageFlag, setModalMessageFlag] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [message, setMessage] = useState('');
 
     const first_name_Ref = useRef();
-    const last_name_Ref = useRef();
 
     const emailRef = useRef();
     const errRef = useRef();
@@ -31,24 +38,13 @@ export default function RegisterNewAccount() {
 
     const [validEmail, setValidEmail] = useState(false);
 
-    const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
+    const nav = `/recepty?ordering=${ordering}&page=${page}&page_size=${pageSize}`;
+    const goBack = () => navigate(nav, { replace: true });
 
     useEffect(() => {
         first_name_Ref.current.focus();
     }, []);
-
-    function first_nameKeyDown(event) {
-        if (event.key === 'Enter') {
-            last_name_Ref.current.focus();
-        }
-    }
-
-    function last_nameKeyDown(event) {
-        if (event.key === 'Enter') {
-            emailRef.current.focus();
-        }
-    }
 
     useEffect(() => {
         setValidFirst_name(USER_REGEX.test(first_name));
@@ -62,10 +58,19 @@ export default function RegisterNewAccount() {
         setValidEmail(EMAIL_REGEX.test(email));
     }, [email]);
 
-    useEffect(() => {
-        setErrMsg('');
-    }, [first_name, last_name, email]);
+    function showMessage(message, isError) {
+        setIsError(isError);
+        setMessage(message);
+        setModalMessageFlag(true);
+        setTimeout(() => {
+            if (!isError) {
+                goBack();
+            }
 
+            setModalMessageFlag(false);
+            setMessage('');
+        }, 3000);
+    }
     async function handleSubmit(e) {
         e.preventDefault();
         setIsLoading(true);
@@ -75,7 +80,7 @@ export default function RegisterNewAccount() {
         const v2 = USER_REGEX.test(last_name);
         const v3 = EMAIL_REGEX.test(email);
         if (!v1 || !v2 || !v3) {
-            setErrMsg('Invalid Entry');
+            showMessage('Invalid Entry', true);
             return;
         }
         try {
@@ -90,8 +95,8 @@ export default function RegisterNewAccount() {
                     signal: controller.signal,
                 },
             );
+            showMessage(`Nový účet pre ${email} bol vytvorený!`, false);
 
-            setSuccess(true);
             setIsLoading(false);
 
             setFirst_name('');
@@ -99,13 +104,14 @@ export default function RegisterNewAccount() {
             setEmail('');
         } catch (err) {
             if (!err?.response) {
-                setErrMsg('No Server Response');
+                showMessage('No Server Response', true);
             } else if (err.response?.status === 409) {
-                setErrMsg(
+                showMessage(
                     `Tento ${err.response?.data.message} je už zaregistrovaný`,
+                    true,
                 );
             } else {
-                setErrMsg('Registrácia zlyhala');
+                showMessage('Registrácia zlyhala', true);
             }
             errRef.current.focus();
         }
@@ -113,176 +119,158 @@ export default function RegisterNewAccount() {
 
     return (
         <>
-            {' '}
             <div className={style.main}>
-                {success ? (
-                    <div className={style.submitContainer}>
-                        <section>
-                            <h1>Nový účet pre {email} bol vytvorený!</h1>
-                        </section>
-                    </div>
-                ) : (
-                    <div
-                        className={
-                            !isLoading ? style.submitContainer : style.offScreen
-                        }
+                <div
+                    className={
+                        !isLoading ? style.submitContainer : style.offScreen
+                    }
+                >
+                    <form
+                        onSubmit={handleSubmit}
+                        className={!isLoading ? style.form : style.offscreen}
                     >
-                        <form
-                            onSubmit={handleSubmit}
-                            className={
-                                !isLoading ? style.form : style.offscreen
+                        <h1>Registrácia</h1>
+                        <CSRFToken />
+                        <div className={style.inputContainer}>
+                            <label className={style.label} htmlFor="KrstnéMeno">
+                                Meno:
+                                <FontAwesomeIcon
+                                    icon={faCheck}
+                                    className={
+                                        validFirst_name
+                                            ? style.valid
+                                            : style.hide
+                                    }
+                                />
+                                <FontAwesomeIcon
+                                    icon={faTimes}
+                                    className={
+                                        validFirst_name || !first_name
+                                            ? style.hide
+                                            : style.invalid
+                                    }
+                                />
+                            </label>
+                            <div className={style.inputBox}>
+                                <input
+                                    type="text"
+                                    className={style.input}
+                                    id="KrstnéMeno"
+                                    ref={first_name_Ref}
+                                    autoComplete="off"
+                                    onChange={(e) =>
+                                        setFirst_name(e.target.value)
+                                    }
+                                    value={first_name}
+                                    required
+                                    aria-invalid={
+                                        validFirst_name ? 'false' : 'true'
+                                    }
+                                    aria-describedby="uidnote"
+                                />
+                            </div>
+                            <label className={style.label} htmlFor="Priezvisko">
+                                Priezvisko:
+                                <FontAwesomeIcon
+                                    icon={faCheck}
+                                    className={
+                                        validLast_name
+                                            ? style.valid
+                                            : style.hide
+                                    }
+                                />
+                                <FontAwesomeIcon
+                                    icon={faTimes}
+                                    className={
+                                        validLast_name || !last_name
+                                            ? style.hide
+                                            : style.invalid
+                                    }
+                                />
+                            </label>
+                            <div className={style.inputBox}>
+                                <input
+                                    type="text"
+                                    className={style.input}
+                                    id="Priezvisko"
+                                    autoComplete="off"
+                                    onChange={(e) =>
+                                        setLast_name(e.target.value)
+                                    }
+                                    value={last_name}
+                                    required
+                                    aria-invalid={
+                                        validLast_name ? 'false' : 'true'
+                                    }
+                                />
+                            </div>
+                            <label className={style.label} htmlFor="email">
+                                Email:
+                                <FontAwesomeIcon
+                                    icon={faCheck}
+                                    className={
+                                        validEmail ? style.valid : style.hide
+                                    }
+                                />
+                                <FontAwesomeIcon
+                                    icon={faTimes}
+                                    className={
+                                        validEmail || !email
+                                            ? style.hide
+                                            : style.invalid
+                                    }
+                                />
+                            </label>
+                            <div className={style.inputBox}>
+                                <input
+                                    type="email"
+                                    className={style.input}
+                                    id="email"
+                                    ref={emailRef}
+                                    placeholder="email@gmail.com"
+                                    autoComplete="off"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email}
+                                    required
+                                    aria-invalid={validEmail ? 'false' : 'true'}
+                                />
+                            </div>
+                        </div>
+                        <button
+                            className={style.button}
+                            disabled={
+                                !validFirst_name ||
+                                !validLast_name ||
+                                !validEmail
+                                    ? true
+                                    : false
                             }
                         >
-                            {' '}
-                            <p
-                                ref={errRef}
-                                className={
-                                    errMsg ? style.errmsg : style.offscreen
-                                }
-                                aria-live="assertive"
-                            >
-                                {errMsg}
-                            </p>
-                            <h1>Registrácia</h1>
-                            <CSRFToken />
-                            <div className={style.inputContainer}>
-                                <label
-                                    className={style.label}
-                                    htmlFor="first_name"
-                                >
-                                    Meno:
-                                    <FontAwesomeIcon
-                                        icon={faCheck}
-                                        className={
-                                            validFirst_name
-                                                ? style.valid
-                                                : style.hide
-                                        }
-                                    />
-                                    <FontAwesomeIcon
-                                        icon={faTimes}
-                                        className={
-                                            validFirst_name || !first_name
-                                                ? style.hide
-                                                : style.invalid
-                                        }
-                                    />
-                                </label>
-                                <div className={style.inputBox}>
-                                    <input
-                                        type="text"
-                                        className={style.input}
-                                        id="first_name"
-                                        ref={first_name_Ref}
-                                        onKeyDown={first_nameKeyDown}
-                                        autoComplete="off"
-                                        onChange={(e) =>
-                                            setFirst_name(e.target.value)
-                                        }
-                                        value={first_name}
-                                        required
-                                        aria-invalid={
-                                            validFirst_name ? 'false' : 'true'
-                                        }
-                                        aria-describedby="uidnote"
-                                    />
-                                </div>
-                                <label
-                                    className={style.label}
-                                    htmlFor="last_name"
-                                >
-                                    Priezvisko:
-                                    <FontAwesomeIcon
-                                        icon={faCheck}
-                                        className={
-                                            validLast_name
-                                                ? style.valid
-                                                : style.hide
-                                        }
-                                    />
-                                    <FontAwesomeIcon
-                                        icon={faTimes}
-                                        className={
-                                            validLast_name || !last_name
-                                                ? style.hide
-                                                : style.invalid
-                                        }
-                                    />
-                                </label>
-                                <div className={style.inputBox}>
-                                    <input
-                                        type="text"
-                                        className={style.input}
-                                        id="last_name"
-                                        ref={last_name_Ref}
-                                        onKeyDown={last_nameKeyDown}
-                                        autoComplete="off"
-                                        onChange={(e) =>
-                                            setLast_name(e.target.value)
-                                        }
-                                        value={last_name}
-                                        required
-                                        aria-invalid={
-                                            validLast_name ? 'false' : 'true'
-                                        }
-                                        aria-describedby="uidnote"
-                                    />
-                                </div>
-                                <label className={style.label} htmlFor="email">
-                                    Email:
-                                    <FontAwesomeIcon
-                                        icon={faCheck}
-                                        className={
-                                            validEmail
-                                                ? style.valid
-                                                : style.hide
-                                        }
-                                    />
-                                    <FontAwesomeIcon
-                                        icon={faTimes}
-                                        className={
-                                            validEmail || !email
-                                                ? style.hide
-                                                : style.invalid
-                                        }
-                                    />
-                                </label>
-                                <div className={style.inputBox}>
-                                    <input
-                                        type="email"
-                                        className={style.input}
-                                        id="email"
-                                        ref={emailRef}
-                                        placeholder="email@gmail.com"
-                                        autoComplete="off"
-                                        onChange={(e) =>
-                                            setEmail(e.target.value)
-                                        }
-                                        value={email}
-                                        required
-                                        aria-invalid={
-                                            validEmail ? 'false' : 'true'
-                                        }
-                                        aria-describedby="uidnote"
-                                    />
-                                </div>
-                            </div>
-                            <button
-                                className={style.button}
-                                disabled={
-                                    !validFirst_name ||
-                                    !validLast_name ||
-                                    !validEmail
-                                        ? true
-                                        : false
-                                }
-                            >
-                                Odoslať
-                            </button>
-                        </form>
-                    </div>
-                )}
-            </div>
+                            Odoslať
+                        </button>
+                        <div
+                            className={
+                                isLoading
+                                    ? style.loadingContainer
+                                    : style.offScreen
+                            }
+                        >
+                            <FontAwesomeIcon
+                                className={style.loadingIcon}
+                                icon={faSpinner}
+                                id="inpFileIcon"
+                                spin
+                            ></FontAwesomeIcon>
+                        </div>
+                    </form>
+                </div>
+            </div>{' '}
+            <ModalMessage
+                visible={modalMessageFlag}
+                setModalFlag={setModalMessageFlag}
+            >
+                <Message item={message} isError={isError}></Message>
+            </ModalMessage>
         </>
     );
 }

@@ -60,13 +60,14 @@ function FilterOption(props) {
         <div
             className={`${getOptionContainerStyle()} ${
                 props.open ? style.isActive : ''
-            }`}
+            } ${!handleFilterTagListArray(tag) ? style.unChecked : ''}`}
             onClick={() => props.handleAddTagToFoodTagsList(tag)}
         >
             <input
                 type="checkbox"
                 checked={handleFilterTagListArray(tag)}
                 name="foodTagSet"
+                aria-label="Checkbox pre označenie"
                 className={style.checkboxInput}
                 value={tag.foodTag}
                 id={tag.foodTag}

@@ -21,7 +21,7 @@ export const usePostTag = (axiosPrivate) => {
             return { tempId, previousFoodTags, queryKey };
         },
         onError: (err, newUnit, context) => {
-            console.log('Error Post FoodTag :', err);
+            console.error('Error Post FoodTag :', err);
             if (context?.previousFoodTags) {
                 queryClient.setQueryData(
                     context.queryKey,
@@ -36,8 +36,6 @@ export const usePostTag = (axiosPrivate) => {
             }
         },
         onSettled: (data, error, newFoodTag, context) => {
-            console.log('Post settled for FoodTag:', newFoodTag);
-
             if (data?.data) {
                 queryClient.setQueryData(context.queryKey, (old) => {
                     if (!Array.isArray(old)) return [data.data];

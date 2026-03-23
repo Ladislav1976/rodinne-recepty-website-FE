@@ -6,10 +6,9 @@ export const useDeleteUnit = (axiosPrivate) => {
     return useMutation({
         mutationFn: (step) => createDeleteUnit(axiosPrivate, step),
         onError: (error) => {
-            console.log('Error Delete Unit :', error);
+            console.error('Error Delete Unit :', error);
         },
         onSuccess: (response, deletedUnit) => {
-            console.log('Unit :', deletedUnit, 'sucsesfully deleted!');
             queryClient.invalidateQueries(['unit']);
         },
     });

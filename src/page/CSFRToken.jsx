@@ -28,7 +28,7 @@ export default function CSRFToken() {
             try {
                 await axios.get(CSFR_URL);
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
         };
 

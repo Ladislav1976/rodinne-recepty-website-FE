@@ -28,16 +28,30 @@
     width: 100%;
     height: 3rem;
 }
+
+.submitContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 1 1 0;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
 .form {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
     align-items: center;
-    width: 100rem;
+    width: 100%;
+    max-width: 100rem;
     height: 100%;
     background-color: white;
     padding-top: 2rem;
-    top: 0;
+    border-left: var(--border3px);
+    border-right: var(--border3px);
     margin: 0;
     flex: 1 1 0;
     & h3 {
@@ -55,19 +69,6 @@
     left: 0px;
     top: 0px;
     color: red;
-}
-
-.submitContainer {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    border-left: var(--border3px);
-    border-right: var(--border3px);
-    flex: 1 1 0;
-    box-sizing: border-box;
-    height: 100%;
 }
 
 .offScreen {
@@ -184,6 +185,13 @@
     margin-bottom: 0.5rem;
 }
 
+.succmsg {
+    color: rgb(39, 178, 34);
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
 .foodButton {
     font-size: 18px;
     padding: 5px 20px 5px 0px;
@@ -209,11 +217,13 @@
 }
 
 .loadingContainer {
+    position: absolute;
+    top: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    z-index: 10;
 }
 .loadingIcon {
     font-size: 3rem;
@@ -232,21 +242,14 @@
         }
     }
 
-    .form .submitContainer {
-        border-left: none;
-        border-right: none;
-        width: 100dvw;
-    }
-
     .inputBox input {
         width: 100%;
     }
 
-    .inputBox textarea {
-        /* height: fit-content; */
-    }
-
     .foodButton {
         padding-right: 40px;
+    }
+    .loadingIcon {
+        font-size: 2.5rem;
     }
 }

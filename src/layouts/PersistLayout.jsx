@@ -3,6 +3,7 @@ import RenderHeader from '../components/Header';
 import '../index.css';
 
 import { useState } from 'react';
+import RenderFooter from '../components/RenderFooter';
 
 const Layout2 = (props) => {
     const [toggle, setToggle] = useState(false);
@@ -18,6 +19,9 @@ const Layout2 = (props) => {
             <main>
                 <Outlet />
             </main>
+            <footer>
+                <RenderFooter />
+            </footer>
         </div>
     );
 };

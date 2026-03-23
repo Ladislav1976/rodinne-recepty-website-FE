@@ -160,8 +160,9 @@ export default function Login() {
                                         <input
                                             type="email"
                                             className={style.input}
-                                            id="email"
+                                            id="Emailová adresa"
                                             ref={emailRef}
+                                            aria-label="Emailová adresa"
                                             placeholder="Vložte svoj email"
                                             autoComplete="off"
                                             {...emailAttribs}
@@ -169,7 +170,6 @@ export default function Login() {
                                             aria-invalid={
                                                 validEmail ? 'false' : 'true'
                                             }
-                                            aria-describedby="uidnote"
                                         />
                                         <div className={style.icon}>
                                             <FontAwesomeIcon
@@ -181,7 +181,8 @@ export default function Login() {
                                         <input
                                             type={showPwd ? 'text' : 'password'}
                                             className={style.input}
-                                            id="password"
+                                            aria-label="Potvrdiť emailovú adresu"
+                                            id="Emailová adresa dva"
                                             onChange={(e) =>
                                                 setPwd(e.target.value)
                                             }

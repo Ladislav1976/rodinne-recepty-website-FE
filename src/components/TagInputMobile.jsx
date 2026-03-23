@@ -68,7 +68,7 @@ export default function TagInputMobile(props) {
                         type="text"
                         className={style.searchInputMobile}
                         placeholder="Hľadať ..."
-                        aria-label="Hľadať ..."
+                        aria-label="Hľadať"
                         value={searchedTag}
                         onChange={handleChange}
                         onKeyDown={handleKeyPress}

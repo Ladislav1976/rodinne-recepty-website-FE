@@ -34,7 +34,7 @@ export const usePutUser = ({
             return { previousUsers };
         },
         onError: (err, newUser, context) => {
-            console.log('Error Put User :', err);
+            console.error('Error Put User :', err);
             const queryKey = ['users'];
             if (context?.previousUsers) {
                 queryClient.setQueryData(queryKey, context.previousUsers);
@@ -58,8 +58,6 @@ export const usePutUser = ({
             handlerSetError('Záznam sa nepodarilo uložiť');
         },
         onSettled: (data, error, updatedUser) => {
-            console.log(console.log('Put settled for user:', updatedUser));
-
             const queryKey = ['users'];
             queryClient.invalidateQueries(queryKey);
 

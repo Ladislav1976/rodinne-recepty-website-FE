@@ -6,7 +6,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useAuth from '../hooks/useAuth';
 import useEmailFormSubmit from '../hooks/useEmailFormSubmit';
 import { useItemsDownload } from '../hooks/Queries/useItemsDownload';
-import styla from '../assets/styles/Pages/SubmitFood.module.css';
+import style from '../assets/styles/Pages/SubmitFood.module.css';
 
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +16,9 @@ import {
     faBackward,
     faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
+
+import Message from '../reports/Message';
+import ModalMessage from '../modals/ModalMessage';
 
 const EMAIL_URL = 'https://api.emailjs.com/api/v1.0/email/send';
 const EMAIL_REGEX =
@@ -27,25 +30,26 @@ export default function SubmitFood(props) {
 
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
-    const goBack = () => navigate(-1);
+    const goBack = () => navigate(-1, { replace: true });
 
     const { auth } = useAuth();
-    const itemsDw = useItemsDownload(ID, axiosPrivate);
 
     const form = useRef();
     const emailRef = useRef();
 
-    const [success, setSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [modalMessageFlag, setModalMessageFlag] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [message, setMessage] = useState('');
     const [email, setEmail] = useState('');
     const [validEmail, setValidEmail] = useState(false);
 
-    const [message, setMessage] = useState(
+    const [emailMessage, setEmailMessage] = useState(
         `Dobrý deň,\n\nPodľa našej dohody Vám zasielam podrobný recept.\n\nS pozdravom\n${auth?.userRes?.first_name} ${auth?.userRes?.last_name}`,
     );
 
-    const [errMsg, setErrMsg] = useState('');
-    const errRef = useRef();
+    const itemsDw = useItemsDownload(ID, axiosPrivate, isSaving);
 
     useEffect(() => {
         emailRef.current.focus();
@@ -59,31 +63,43 @@ export default function SubmitFood(props) {
     const [stepsList, setStepsList] = useState([]);
     const [ingredientsList, setIngredientsList] = useState([]);
     const [urlList, setUrlList] = useState([]);
-    const [imageURLsList, setImageURLsList] = useState([]);
 
     const food_form = useEmailFormSubmit(
         name,
         stepsList,
         ingredientsList,
         urlList,
-        imageURLsList,
     );
 
     useEffect(() => {
         if (!itemsDw.isLoading && itemsDw.data) {
             setName(itemsDw.data.name);
             setStepsList(itemsDw.data.steps);
-            setIngredientsList(itemsDw.data.ingredients);
+            setIngredientsList(itemsDw.data.ingredientsGroup);
             setUrlList(itemsDw.data.urls);
-            setImageURLsList(itemsDw.data.images);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itemsDw.data]);
+
+    function showMessage(message, isError) {
+        setIsError(isError);
+        setMessage(message);
+        setModalMessageFlag(true);
+        setTimeout(() => {
+            if (!isError) {
+                goBack();
+            }
+
+            setModalMessageFlag(false);
+            setMessage('');
+            setIsSaving(false);
+        }, 3000);
+    }
     async function sendEmail(e) {
         e.preventDefault();
-        setErrMsg('Neplatna email adresa!');
+
         if (!validEmail) {
-            setErrMsg('Neplatna email adresa!');
+            showMessage('Neplatna email adresa!', true);
             return;
         }
         setIsLoading(true);
@@ -100,7 +116,7 @@ export default function SubmitFood(props) {
                 from_name: `${auth?.userRes?.first_name} ${auth?.userRes?.last_name}`,
                 from_email: auth?.userRes?.email,
                 to_email: email,
-                message: message,
+                message: emailMessage,
                 food_form: food_form,
                 html: `<h1>Hello</h1><img src="cid:unique@image"/>`,
 
@@ -115,16 +131,16 @@ export default function SubmitFood(props) {
                 },
             });
             if (response) {
-                setSuccess(true);
+                showMessage('Email bol úspešne odoslaný!', false);
             }
         } catch (err) {
             if (!err?.respons) {
-                setErrMsg('No Server Response');
+                showMessage('No Server Response', true);
             } else if (err.response?.status === 409) {
-                setErrMsg(
+                showMessage(
                     err.response?.data?.message || 'Chyba pri odosielaní',
+                    true,
                 );
-                errRef.current.focus();
             }
         } finally {
             setIsLoading(false);
@@ -134,144 +150,130 @@ export default function SubmitFood(props) {
     return (
         <>
             {' '}
-            <div className={styla.main}>
-                <div className={styla.panel}>
-                    <div className={styla.messagebox}>{props.errMsg}</div>
-                    <div className={styla.buttonBox}>
-                        <div
-                            className={styla.foodButton}
-                            onClick={() => navigate(-1)}
-                        >
+            <div className={style.main}>
+                <div className={style.panel}>
+                    <div className={style.messagebox}>{props.errMsg}</div>
+                    <div className={style.buttonBox}>
+                        <div className={style.foodButton} onClick={goBack}>
                             <FontAwesomeIcon icon={faBackward} />
                         </div>
                     </div>
                 </div>
-                {success ? (
-                    <div className={styla.submitContainer}>
-                        <div className={styla.form}>
-                            <h3>Email bol úspešne odoslaný!</h3>
 
-                            <button className={styla.button} onClick={goBack}>
-                                Späť
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <>
-                        <div
-                            className={
-                                !isLoading
-                                    ? styla.submitContainer
-                                    : styla.offScreen
-                            }
+                <>
+                    <div className={style.submitContainer}>
+                        <form
+                            className={style.form}
+                            ref={form}
+                            onSubmit={sendEmail}
+                            id="food_form"
                         >
-                            <form
-                                className={styla.form}
-                                ref={form}
-                                onSubmit={sendEmail}
-                                id="food_form"
+                            {/* <p
+                                ref={errRef}
+                                className={
+                                    errMsg
+                                        ? style.errmsg
+                                        : successMsg
+                                          ? style.succmsg
+                                          : style.offscreen
+                                }
+                                aria-live="assertive"
                             >
-                                <p
-                                    ref={errRef}
-                                    className={
-                                        errMsg ? styla.errmsg : styla.offscreen
-                                    }
-                                    aria-live="assertive"
-                                >
-                                    {errMsg}
-                                </p>
-                                <h2>Odoslať recept</h2>
-                                <div className={styla.inputContainer}>
-                                    <label
-                                        className={styla.label}
-                                        htmlFor="email"
-                                    >
-                                        Email :
-                                        <FontAwesomeIcon
-                                            icon={faCheck}
-                                            className={
-                                                validEmail
-                                                    ? styla.valid
-                                                    : styla.hide
-                                            }
-                                        />
-                                        <FontAwesomeIcon
-                                            icon={faTimes}
-                                            className={
-                                                validEmail || !email
-                                                    ? styla.offScreen
-                                                    : styla.invalid
-                                            }
-                                        />
-                                    </label>
-                                    <div className={styla.inputBox}>
-                                        <input
-                                            type="email"
-                                            className={styla.input}
-                                            id="email"
-                                            ref={emailRef}
-                                            placeholder="email@gmail.com"
-                                            autoComplete="off"
-                                            onChange={(e) =>
-                                                setEmail(e.target.value)
-                                            }
-                                            value={email}
-                                            required
-                                            aria-invalid={
-                                                validEmail ? 'false' : 'true'
-                                            }
-                                            aria-describedby="uidnote"
-                                        />
-                                    </div>
-                                    <label
-                                        className={styla.label}
-                                        htmlFor="message"
-                                    >
-                                        Správa:
-                                    </label>
-                                    <div className={styla.inputBox}>
-                                        <textarea
-                                            type="text"
-                                            id="message"
-                                            autoComplete="off"
-                                            onChange={(e) =>
-                                                setMessage(e.target.value)
-                                            }
-                                            value={message}
-                                            rows="10"
-                                            required
-                                            aria-describedby="uidnote"
-                                        />
-                                    </div>
+                                {errMsg}
+                                {successMsg}
+                            </p> */}
+                            <h2>Odoslať recept</h2>
+                            <div className={style.inputContainer}>
+                                <label className={style.label} htmlFor="email">
+                                    Email :
+                                    <FontAwesomeIcon
+                                        icon={faCheck}
+                                        className={
+                                            validEmail
+                                                ? style.valid
+                                                : style.hide
+                                        }
+                                    />
+                                    <FontAwesomeIcon
+                                        icon={faTimes}
+                                        className={
+                                            validEmail || !email
+                                                ? style.offScreen
+                                                : style.invalid
+                                        }
+                                    />
+                                </label>
+                                <div className={style.inputBox}>
+                                    <input
+                                        type="email"
+                                        className={style.input}
+                                        id="email"
+                                        ref={emailRef}
+                                        placeholder="email@gmail.com"
+                                        autoComplete="off"
+                                        onChange={(e) =>
+                                            setEmail(e.target.value)
+                                        }
+                                        value={email}
+                                        required
+                                        aria-invalid={
+                                            validEmail ? 'false' : 'true'
+                                        }
+                                        // aria-describedby="uidnote"
+                                    />
                                 </div>
-
-                                <button
-                                    type="submit"
-                                    className={styla.button}
-                                    disabled={!validEmail ? true : false}
+                                <label
+                                    className={style.label}
+                                    htmlFor="emailová správa"
                                 >
-                                    Odoslať
-                                    <span> &#10095; </span>
-                                </button>
-                            </form>
-                        </div>
-                        <div
-                            className={
-                                isLoading
-                                    ? styla.loadingContainer
-                                    : styla.offScreen
-                            }
-                        >
-                            <FontAwesomeIcon
-                                className={styla.loadingIcon}
-                                icon={faSpinner}
-                                id="inpFileIcon"
-                                spin
-                            ></FontAwesomeIcon>
-                        </div>
-                    </>
-                )}
+                                    Správa:
+                                </label>
+                                <div className={style.inputBox}>
+                                    <textarea
+                                        type="text"
+                                        id="emailová správa"
+                                        autoComplete="off"
+                                        onChange={(e) =>
+                                            setEmailMessage(e.target.value)
+                                        }
+                                        value={emailMessage}
+                                        rows="10"
+                                        required
+                                        // aria-describedby="uidnote"
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className={style.button}
+                                disabled={!validEmail ? true : false}
+                            >
+                                Odoslať
+                                <span> &#10095; </span>
+                            </button>
+                        </form>
+                    </div>
+                    <div
+                        className={
+                            isLoading ? style.loadingContainer : style.offScreen
+                        }
+                    >
+                        <FontAwesomeIcon
+                            className={style.loadingIcon}
+                            icon={faSpinner}
+                            id="inpFileIcon"
+                            spin
+                        ></FontAwesomeIcon>
+                    </div>
+                </>
             </div>
+            <ModalMessage
+                visible={modalMessageFlag}
+                setModalFlag={setModalMessageFlag}
+            >
+                <Message item={message} isError={isError}></Message>
+            </ModalMessage>
         </>
     );
 }

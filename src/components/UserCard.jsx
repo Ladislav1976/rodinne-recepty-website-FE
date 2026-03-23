@@ -111,7 +111,7 @@ export default function UserCard({ userCard, closeModal }) {
                                 <tr>
                                     <th>E-mail</th>
                                     <td>{userCard.email}</td>
-                                </tr>{' '}
+                                </tr>
                                 <tr>
                                     <th>Receptov</th>
                                     <td>{userCard.foods_count}</td>
@@ -128,6 +128,11 @@ export default function UserCard({ userCard, closeModal }) {
                                                 <label className={style.switch}>
                                                     <input
                                                         type="checkbox"
+                                                        aria-label={
+                                                            status === true
+                                                                ? 'Aktívny'
+                                                                : 'Neaktívny'
+                                                        }
                                                         checked={
                                                             status === true
                                                         }
@@ -150,16 +155,11 @@ export default function UserCard({ userCard, closeModal }) {
                                                         }}
                                                     ></span>
                                                 </label>
-
                                                 <span
                                                     className={
                                                         style.status_text
                                                     }
                                                     style={{
-                                                        cursor:
-                                                            role === 'Admin'
-                                                                ? 'context-menu'
-                                                                : 'pointer',
                                                         color:
                                                             status === true
                                                                 ? 'rgb(1, 168, 1)'
@@ -176,8 +176,7 @@ export default function UserCard({ userCard, closeModal }) {
                                 </tr>
                                 <tr>
                                     <th rowSpan={4}>Profil:</th>
-                                    {/* <th> */}
-                                    {/* <div className={style.roles_container}> */}
+
                                     {[
                                         {
                                             role: 'Admin',
@@ -212,6 +211,12 @@ export default function UserCard({ userCard, closeModal }) {
                                                         >
                                                             <input
                                                                 type="checkbox"
+                                                                aria-label={
+                                                                    role ===
+                                                                    r.role
+                                                                        ? 'Aktívny'
+                                                                        : 'Neaktívny'
+                                                                }
                                                                 checked={
                                                                     role ===
                                                                     r.role
@@ -256,7 +261,6 @@ export default function UserCard({ userCard, closeModal }) {
                                                                 }}
                                                             ></span>
                                                         </label>
-
                                                         <span
                                                             className={
                                                                 style.status_text

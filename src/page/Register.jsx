@@ -170,7 +170,7 @@ export default function Register() {
                                 <div className={style.inputBox}>
                                     <label
                                         className={style.label}
-                                        htmlFor="first_name"
+                                        htmlFor="KrstnéMeno"
                                     >
                                         Meno:
                                         <FontAwesomeIcon
@@ -193,7 +193,7 @@ export default function Register() {
                                     <input
                                         type="text"
                                         className={style.input}
-                                        id="first_name"
+                                        id="KrstnéMeno"
                                         ref={first_name_Ref}
                                         autoComplete="off"
                                         onChange={(e) =>
@@ -231,7 +231,7 @@ export default function Register() {
                                 <div className={style.inputBox}>
                                     <label
                                         className={style.label}
-                                        htmlFor="last_name"
+                                        htmlFor="Priezvisko"
                                     >
                                         Priezvisko:
                                         <FontAwesomeIcon
@@ -254,7 +254,7 @@ export default function Register() {
                                     <input
                                         type="text"
                                         className={style.input}
-                                        id="last_name"
+                                        id="Priezvisko"
                                         ref={last_name_Ref}
                                         autoComplete="off"
                                         onChange={(e) =>
@@ -292,7 +292,7 @@ export default function Register() {
                                 <div className={style.inputBox}>
                                     <label
                                         className={style.label}
-                                        htmlFor="user_name"
+                                        htmlFor="MenoUžívateľa"
                                     >
                                         Meno:
                                         <FontAwesomeIcon
@@ -315,7 +315,7 @@ export default function Register() {
                                     <input
                                         type="text"
                                         className={style.input}
-                                        id="user_name"
+                                        id="MenoUžívateľa"
                                         ref={user_name_Ref}
                                         autoComplete="off"
                                         onChange={(e) =>
@@ -437,12 +437,12 @@ export default function Register() {
                                         aria-invalid={
                                             validPwd ? 'false' : 'true'
                                         }
-                                        aria-describedby="pwdnote"
+                                        aria-describedby="hesloPoznamka"
                                         onFocus={() => setPwdFocus(true)}
                                         onBlur={() => setPwdFocus(false)}
                                     />
                                     <p
-                                        id="pwdnote"
+                                        id="hesloPoznamka"
                                         className={
                                             pwdFocus && !validPwd
                                                 ? style.instructions
@@ -467,7 +467,7 @@ export default function Register() {
                                 </div>
 
                                 <label
-                                    htmlFor="confirm_pwd"
+                                    htmlFor="passwordConfirm"
                                     className={style.label}
                                 >
                                     Potvrdiť heslo:
@@ -492,7 +492,7 @@ export default function Register() {
                                     <input
                                         type="password"
                                         className={style.input}
-                                        id="confirm_pwd"
+                                        id="passwordConfirm"
                                         onChange={(e) =>
                                             setMatchPwd(e.target.value)
                                         }
@@ -501,12 +501,12 @@ export default function Register() {
                                         aria-invalid={
                                             validMatch ? 'false' : 'true'
                                         }
-                                        aria-describedby="confirmnote"
+                                        aria-describedby="confirmpwd"
                                         onFocus={() => setMatchFocus(true)}
                                         onBlur={() => setMatchFocus(false)}
                                     />
                                     <p
-                                        id="confirmnote"
+                                        id="confirmpwd"
                                         className={
                                             matchFocus && !validMatch
                                                 ? style.instructions

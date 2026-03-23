@@ -21,7 +21,7 @@ export const usePostUnit = (axiosPrivate) => {
             return { tempId, previousUnits, queryKey };
         },
         onError: (err, newUnit, context) => {
-            console.log('Error Post Unit :', err);
+            console.error('Error Post Unit :', err);
             if (context?.previousUnits) {
                 queryClient.setQueryData(
                     context.queryKey,
@@ -36,8 +36,6 @@ export const usePostUnit = (axiosPrivate) => {
             }
         },
         onSettled: (data, error, newUrl, context) => {
-            console.log('Post settled for unit:', newUrl);
-
             if (data?.data) {
                 queryClient.setQueryData(context.queryKey, (old) => {
                     if (!Array.isArray(old)) return [data.data];

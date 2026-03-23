@@ -46,6 +46,7 @@ export default function ResetPassword() {
     // const [matchFocus, setMatchFocus] = useState(false);
     const [points, setPoints] = useState(false);
     const [color, setColor] = useState(false);
+    const [pwdStrength, setPwdStrength] = useState('Žiadne heslo');
 
     const [errMsg, setErrMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
@@ -62,14 +63,19 @@ export default function ResetPassword() {
 
         if (pwd.length === 0) {
             setColor('rgb(253, 5, 5)');
+            setPwdStrength('Veľmi slabé');
         } else if (currentPoints <= 2) {
             setColor('rgb(253, 63, 5)');
+            setPwdStrength('Slabé');
         } else if (currentPoints <= 3) {
             setColor('rgb(253, 166, 5)');
+            setPwdStrength('Stredné');
         } else if (currentPoints <= 4) {
             setColor('rgb(216, 253, 5)');
+            setPwdStrength('Silné');
         } else {
             setColor('rgb(2, 170, 16)');
+            setPwdStrength('Veľmi silné');
         }
 
         setValidPwd(currentPoints === 5);
@@ -227,7 +233,7 @@ export default function ResetPassword() {
                                                 }
                                             />
                                             <div
-                                                id="pwdnote"
+                                                id="status-heslo"
                                                 className={`
                                     ${style.instructions} 
                                     ${showInfo ? style.showMobile : ''}
@@ -275,13 +281,15 @@ export default function ResetPassword() {
                                             aria-invalid={
                                                 validPwd ? 'false' : 'true'
                                             }
-                                            aria-describedby="pwdnote"
+                                            aria-describedby="status-heslo"
                                             // onFocus={() => setPwdFocus(true)}
                                             // onBlur={() => setPwdFocus(false)}
                                         />{' '}
                                         <div className={style.semafor}>
                                             {[1, 2, 3, 4, 5].map((num) => (
                                                 <div
+                                                    id="status-heslo"
+                                                    aria-label={pwdStrength}
                                                     key={num}
                                                     className={`${style.light}${
                                                         points >= num
@@ -323,7 +331,7 @@ export default function ResetPassword() {
                                     <div className={style.inputBox}>
                                         <label
                                             className={style.label}
-                                            htmlFor="confirm_pwd"
+                                            htmlFor="passwordConfirm"
                                         >
                                             Potvrdiť heslo:
                                             <FontAwesomeIcon
@@ -346,7 +354,7 @@ export default function ResetPassword() {
                                         <input
                                             type="password"
                                             className={style.input}
-                                            id="confirm_pwd"
+                                            id="passwordConfirm"
                                             onChange={(e) =>
                                                 setMatchPwd(e.target.value)
                                             }
@@ -355,7 +363,7 @@ export default function ResetPassword() {
                                             aria-invalid={
                                                 validMatch ? 'false' : 'true'
                                             }
-                                            aria-describedby="confirmnote"
+                                            aria-describedby="oko"
                                             // onFocus={() => setMatchFocus(true)}
                                             // onBlur={() => setMatchFocus(false)}
                                         />
@@ -366,7 +374,7 @@ export default function ResetPassword() {
                                                     setShowCnPwd,
                                                 )
                                             }
-                                            id="eye"
+                                            id="oko"
                                         >
                                             <FontAwesomeIcon
                                                 icon={

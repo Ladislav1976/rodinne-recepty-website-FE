@@ -73,7 +73,7 @@ function ViewFood(props) {
             setName(itemsDw.data.name);
             setFoodTagSet(itemsDw.data.tags);
             setStepsList(itemsDw.data.steps);
-            setIngredientsList(itemsDw.data.ingredients);
+            setIngredientsList(itemsDw.data.ingredientsGroup);
             setUrlList(itemsDw.data.urls);
             setDate(itemsDw.data.date);
             setImageURLsList(itemsDw.data.images);

@@ -33,8 +33,8 @@
     flex-shrink: 0;
     background-color: rgb(228, 227, 227);
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .urlTextView {
@@ -77,14 +77,14 @@ a:active {
 .urlBox {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 2rem;
+    grid-template-columns: 1fr 3rem;
     justify-content: flex-start;
     align-items: center;
     min-width: 0;
     width: 100%;
     flex-grow: 1;
     gap: 1rem;
-
+    column-gap: 0;
     background-color: white;
 }
 
@@ -116,6 +116,7 @@ a:active {
     grid-row: 2/3;
     display: flex;
     justify-content: center;
+    justify-self: center;
     align-items: center;
     background-color: var(--greydark);
     color: white;
@@ -218,7 +219,7 @@ a:active {
     .urlBox {
         position: relative;
         display: grid;
-        grid-template-columns: 1fr;
+        /* grid-template-columns: 1fr; */
         padding: 0;
     }
     .urlContainer {
@@ -240,7 +241,7 @@ a:active {
     .newUrlIcon {
         grid-column: 2/3;
         grid-row: 1/2;
-        margin-right: 2rem;
+        /* margin-right: 2rem; */
     }
     .iconBox {
         grid-column: 2/3;

@@ -75,6 +75,7 @@ function Step(props) {
                             className={style.stepText}
                             type="text"
                             rows="10"
+                            aria-label="Existujúci postup prípravy"
                             value={step.step}
                             onChange={(event) =>
                                 handleUpdateStep(event.target.value)
@@ -240,9 +241,9 @@ export default function StepsInput(props) {
                 ></div>{' '}
                 <textarea
                     className={style.newStepText}
-                    ref={props.stepRef}
                     onKeyDown={props.stepKeyDown}
-                    placeholder="Napíšte postup prípravy..."
+                    placeholder="Pridať postup prípravy..."
+                    aria-label="Nový postup prípravy"
                     rows="10"
                     value={addedStep}
                     onChange={(e) => handleChangeStep(e.target.value)}
