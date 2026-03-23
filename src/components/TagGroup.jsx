@@ -53,13 +53,13 @@ export default function TagGroup() {
         <>
             <div className={style.main}>
                 <form className={style.form} onSubmit={handleSave}>
-                    <label className={style.label} htmlFor="tagGroup">
+                    <label className={style.label} htmlFor="Kategória">
                         Kategória
                     </label>
                     <input
                         type="text"
                         className={style.inputTagGroup}
-                        id="tagGroup"
+                        id="Kategória"
                         placeholder="Vložiť"
                         ref={groupNameRef}
                         aria-required="true"

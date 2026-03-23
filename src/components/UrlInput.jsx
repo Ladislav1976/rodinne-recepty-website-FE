@@ -1,5 +1,5 @@
 import style from '../assets/styles/Components/UrlInput.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faTrash,
@@ -73,7 +73,7 @@ function Url(props) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                {`${props.url.urlname}`}
+                                {props.url.urlname}
                             </a>{' '}
                         </div>
                     </div>
@@ -91,6 +91,7 @@ function Url(props) {
                             type="text"
                             id="urlname"
                             name="urlname"
+                            aria-label="Meno existujúcej url adresy webovej stránky"
                             size={50}
                             onChange={handleUpdateUrlName}
                         />
@@ -99,9 +100,11 @@ function Url(props) {
                             value={url.url}
                             type="url"
                             id="url"
-                            pattern="https://.*"
+                            // pattern="https://.*"
+
                             name="url"
-                            size={100}
+                            aria-label="Existujúca url adresa webovej stránky"
+                            size={1000}
                             onChange={handleUpdateUrl}
                         />
                     </div>
@@ -114,7 +117,6 @@ function Url(props) {
                         >
                             <FontAwesomeIcon
                                 color={isChanged ? '#fd0000' : '#558113'}
-                                // className={style.editIcon}
                                 icon={isChanged ? faFloppyDisk : faCheck}
                                 onClick={() => {
                                     handleUpdateUrlList();
@@ -122,12 +124,8 @@ function Url(props) {
                             />
                         </div>
 
-                        <div
-                            className={style.deleteIcon}
-                            //datatooltip="Vymazať"
-                        >
+                        <div className={style.deleteIcon}>
                             <FontAwesomeIcon
-                                // className={style.deleteIcon}
                                 icon={faTrash}
                                 onClick={() => {
                                     props.handleUrlDelete(url);
@@ -140,7 +138,6 @@ function Url(props) {
                                 datatooltip="Zrušiť"
                             >
                                 <FontAwesomeIcon
-                                    // className={style.cancelIcon}
                                     icon={faXmark}
                                     onClick={() => handleCancelUrl()}
                                 />
@@ -153,10 +150,13 @@ function Url(props) {
     );
 }
 
+const URL_REGEX = /^https:\/\/([\w\d.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+
 export default function UrlInput(props) {
     const urlList = props.urlList;
     const [addedUrl, setAddedUrl] = useState('');
     const [addedUrlName, setAddedUrlName] = useState('');
+    const [validUrl, setValidUrl] = useState(false);
     let uniqueID = new Date().toISOString();
     const component = props.component;
 
@@ -164,12 +164,24 @@ export default function UrlInput(props) {
         props.deleteUrl(url);
     }
 
+    useEffect(() => {
+        setValidUrl(URL_REGEX.test(addedUrl));
+    }, [addedUrl]);
+
     function addURL() {
-        if (addedUrl === '') return;
+        if (!addedUrl || !addedUrlName) return;
+        if (!validUrl) {
+            props.handlerSetModalErrorMissing(
+                'Neplatný formát! Adresa musí začínať s "https://',
+            );
+            return;
+        }
+
         props.handleAddUrl(
             {
                 id: uniqueID,
                 url: addedUrl,
+
                 urlname: addedUrlName,
                 statusDelete: false,
             },
@@ -230,9 +242,9 @@ export default function UrlInput(props) {
                                 ref={props.urlRef}
                                 onKeyDown={props.urlKeyDown}
                                 type="text"
-                                id={'url'}
-                                name={'url'}
-                                // size={200}
+                                id="urlName"
+                                name="urlName"
+                                aria-label="Názov novej url adresy"
                                 placeholder="Názov"
                                 onChange={handleChangeUrlName}
                             />
@@ -242,9 +254,9 @@ export default function UrlInput(props) {
                                 ref={props.urlRef}
                                 onKeyDown={props.urlKeyDown}
                                 type="url"
-                                id={'url'}
-                                name={'url'}
-                                // size={200}
+                                id="url"
+                                name="url"
+                                aria-label="Nová url adresa"
                                 placeholder="https://example.com"
                                 onChange={handleChangeUrl}
                             />

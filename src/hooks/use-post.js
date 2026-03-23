@@ -104,7 +104,7 @@ export async function createDeleteFood(axiosPrivate, food) {
     return await axiosPrivate.delete(`foods/${food.id}/`).then((res) => res);
 }
 
-export async function createPostImagefood(axiosPrivate, { formdata }) {
+export async function createPostImagefood(axiosPrivate, formdata) {
     return await axiosPrivate.post('imagefood/', formdata, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -177,6 +177,10 @@ export async function createPutIngredients(axiosPrivate, ingredients) {
             position: ingredients.position,
         })
         .then((res) => res);
+}
+
+export async function createPutUnits(axiosPrivate, units) {
+    return await axiosPrivate.put(`unit/`, units).then((res) => res);
 }
 
 export async function putDataPrivate(axiosPrivate, controller, user) {

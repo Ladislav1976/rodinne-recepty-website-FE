@@ -68,7 +68,7 @@ export default function Tag({ tagGroupQf }) {
             <div className={style.main}>
                 {' '}
                 <form className={style.form} onSubmit={handleSave}>
-                    <label className={style.label} htmlFor="tagGroup">
+                    <label className={style.label} htmlFor="Oznacenie">
                         Označenie
                     </label>
 
@@ -93,7 +93,7 @@ export default function Tag({ tagGroupQf }) {
                     <input
                         type="text"
                         className={style.inputTagGroup}
-                        id="tagGroup"
+                        id="Oznacenie"
                         placeholder="Vložiť.."
                         ref={tagRef}
                         aria-describedby={errMsg ? 'name-error' : undefined}

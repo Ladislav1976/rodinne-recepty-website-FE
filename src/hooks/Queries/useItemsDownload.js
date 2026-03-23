@@ -24,7 +24,9 @@ export const useItemsDownload = (ID, axiosPrivate, isSaving) => {
                 ? foodQf.data.foodTags
                 : [];
             const urlsArray = ensureArray(foodQf?.data?.urls);
-            const ingredientsArray = ensureArray(foodQf?.data?.ingredients);
+            const ingredientGroupArray = ensureArray(
+                foodQf?.data?.ingredientsGroup,
+            );
             const unitsArray = ensureArray(foodQf?.data?.unitsQf);
             const tagGroupsArray = ensureArray(foodQf?.data?.tagGroupQf);
 
@@ -60,20 +62,42 @@ export const useItemsDownload = (ID, axiosPrivate, isSaving) => {
                     ...element,
                     statusDelete: false,
                 })),
-                ingredients: ingredientsArray
-                    .map((element, i) => {
+                ingredientsGroup: ingredientGroupArray
+                    .map((group, i) => {
                         return {
-                            id: element.id,
-                            quantity: element.quantity ? element.quantity : '',
-                            ingredient: element.ingredientName[0]
-                                ? element.ingredientName[0]
-                                : [],
-                            unit: element.units[0] ? element.units[0] : [],
-                            position: element.position,
+                            ...group,
                             statusDelete: false,
+                            ingredients: group.ingredients.map((element) => {
+                                return {
+                                    id: element.id,
+                                    quantity: element.quantity
+                                        ? element.quantity
+                                        : '',
+                                    ingredient: element.ingredientName
+                                        ? element.ingredientName
+                                        : [],
+                                    unit: element.units ? element.units : [],
+                                    position: element.position,
+                                    statusDelete: false,
+                                };
+                            }),
                         };
                     })
                     .sort((a, b) => a.position - b.position),
+                // ingredients: ingredientsArray
+                //     .map((element, i) => {
+                //         return {
+                //             id: element.id,
+                //             quantity: element.quantity ? element.quantity : '',
+                //             ingredient: element.ingredientName[0]
+                //                 ? element.ingredientName[0]
+                //                 : [],
+                //             unit: element.units[0] ? element.units[0] : [],
+                //             position: element.position,
+                //             statusDelete: false,
+                //         };
+                //     })
+                //     .sort((a, b) => a.position - b.position),
                 units: unitsArray,
                 tagGroups: tagGroupsArray,
             };

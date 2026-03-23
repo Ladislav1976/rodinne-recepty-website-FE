@@ -50,13 +50,13 @@ export default function Unit() {
         <>
             <div className={style.main}>
                 <form className={style.form} onSubmit={handleSave}>
-                    <label className={style.label} htmlFor="unit">
+                    <label className={style.label} htmlFor="Jednotka">
                         Jednotka
                     </label>
                     <input
                         type="text"
                         className={style.inputUnit}
-                        id="unit"
+                        id="Jednotka"
                         placeholder="Vložit.."
                         ref={unitRef}
                         aria-required="true"

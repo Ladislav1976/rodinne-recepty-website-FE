@@ -6,10 +6,9 @@ export const useDeleteGroup = (axiosPrivate) => {
     return useMutation({
         mutationFn: (step) => createDeleteGroup(axiosPrivate, step),
         onError: (error) => {
-            console.log('Error Delete Group :', error);
+            console.error('Error Delete Group :', error);
         },
         onSuccess: (response, deletedTag) => {
-            console.log('Group :', deletedTag, 'sucsesfully deleted!');
             queryClient.invalidateQueries(['tagGroups']);
         },
     });

@@ -15,8 +15,8 @@ export const usePutImage = (axiosPrivate, controller) => {
             return { previousImage, queryKey };
         },
         onError: (err, previousImage, context) => {
-            console.log('Error Put Imagefood :', err);
-            // throw err;
+            console.error('Error Put Imagefood :', err);
+
             if (context?.queryKey) {
                 if (context?.previousImage != null) {
                     queryClient.setQueryData(
@@ -27,9 +27,6 @@ export const usePutImage = (axiosPrivate, controller) => {
                     queryClient.removeQueries({ queryKey: context.queryKey });
                 }
             }
-        },
-        onSettled: (data, error, ImagefoodUpdated, context) => {
-            console.log('PUT settled for Imagefood:', ImagefoodUpdated);
         },
     });
 };

@@ -12,13 +12,12 @@ export const usePostFood = (
         mutationFn: (food) => createPostFood(axiosPrivate, food),
 
         onError: (err, newFood, context) => {
-            console.log('Error Post Food :', err);
+            console.error('Error Post Food :', err);
             setModalLoadingFlag(false);
             showMessage('⚠️ Dáta sa nepodarilo uložiť.', true);
             throw err;
         },
         onSuccess: (data, context) => {
-            console.log('POST succeeded for food:', data.data);
             const queryKey = ['foods', data?.data?.id];
 
             queryClient.setQueryData(queryKey, data?.data);

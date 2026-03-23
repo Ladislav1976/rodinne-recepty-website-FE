@@ -4,9 +4,11 @@ import { createPostImagefood } from '../use-post';
 export const usePostImage = (axiosPrivate) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (formdata) => createPostImagefood(axiosPrivate, formdata),
+        mutationFn: (formData) =>
+            createPostImagefood(axiosPrivate, formData.imageFormForBackEnd),
 
-        onMutate: async (newImage) => {
+        onMutate: async (newImageObj) => {
+            const newImage = newImageObj.formdataForRCatch;
             const queryKey = ['imagefood', newImage.food];
             await queryClient.cancelQueries({ queryKey });
             const previousImages = queryClient.getQueryData(queryKey);
@@ -23,7 +25,7 @@ export const usePostImage = (axiosPrivate) => {
         },
 
         onError: (err, newImage, context) => {
-            console.log('Error Post Imagefood :', err);
+            console.error('Error Post Imagefood :', err);
 
             if (context?.previousImages != null) {
                 queryClient.setQueryData(
@@ -36,8 +38,6 @@ export const usePostImage = (axiosPrivate) => {
         },
 
         onSettled: (data, error, newImage, context) => {
-            console.log('Post settled for image:', newImage);
-
             if (data?.data) {
                 queryClient.setQueryData(context.queryKey, (old) => {
                     if (!Array.isArray(old)) return [data.data];

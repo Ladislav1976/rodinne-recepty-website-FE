@@ -210,7 +210,7 @@ export default function Reset() {
                                             aria-invalid={
                                                 validEmail ? 'false' : 'true'
                                             }
-                                            aria-describedby="uidnote"
+                                            // aria-describedby="uidnote"
                                         />{' '}
                                         <div className={style.icon}>
                                             <FontAwesomeIcon

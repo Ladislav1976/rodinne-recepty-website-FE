@@ -6,10 +6,9 @@ export const useDeleteTag = (axiosPrivate) => {
     return useMutation({
         mutationFn: (step) => createDeleteTag(axiosPrivate, step),
         onError: (error) => {
-            console.log('Error Delete Tag :', error);
+            console.error('Error Delete Tag :', error);
         },
         onSuccess: (response, deletedTag) => {
-            console.log('Tag :', deletedTag, 'sucsesfully deleted!', response);
             queryClient.invalidateQueries(['foodTags']);
         },
     });

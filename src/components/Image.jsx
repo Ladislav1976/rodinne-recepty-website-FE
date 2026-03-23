@@ -41,7 +41,11 @@ function Img(props) {
                         <FontAwesomeIcon icon={faXmark} />
                     </div>
                 </div>{' '}
-                <input type="checkbox" className={style.checkboxInput} />
+                <input
+                    type="checkbox"
+                    className={style.checkboxInput}
+                    aria-label="Checkbox pre zmazanie fotografie"
+                />
                 <div
                     className={
                         props.component === 'editcomponent' ||
@@ -114,19 +118,19 @@ export default function Image(props) {
                                 type="file"
                                 multiple
                                 accept="image/jpeg,image/png,image/gif"
-                                id="inpFile"
+                                aria-label="Pridať fotografiu"
+                                id="Fotografia"
                                 onChange={props.onImageChange}
                                 display="none"
                             />
                             <div className={style.imageIconBox}>
                                 <label
-                                    htmlFor="inpFile"
+                                    htmlFor="Fotografia"
                                     className={style.imageIcon}
                                     datatooltip="Pridať fotografiu"
                                 >
                                     <FontAwesomeIcon
                                         icon={faCamera}
-                                        id="inpFileIcon"
                                     ></FontAwesomeIcon>
                                 </label>
                             </div>

@@ -26,7 +26,7 @@ import { usePostImage } from '../hooks/Mutations/usePostImage';
 
 import { useQueryClient } from '@tanstack/react-query';
 import MenuToggle from '../components/MenuToggle';
-import ModalDelete from '../modals/ModalDelete';
+import ModalMessage from '../modals/ModalMessage';
 import Message from '../reports/Message';
 
 function NewFood(props) {
@@ -37,7 +37,6 @@ function NewFood(props) {
     const navigate = useNavigate();
     const unitQf = useUnit(axiosPrivate);
     const tagGroupQf = useTagGroups(axiosPrivate);
-    // const [isSaving, setIsSaving] = useState(false);
 
     let uniqueID = new Date().toISOString();
 
@@ -90,44 +89,12 @@ function NewFood(props) {
     );
 
     const nameRef = useRef();
-    const urlRef = useRef();
-    const stepRef = useRef();
-    const qtRef = useRef();
-    const unitRef = useRef();
-    const ingrRef = useRef();
 
-    function nameKeyDown(event) {
-        if (event.key === 'Enter') {
-            urlRef.current.focus();
-        }
-    }
-    function urlKeyDown(event) {
-        if (event.key === 'Enter') {
-            stepRef.current.focus();
-        }
-    }
-    function stepKeyDown(event) {
-        if (event.key === 'Enter') {
-            qtRef.current.focus();
-        }
-    }
-
-    function qrKeyDown(event) {
-        if (event.key === 'Enter') {
-            unitRef.current.focus();
-        }
-    }
-
-    function unitKeyDown(event) {
-        if (event.key === 'Enter') {
-            ingrRef.current.focus();
-        }
-    }
-    function ingKeyDown(event) {
-        if (event.key === 'Enter') {
+    useEffect(() => {
+        if (nameRef.current) {
             nameRef.current.focus();
         }
-    }
+    }, [unitQf.isLoading]);
 
     function handleFoodSave(e) {
         e.preventDefault();
@@ -230,15 +197,19 @@ function NewFood(props) {
                             urlname: res.urlname,
                         };
                     }),
-                ingredients: ingredientsList
-                    ?.filter((i) => !i.statusDelete)
-                    .map((res, index) => {
+                ingredientsGroup: (ingredientsList || [])
+                    .filter((i) => !i.statusDelete)
+                    .map((group, index) => {
                         return {
-                            // id: res.id,
-                            units: [res.unit.id],
-                            quantity: res.quantity,
-                            ingredientName: [res.ingredient.ingredient],
-
+                            ...group,
+                            ingredients: group.ingredients.map((res, index) => {
+                                return {
+                                    units: res.unit.id,
+                                    quantity: res.quantity,
+                                    ingredientName: res.ingredient.ingredient,
+                                    position: index + 1,
+                                };
+                            }),
                             position: index + 1,
                         };
                     }),
@@ -282,24 +253,54 @@ function NewFood(props) {
         setFoodTagSet(newFoodTagSet);
     }
 
-    function addToIngredientList(quantity, unit, ing) {
-        if (ing === '') {
+    function addToIngredientList(group, quantity, unit, ing) {
+        if (!group || !quantity || !unit || !ing) {
             return;
         }
+        let position = getPosition(group.id, ingredientsList);
+        let newIngredientsList = ingredientsList.slice();
+        newIngredientsList.splice(position, 1, {
+            ...group,
+            ingredients: [
+                ...group.ingredients,
+                {
+                    id: uniqueID,
+                    quantity: quantity,
+                    unit: unit,
+                    ingredient: ing,
+                    statusDelete: false,
+                },
+            ],
+        });
+        setIngredientsList(newIngredientsList);
+    }
+
+    function addIngreGroupToIngredientList(group) {
+        if (!group) return;
+
         let newIngredientsList = ingredientsList.slice();
 
         newIngredientsList.push({
             id: uniqueID,
-            quantity: quantity,
-            unit: unit,
-            ingredient: ing,
+            groupName: group,
+            ingredients: [],
             statusDelete: false,
         });
 
         setIngredientsList(newIngredientsList);
     }
 
-    function makeIngredientsDelete(ingre) {
+    function makeIngredientsDelete(group, ingre) {
+        let position = getPosition(group.id, ingredientsList);
+        let newIngredientsList = ingredientsList.slice();
+        newIngredientsList.splice(position, 1, {
+            ...group,
+            ingredients: makeItemDelete(ingre, group.ingredients),
+        });
+        setIngredientsList(newIngredientsList);
+    }
+
+    function makeIngreGroupDelete(ingre) {
         setIngredientsList(makeItemDelete(ingre, ingredientsList));
     }
 
@@ -417,40 +418,59 @@ function NewFood(props) {
         return array;
     }
 
-    async function imagiesForPostHandler(food) {
-        const date = new Date(food.date).toISOString().substring(0, 10);
+    function createFormData(foodId, folder, file, pos) {
+        const formData = new FormData();
+        formData.append('food', foodId);
+        formData.append('upload_folder', folder);
+        formData.append('image', file);
+        formData.append('position', pos);
+        return formData;
+    }
+
+    async function handlerImagiesForPost(food) {
+        const newDate = new Date(food.date).toISOString().substring(0, 10);
         const seconds = new Date(food.date).getUTCMilliseconds();
+        const results = [];
+        for (const [index, res] of imageURLsList.entries()) {
+            const isNewImage = typeof res.id === 'string';
+            const isDeleted = res.statusDelete === true;
+            const folderName = `${food.name}-${newDate}-${seconds}`;
+            const position = index + 1;
 
-        return Promise.all(
-            imageURLsList?.map((res, index) => {
-                let formdata = new FormData();
-                formdata.append('food', food.id);
-                formdata.append(
-                    'upload_folder',
-                    `${food.name}-${date}-${seconds}`,
-                );
-                formdata.append('image', res.imageForBackEnd);
-                formdata.append('position', index + 1);
+            const postData = {
+                imageFormForBackEnd: createFormData(
+                    food.id,
+                    folderName,
+                    res.imageForBackEnd,
+                    position,
+                ),
+                formdataForRCatch: {
+                    food: food.id,
+                    upload_folder: folderName,
+                    image: res.image,
+                    position,
+                },
+            };
 
-                if (!Number.isInteger(res.id) && res.statusDelete === false) {
-                    return postImage.mutateAsync({ formdata });
-                }
-                if (!Number.isInteger(res.id) && res.statusDelete === true) {
-                    return { status: 204 };
+            let response;
+            try {
+                if (isNewImage && !isDeleted) {
+                    response = await postImage.mutateAsync(postData);
                 } else {
-                    return '';
+                    response = { status: 204 };
                 }
-            }),
-        )
-            .then((res) => {
-                return {
-                    status: 'fullfilled',
-                    value: handleDataID(res),
-                };
-            })
-            .catch((err) => {
-                console.log('Error Imagies', err);
-            });
+
+                if (response) results.push(response);
+            } catch (err) {
+                console.error('Error Imagies', err);
+                throw err;
+            }
+        }
+
+        return {
+            status: 'fullfilled',
+            value: handleDataID(results),
+        };
     }
 
     function makeFoodRecord(food) {
@@ -459,7 +479,7 @@ function NewFood(props) {
     }
     async function makeImagesRecord(foodCreated) {
         try {
-            const res = await imagiesForPostHandler(foodCreated);
+            const res = await handlerImagiesForPost(foodCreated);
             if (res) {
                 queryClient.invalidateQueries(['imageFood', foodCreated.id]);
                 queryClient.invalidateQueries({
@@ -471,13 +491,9 @@ function NewFood(props) {
                 handlerSetModalSave('Uložené', false);
             }
         } catch (err) {
-            console.log(
-                'ERROR POST request can not be executed! Posssible Error in the following post function: Imagies',
-                err,
-            );
+            console.error('ERROR recept sa nepodarilo uložiť.', err);
             setModalLoadingFlag(false);
-
-            showMessage('⚠️ Dáta sa nepodarilo uložiť.', true);
+            showMessage('⚠️ Recept sa nepodarilo uložiť.', true);
             throw err;
         }
     }
@@ -503,6 +519,8 @@ function NewFood(props) {
                 newArray.splice(position, 1);
                 newArray.splice(position + move, 0, item);
                 return newArray;
+            } else {
+                return array;
             }
         }
         if (move < 0) {
@@ -510,6 +528,8 @@ function NewFood(props) {
                 newArray.splice(position, 1);
                 newArray.splice(position - 1, 0, item);
                 return newArray;
+            } else {
+                return array;
             }
         }
     }
@@ -635,19 +655,17 @@ function NewFood(props) {
 
                         <IngredientInput
                             addToIngredientList={addToIngredientList}
+                            addIngreGroupToIngredientList={
+                                addIngreGroupToIngredientList
+                            }
                             ingredientsList={ingredientsList}
                             handlerSetModalErrorMissing={
                                 handlerSetModalErrorMissing
                             }
                             ingredientMove={ingredientMove}
                             removeFromIngredientList={makeIngredientsDelete}
+                            makeIngreGroupDelete={makeIngreGroupDelete}
                             component={component}
-                            qtRef={qtRef}
-                            unitRef={unitRef}
-                            ingrRef={ingrRef}
-                            qrKeyDown={qrKeyDown}
-                            unitKeyDown={unitKeyDown}
-                            ingKeyDown={ingKeyDown}
                             unitsDw={unitQf?.data || []}
                         ></IngredientInput>
 
@@ -666,8 +684,6 @@ function NewFood(props) {
                                 deleteUrl={makeUrlToDelete}
                                 updateUrlList={updateUrlList}
                                 handleAddUrl={handleAddUrl}
-                                urlRef={urlRef}
-                                urlKeyDown={urlKeyDown}
                             ></UrlInput>
 
                             <StepsInput
@@ -677,22 +693,18 @@ function NewFood(props) {
                                 stepsList={stepsList}
                                 deleteStep={makeSteptoDelete}
                                 component={component}
-                                stepRef={stepRef}
-                                stepKeyDown={stepKeyDown}
                             ></StepsInput>
                         </div>
                         <div className={style.fooodnamebox}>
-                            <div className={style.name} htmlFor="name">
-                                Nazov:
+                            <div className={style.name} htmlFor="NázovReceptu">
+                                Názov:
                             </div>
-
                             <input
                                 className={style.foodname}
-                                id="name"
-                                name="name"
+                                id="NázovReceptu"
+                                name="Názov receptu"
                                 ref={nameRef}
                                 value={name}
-                                onKeyDown={nameKeyDown}
                                 type="text"
                                 maxLength="300"
                                 onChange={(e) => setName(e.target.value)}
@@ -714,12 +726,12 @@ function NewFood(props) {
             <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
                 <SaveError></SaveError>
             </Modal>{' '}
-            <ModalDelete
+            <ModalMessage
                 visible={modalMessageFlag}
                 setModalFlag={setModalMessageFlag}
             >
                 <Message item={message} isError={isError}></Message>
-            </ModalDelete>
+            </ModalMessage>
             <ModalPreview
                 visible={modalLightboxFlag}
                 setModalFlag={setModalLightboxFlag}
