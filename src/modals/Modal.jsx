@@ -1,4 +1,4 @@
-import style from '../assets/styles/Modals/Modal.module.css';
+import style from '../assets/styles/modals/Modal.module.css';
 import { createPortal } from 'react-dom';
 import { useEffect } from 'react';
 
@@ -17,7 +17,6 @@ export default function Modal(props) {
     if (!props.visible) return null;
     function onModalClose(e) {
         e.stopPropagation();
-        // props.setModalFlag(false);
     }
 
     function onModalContentClick(event) {
@@ -30,6 +29,6 @@ export default function Modal(props) {
                 {props.children}
             </div>
         </div>,
-        document.body,
+        document.body
     );
 }

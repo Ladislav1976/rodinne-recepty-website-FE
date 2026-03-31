@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import style from '../assets/styles/Pages/Users.module.css';
+import style from '../assets/styles/pages/Users.module.css';
 import { useUsers } from '../hooks/Queries/useUsers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import user_image from '../image/user_image.png';
@@ -50,136 +50,78 @@ export default function Users() {
                                     {users?.length ? (
                                         <>
                                             {
-                                                <table
-                                                    className={style.tableusers}
-                                                >
+                                                <table className={style.tableusers}>
                                                     <thead>
                                                         <tr>
-                                                            <th
-                                                                className={
-                                                                    style.fontheader
-                                                                }
-                                                            ></th>
-                                                            <th
-                                                                className={
-                                                                    style.fontheader
-                                                                }
-                                                            >
+                                                            <th className={style.fontheader}></th>
+                                                            <th className={style.fontheader}>
                                                                 P.č.
                                                             </th>
-                                                            <th
-                                                                className={
-                                                                    style.fontheader
-                                                                }
-                                                            >
+                                                            <th className={style.fontheader}>
                                                                 Meno
                                                             </th>
-                                                            <th
-                                                                className={
-                                                                    style.fontheader
-                                                                }
-                                                            >
+                                                            <th className={style.fontheader}>
                                                                 Priezvisko
                                                             </th>
-                                                            <th
-                                                                className={
-                                                                    style.fontheader
-                                                                }
-                                                            >
+                                                            <th className={style.fontheader}>
                                                                 Práva
                                                             </th>
-                                                            <th
-                                                                className={
-                                                                    style.fontheader
-                                                                }
-                                                            >
+                                                            <th className={style.fontheader}>
                                                                 Status
                                                             </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {(users || []).map(
-                                                            (user, i) => (
-                                                                <tr
-                                                                    key={
-                                                                        user.id
-                                                                    }
+                                                        {(users || []).map((user, i) => (
+                                                            <tr key={user.id}>
+                                                                <td>
+                                                                    <img
+                                                                        className={style.imgage}
+                                                                        src={
+                                                                            user.avatar ||
+                                                                            user_image
+                                                                        }
+                                                                        alt=""
+                                                                        onClick={() => {
+                                                                            setModalAdminFlag(true);
+                                                                            setUserCard(user);
+                                                                        }}
+                                                                    />
+                                                                </td>
+                                                                <td>{i + 1}</td>
+                                                                <td>{user?.first_name}</td>
+                                                                <td>{user?.last_name}</td>
+                                                                <td>
+                                                                    {ROLES.map((r) =>
+                                                                        r.role === user?.role
+                                                                            ? r.viewRole
+                                                                            : ''
+                                                                    )}
+                                                                </td>
+                                                                <td
+                                                                    style={{
+                                                                        color: user?.is_active
+                                                                            ? 'rgb(1, 168, 1)'
+                                                                            : '#999',
+                                                                    }}
                                                                 >
-                                                                    <td>
-                                                                        <img
-                                                                            className={
-                                                                                style.imgage
-                                                                            }
-                                                                            src={
-                                                                                user.avatar ||
-                                                                                user_image
-                                                                            }
-                                                                            alt=""
-                                                                            onClick={() => {
-                                                                                setModalAdminFlag(
-                                                                                    true,
-                                                                                );
-                                                                                setUserCard(
-                                                                                    user,
-                                                                                );
-                                                                            }}
-                                                                        />
-                                                                    </td>
-                                                                    <td>
-                                                                        {i + 1}
-                                                                    </td>
-                                                                    <td>
-                                                                        {
-                                                                            user?.first_name
-                                                                        }
-                                                                    </td>
-                                                                    <td>
-                                                                        {
-                                                                            user?.last_name
-                                                                        }
-                                                                    </td>
-                                                                    <td>
-                                                                        {ROLES.map(
-                                                                            (
-                                                                                r,
-                                                                            ) =>
-                                                                                r.role ===
-                                                                                user?.role
-                                                                                    ? r.viewRole
-                                                                                    : '',
-                                                                        )}
-                                                                    </td>
-                                                                    <td
+                                                                    <FontAwesomeIcon
                                                                         style={{
+                                                                            width: '2rem',
                                                                             color: user?.is_active
                                                                                 ? 'rgb(1, 168, 1)'
                                                                                 : '#999',
                                                                         }}
-                                                                    >
-                                                                        <FontAwesomeIcon
-                                                                            style={{
-                                                                                width: '2rem',
-                                                                                color: user?.is_active
-                                                                                    ? 'rgb(1, 168, 1)'
-                                                                                    : '#999',
-                                                                            }}
-                                                                            icon={
-                                                                                faCircle
-                                                                            }
-                                                                        ></FontAwesomeIcon>
-                                                                        {user?.is_active ? (
-                                                                            <span>
-                                                                                aktívny
-                                                                            </span>
-                                                                        ) : (
-                                                                            <span>
-                                                                                neaktívny
-                                                                            </span>
-                                                                        )}
-                                                                    </td>
-                                                                </tr>
-                                                            ),
-                                                        )}
+                                                                        icon={faCircle}
+                                                                    ></FontAwesomeIcon>
+                                                                    {user?.is_active ? (
+                                                                        <span>aktívny</span>
+                                                                    ) : (
+                                                                        <span>neaktívny</span>
+                                                                    )}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
                                                     </tbody>
                                                 </table>
                                             }
@@ -193,10 +135,7 @@ export default function Users() {
                     </div>
                 </div>
             )}
-            <ModalUserCard
-                visible={modalAdminFlag}
-                setModalFlag={setModalAdminFlag}
-            >
+            <ModalUserCard visible={modalAdminFlag} setModalFlag={setModalAdminFlag}>
                 <UserCard
                     key={userCard?.id || ''}
                     userCard={userCard}

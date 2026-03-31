@@ -1,12 +1,7 @@
 import { createPutFood } from '../use-post';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
-export const usePutFood = (
-    axiosPrivate,
-    setModalLoadingFlag,
-    showMessage,
-    makeImagesRecord,
-) => {
+export const usePutFood = (axiosPrivate, setModalLoadingFlag, showMessage, makeImagesRecord) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (food) => createPutFood(axiosPrivate, food),

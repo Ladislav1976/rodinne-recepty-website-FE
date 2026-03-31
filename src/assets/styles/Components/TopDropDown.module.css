@@ -48,7 +48,8 @@
 .sidebar .menu .menuItem:hover {
     border-right: 5px solid var(--orange);
 }
-@media (max-width: 1024px) {
+
+@media (width <= 1024px) {
     .sidebar.isactive {
         display: block;
         left: 0;

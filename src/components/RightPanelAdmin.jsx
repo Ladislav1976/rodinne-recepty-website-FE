@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import style from '../assets/styles/Components/RightPanelAdmin.module.css';
+import style from '../assets/styles/components/RightPanelAdmin.module.css';
 import { createPortal } from 'react-dom';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,9 +8,7 @@ export default function RightPanelAdmin(props) {
     const sidebarContent = (
         <>
             <div
-                className={`${
-                    style.sidebarAdmin
-                } ${toggle ? style.isActive : ''}`}
+                className={`${style.sidebarAdmin} ${toggle ? style.isActive : ''}`}
                 onClick={(e) => {
                     if (toggle && e.target === e.currentTarget) {
                         setToggle(!toggle);
@@ -28,11 +26,7 @@ export default function RightPanelAdmin(props) {
                 >
                     <FontAwesomeIcon icon={faXmark} />
                 </div>
-                <div
-                    className={style.container}
-                    // onClick={(e) => e.stopPropagation()}
-                >
-                    {' '}
+                <div className={style.container}>
                     <div className={style.li}>
                         <NavLink to="/admin/setting">Nastavenia</NavLink>
                     </div>

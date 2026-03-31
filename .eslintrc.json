@@ -2,7 +2,8 @@
     "extends": [
         "react-app",
         "react-app/jest",
-        "plugin:css-modules/recommended"
+        "plugin:css-modules/recommended",
+        "prettier"
     ],
     "plugins": ["css-modules"],
     "rules": {

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import style from '../assets/styles/Modals/ModalStep.module.css';
+import style from '../assets/styles/modals/ModalStep.module.css';
 import { createPortal } from 'react-dom';
 
 export default function ModalStep(props) {
@@ -30,6 +30,6 @@ export default function ModalStep(props) {
                 {props.children}
             </div>
         </div>,
-        document.body,
+        document.body
     );
 }

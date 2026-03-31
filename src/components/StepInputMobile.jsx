@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import style from '../assets/styles/Components/StepInputMobile.module.css';
+import style from '../assets/styles/components/StepInputMobile.module.css';
 
 export default function StepInputMobile(props) {
     const [step, setStep] = useState(props.step ? props.step : '');

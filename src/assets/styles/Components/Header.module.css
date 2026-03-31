@@ -1,6 +1,7 @@
 .lContainer * {
     box-sizing: border-box;
 }
+
 .lContainer {
     position: sticky;
     top: 0;
@@ -15,6 +16,7 @@
     height: 3.5rem;
     flex-shrink: 0;
 }
+
 .lHeader {
     display: grid;
     grid-template-columns: 10rem 1fr 10rem;
@@ -24,6 +26,7 @@
     padding: 0 1rem;
     width: 100%;
 }
+
 .receptyLogo {
     display: flex;
     justify-content: center;
@@ -36,13 +39,13 @@
     border-radius: 50%;
     visibility: hidden;
 }
+
 .familyLogo,
 .logo {
     display: block;
     display: flex;
     justify-content: center;
     align-items: center;
-
     font-size: 1.5rem;
     padding: 0.5rem;
 }
@@ -63,6 +66,7 @@
         color: var(--orange);
     }
 }
+
 .receptyLogoContainer {
     display: flex;
     align-items: center;
@@ -74,7 +78,6 @@
 .familyLogo {
     background-color: var(--greydark);
     width: auto;
-
     color: white;
 }
 
@@ -82,6 +85,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+
     &:hover {
         text-decoration: underline;
     }
@@ -98,11 +102,13 @@
     flex-shrink: 1;
     flex-grow: 1;
 }
+
 .dropdown {
     position: relative;
     display: flex;
     justify-content: center;
 }
+
 .dropbtn {
     display: flex;
     justify-content: center;
@@ -132,7 +138,7 @@
     left: 50%;
     transform: translateX(-50%);
     background-color: #f9f9f9;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px 0 rgb(0 0 0 / 0.2);
     z-index: 1001;
 }
 
@@ -167,6 +173,7 @@
     position: absolute;
     z-index: 2;
 }
+
 .overlay {
     display: none;
 }
@@ -177,15 +184,16 @@
 
 .errmsg {
     position: absolute;
-
-    color: rgb(231, 35, 35);
+    color: rgb(231 35 35);
 }
-@media (max-width: 1300px) {
+
+@media (width <= 1300px) {
     .dropdown {
         display: none;
     }
 }
-@media (max-width: 1024px) {
+
+@media (width <= 1024px) {
     .navlik {
         visibility: hidden;
     }
@@ -193,17 +201,21 @@
     .responseContainer section h1 {
         font-size: 1.2rem;
     }
+
     .menu {
         column-gap: 2rem;
     }
+
     .dropdown .logo {
         min-width: 2.5rem;
         font-size: 1.1rem;
         padding: 0.3rem;
     }
+
     .logo {
         min-width: 2.5rem;
         padding: 0.3rem;
+
         &&:hover {
             background-color: white;
             border-radius: 0.5rem;
@@ -212,24 +224,25 @@
     }
 }
 
-@media (max-width: 764px) {
+@media (width <= 764px) {
     .lHeader {
         padding: 0 1rem;
         grid-template-columns: 3.3rem 1fr 3.3rem;
     }
+
     .receptyLogo {
         visibility: unset;
     }
+
     .logo,
     .familyLogo {
         font-size: 1rem;
     }
+
     .menu .menutoggle {
         font-size: 1rem;
     }
-    .lHeader {
-        padding: 0 1rem;
-    }
+
     .receptyLogoContainer {
         width: 4rem;
     }
@@ -238,6 +251,7 @@
     .menu {
         position: static !important;
     }
+
     .dropdowncontent {
         display: none;
         position: absolute;
@@ -245,14 +259,14 @@
         width: 100%;
         grid-template-columns: repeat(2, 1fr);
         justify-content: center;
-        justify-items: center;
-        align-items: center;
+        place-items: center center;
         border-radius: 0;
         background-color: #f9f9f9;
         transform: none;
         top: 100%;
         z-index: 1001;
     }
+
     .dropdowncontent .li {
         width: 100%;
         display: flex;
@@ -270,15 +284,17 @@
     }
 }
 
-@media (max-width: 530px) {
+@media (width <= 530px) {
     .receptyLogoContainer {
         width: 3rem;
     }
+
     .menu {
         column-gap: 1rem;
     }
 }
-@media (max-width: 400px) {
+
+@media (width <= 400px) {
     .lHeader {
         padding: 0 0.2rem;
     }

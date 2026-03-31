@@ -14,7 +14,7 @@
     font-size: 0.8rem;
 }
 
-@media (max-width: 764px) {
+@media (width <= 764px) {
     .lContainer {
         display: none;
     }

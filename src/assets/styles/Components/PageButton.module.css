@@ -10,15 +10,17 @@
     justify-content: center;
     border-color: transparent;
     cursor: pointer;
+
     &:hover {
         background-color: var(--orange);
     }
 }
+
 .button {
     background-color: transparent;
 }
 
 .buttoncurrentpage {
     color: white;
-    background-color: rgba(26, 25, 25, 0.651);
+    background-color: rgb(26 25 25 / 0.651);
 }

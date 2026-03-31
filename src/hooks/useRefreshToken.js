@@ -3,8 +3,7 @@ import useAuth from './useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function useRefreshToken() {
-    const { setAuth, setCSRFToken, setPage, setPageSize, setOrdering } =
-        useAuth();
+    const { setAuth, setCSRFToken, setPage, setPageSize, setOrdering } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const refresh = async () => {

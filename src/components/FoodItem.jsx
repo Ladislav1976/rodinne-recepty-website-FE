@@ -1,21 +1,25 @@
-import style from '../assets/styles/Components/FoodItem.module.css';
+import style from '../assets/styles/components/FoodItem.module.css';
 
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+
 import default_image from '../image/default_image1.jpg';
 
 export default function FoodItem(props) {
     const navigate = useNavigate();
-    const [loaded, setLoaded] = useState(false);
+
     const food = props.food;
     const id = props.food.id;
+    const deletedPar = props.deletedPar;
+    const params = new URLSearchParams({
+        is_deleted: deletedPar,
+    });
 
     return (
         <>
             {
                 <div
                     className={style.foodcontainer}
-                    onClick={() => navigate(`/recepty/${id}/`)}
+                    onClick={() => navigate(`/recepty/${id}?${params.toString()}`)}
                 >
                     <div
                         style={{
@@ -28,10 +32,10 @@ export default function FoodItem(props) {
                             loading="lazy"
                             src={food?.images || default_image}
                             alt="Nacitany obrazok"
-                            onLoad={() => setLoaded(true)}
+                            onLoad={props.handleImgLoader}
+                            onError={props.handleImgLoader}
                             style={{
-                                opacity: loaded ? 1 : 0,
-                                transition: 'opacity 0.3s ease-in',
+                                border: deletedPar === 'true' ? '2px solid red' : '',
                             }}
                             key={food.images}
                         />

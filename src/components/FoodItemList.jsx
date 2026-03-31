@@ -1,11 +1,10 @@
 import FoodItem from './FoodItem';
-import style from '../assets/styles/Components/FoodItemList.module.css';
+import style from '../assets/styles/components/FoodItemList.module.css';
 
 import PageButton from './PageButton';
 
 export default function FoodItemList(props) {
     const foodItemListRender = [];
-    const setImgLoader = props.onImgLoader;
     const isMobile = props.isMobile;
 
     if (props.foods) {
@@ -14,15 +13,16 @@ export default function FoodItemList(props) {
                 <FoodItem
                     food={food}
                     key={food.id}
-                    setImgLoader={setImgLoader}
+                    handleImgLoader={props.handleImgLoader}
                     location={props.location}
-                />,
+                    deletedPar={props.deletedPar}
+                />
             );
         }
     }
-    // }
 
     const page = props.page;
+
     const foodsQf = props.foodsQf;
     const pagesArray = Array(foodsQf?.data?.TotalNumOfPages)
         .fill()
@@ -38,9 +38,7 @@ export default function FoodItemList(props) {
                             <button
                                 className={style.button}
                                 onClick={() => props.pageChange(page - 1)}
-                                disabled={
-                                    !foodsQf?.data?.previous || page === 1
-                                }
+                                disabled={!foodsQf?.data?.previous || page === 1}
                                 id={
                                     !foodsQf?.data?.previous || page === 1
                                         ? style['buttondisabled']
@@ -60,9 +58,7 @@ export default function FoodItemList(props) {
                             <button
                                 className={style.button}
                                 onClick={() => props.pageChange(page + 1)}
-                                disabled={
-                                    page === foodsQf?.data?.TotalNumOfPages
-                                }
+                                disabled={page === foodsQf?.data?.TotalNumOfPages}
                                 id={
                                     page === foodsQf?.data?.TotalNumOfPages
                                         ? style['buttondisabled']
@@ -73,8 +69,7 @@ export default function FoodItemList(props) {
                             </button>
                         </nav>
                         <div className={style.navdisplay}>
-                            ({foodsQf?.data?.FirstItemsOnPage} -{' '}
-                            {foodsQf?.data?.LastItemsOnPage}) z{' '}
+                            ({foodsQf?.data?.FirstItemsOnPage} - {foodsQf?.data?.LastItemsOnPage}) z{' '}
                             {foodsQf?.data?.TotalItems}
                             <select
                                 className={style.pageSize}

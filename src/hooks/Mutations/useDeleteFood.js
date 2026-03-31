@@ -1,7 +1,7 @@
 import { createDeleteFood } from '../use-post';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 
-export const useDeleteFood = (axiosPrivate, setModalLoadingFlag) => {
+export const useDeleteFood = (axiosPrivate, setModalLoadingFlag, is_deleted) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (food) => createDeleteFood(axiosPrivate, food),
@@ -11,13 +11,11 @@ export const useDeleteFood = (axiosPrivate, setModalLoadingFlag) => {
         },
         onSuccess: (response, foodDeleted) => {
             queryClient.removeQueries({
-                queryKey: ['foods', foodDeleted.id],
+                queryKey: ['foods', foodDeleted.id, is_deleted],
+                exact: true,
             });
             queryClient.invalidateQueries({
                 queryKey: ['foodsList'],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['foods', foodDeleted.id],
             });
         },
     });

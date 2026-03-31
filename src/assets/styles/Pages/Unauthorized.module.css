@@ -8,9 +8,11 @@
     height: 100%;
     flex-grow: 1;
     box-sizing: border-box;
+
     & h1 {
         font-size: 1.5rem;
     }
+
     & p {
         font-size: 1rem;
         text-wrap: wrap;
@@ -22,7 +24,6 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: var(--orange);
     width: 10rem;
     height: 3rem;
     border-radius: 5px;
@@ -30,12 +31,13 @@
     background-color: var(--greydark);
     color: white;
     cursor: pointer;
+
     &:hover {
         background-color: var(--orange);
-
         color: white;
     }
 }
+
 .button span {
     margin-left: 1rem;
 }

@@ -13,7 +13,6 @@
 }
 
 .foodButton {
-    padding: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,14 +21,26 @@
     width: fit-content;
     white-space: nowrap;
     margin: 0 1rem;
-}
-.iconButton {
-    display: none;
+    padding: 0.5rem;
 }
 
-.foodButton:hover {
-    color: var(--orange);
-    border-radius: 0.5rem;
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    width: 3rem;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.faXmark {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .foodsmain {
@@ -75,21 +86,17 @@
 }
 
 .food {
-    margin: 0px 0px 10px 20px;
+    margin: 0 0 10px 20px;
 }
 
 .image {
     width: 50px;
     height: 50px;
     margin: 5px;
-    border-top-left-radius: 50% 50%;
-    border-top-right-radius: 50% 50%;
-    border-bottom-right-radius: 50% 50%;
-    border-bottom-left-radius: 50% 50%;
+    border-radius: 50%;
 }
 
 .checkboxInput:checked + .label {
-    font-weight: bold;
     text-decoration: underline;
     font-size: 12px;
     color: var(--orange);
@@ -104,7 +111,7 @@
 }
 
 .foodMaso {
-    margin: 0px 0px 10px 40px;
+    margin: 0 0 10px 40px;
 }
 
 .label:hover {
@@ -147,7 +154,6 @@
         justify-content: space-between;
         padding-right: 1rem;
         height: 3rem;
-        /* top: 7.5rem; */
     }
 
     .main {
@@ -156,17 +162,13 @@
         border-left: none;
     }
 }
-@media (width <= 764px) {
-    .foodButton {
-        display: none;
-    }
-    .iconButton {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.5rem;
-        font-weight: 600;
-        width: 3rem;
-        height: 100%;
+
+@media (width >= 1024px) {
+    .button {
+        cursor: pointer;
+
+        &&:hover {
+            color: var(--orange);
+        }
     }
 }

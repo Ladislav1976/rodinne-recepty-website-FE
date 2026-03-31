@@ -1,5 +1,4 @@
-// import style from '../assets/styles/Components/MenuToggle.module.css';
-import style from '../assets/styles/Components/MenuToggle.module.css';
+import style from '../assets/styles/components/MenuToggle.module.css';
 
 export default function MenuToggle(props) {
     const [toggle, setToggle] = props.toggle;

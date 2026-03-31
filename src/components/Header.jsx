@@ -1,6 +1,6 @@
 import UserInfo from './UserInfo';
 import useAuth from '../hooks/useAuth';
-import style from '../assets/styles/Components/Header.module.css';
+import style from '../assets/styles/components/Header.module.css';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
@@ -20,7 +20,7 @@ import MenuToggle from './MenuToggle';
 import RightPanelAdmin from './RightPanelAdmin';
 
 export default function RenderHeader(props) {
-    const { auth, page, pageSize, ordering } = useAuth();
+    const { auth, page, pageSize, ordering, search, is_deleted } = useAuth();
     const [toggle, setToggle] = props.toggle;
     const errRef = useRef();
 
@@ -33,8 +33,15 @@ export default function RenderHeader(props) {
             setErrMsg('');
         }, 5000);
     }
+    const params = new URLSearchParams({
+        ordering: ordering,
+        page: page,
+        page_size: pageSize,
+        search: search,
+        is_deleted: is_deleted,
+    });
     const navigate = useNavigate();
-    const nav = `/recepty?ordering=${ordering}&page=${page}&page_size=${pageSize}`;
+    const nav = `/recepty?${params.toString()}`;
 
     return (
         <>
@@ -42,76 +49,45 @@ export default function RenderHeader(props) {
                 <div className={style.lContainer}>
                     <div className={style.lHeader}>
                         <div className={style.receptyLogoContainer}>
-                            <div
-                                className={style.receptyLogo}
-                                onClick={() => navigate(`/`)}
-                            >
+                            <div className={style.receptyLogo} onClick={() => navigate(`/`)}>
                                 <img src={receptyLogo} alt="" />
                             </div>
                         </div>
                         <div className={style.menu}>
-                            <div
-                                className={style.logo}
-                                onClick={() => navigate(`/`)}
-                            >
+                            <div className={style.logo} onClick={() => navigate(`/`)}>
                                 <FontAwesomeIcon icon={faHouse} />
                             </div>
-                            <div
-                                className={style.logo}
-                                onClick={() => navigate(nav)}
-                            >
+                            <div className={style.logo} onClick={() => navigate(nav)}>
                                 <FontAwesomeIcon icon={faUtensils} />
                             </div>{' '}
-                            <MenuToggle toggle={[toggle, setToggle]} />
-                            <RightPanelAdmin toggle={[toggle, setToggle]} />
-                            <div
-                                className={
-                                    auth?.userRes?.is_superuser
-                                        ? style.dropdown
-                                        : style.hide
-                                }
-                            >
-                                <div
-                                    className={`${style.logo} ${style.dropbtn}`}
-                                >
-                                    <FontAwesomeIcon icon={faGear} />
-                                </div>
+                            {auth?.userRes?.is_superuser && (
+                                <>
+                                    <MenuToggle toggle={[toggle, setToggle]} />
+                                    <RightPanelAdmin toggle={[toggle, setToggle]} />
+                                    <div className={style.dropdown}>
+                                        <div className={`${style.logo} ${style.dropbtn}`}>
+                                            <FontAwesomeIcon icon={faGear} />
+                                        </div>
 
-                                <div className={style.dropdowncontent}>
-                                    <NavLink
-                                        className={style.li}
-                                        to="/admin/setting"
-                                    >
-                                        Nastavenia
-                                    </NavLink>
-                                    <NavLink
-                                        className={style.li}
-                                        to="/admin/users"
-                                    >
-                                        Užívatelia
-                                    </NavLink>
-                                    <NavLink
-                                        className={style.li}
-                                        to="/admin/register"
-                                    >
-                                        Nový účet
-                                    </NavLink>
-                                </div>
-                            </div>
-                            <div
-                                className={style.logo}
-                                onClick={() => logOut()}
-                            >
+                                        <div className={style.dropdowncontent}>
+                                            <NavLink className={style.li} to="/admin/setting">
+                                                Nastavenia
+                                            </NavLink>
+                                            <NavLink className={style.li} to="/admin/users">
+                                                Užívatelia
+                                            </NavLink>
+                                            <NavLink className={style.li} to="/admin/register">
+                                                Nový účet
+                                            </NavLink>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                            <div className={style.logo} onClick={() => logOut()}>
                                 <FontAwesomeIcon icon={faRightFromBracket} />
                             </div>
                         </div>
-                        {/* <div
-                            ref={errRef}
-                            className={errMsg ? style.errmsg : style.hide}
-                            aria-live="assertive"
-                        >
-                            {errMsg}
-                        </div> */}
+
                         <div className={style.userBox}>
                             <UserInfo />
                         </div>

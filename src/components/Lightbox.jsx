@@ -1,12 +1,6 @@
-import style from '../assets/styles/Components/Lightbox.module.css';
+import style from '../assets/styles/components/Lightbox.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faPenToSquare,
-    faFloppyDisk,
-    faTrash,
-    faXmark,
-} from '@fortawesome/free-solid-svg-icons';
-// import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { faPenToSquare, faFloppyDisk, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useSwipeable } from 'react-swipeable';
 
 export default function Lightbox(props) {
@@ -70,22 +64,14 @@ export default function Lightbox(props) {
 
         if (move > 0) {
             if (position < -1 + imageURLsList.length) {
-                const newImageURLsList = moveImage(
-                    imageURLsList,
-                    position,
-                    newPosition,
-                );
+                const newImageURLsList = moveImage(imageURLsList, position, newPosition);
                 setImageURLsList(newImageURLsList);
                 setImagePosition(newPosition);
             }
         }
         if (move < 0) {
             if (position > 0) {
-                const newImageURLsList = moveImage(
-                    imageURLsList,
-                    position,
-                    newPosition,
-                );
+                const newImageURLsList = moveImage(imageURLsList, position, newPosition);
                 setImageURLsList(newImageURLsList);
                 setImagePosition(newPosition);
             }
@@ -121,16 +107,7 @@ export default function Lightbox(props) {
 
     imageDispley.push(
         <>
-            <div
-                className={style.imageblock}
-                key={imageURLsList[imagePosition].id}
-            >
-                {/* <TransformWrapper
-                    defaultScale={1}
-                    defaultPositionX={100}
-                    defaultPositionY={200}
-                > */}
-                {/* <TransformComponent> */}
+            <div className={style.imageblock} key={imageURLsList[imagePosition].id}>
                 <img
                     className={style.imagePreviewed}
                     loading="lazy"
@@ -138,10 +115,8 @@ export default function Lightbox(props) {
                     src={imageURLsList[imagePosition].image}
                     alt=""
                 />
-                {/* </TransformComponent>
-                </TransformWrapper> */}
             </div>
-        </>,
+        </>
     );
 
     let clicker = false;
@@ -155,9 +130,7 @@ export default function Lightbox(props) {
     if (imageURLsList.length < 1) {
         return;
     } else {
-        let filterImageURLsList = imageURLsList.filter(
-            (e) => e.statusDelete === false,
-        );
+        let filterImageURLsList = imageURLsList.filter((e) => e.statusDelete === false);
 
         filterImageURLsList.forEach((image, index) => {
             let pos = props.getPosition(image.id, filterImageURLsList);
@@ -174,13 +147,9 @@ export default function Lightbox(props) {
                             loading="lazy"
                             onClick={() => props.handlerImage(image)}
                             alt="Preview"
-                            id={
-                                pos === imagePosition
-                                    ? style['imagedisplayed']
-                                    : style['']
-                            }
+                            id={pos === imagePosition ? style['imagedisplayed'] : style['']}
                         />
-                    </>,
+                    </>
                 );
             }
             if (!clicker) {
@@ -193,13 +162,9 @@ export default function Lightbox(props) {
                             loading="lazy"
                             onClick={() => props.handlerImage(image)}
                             alt="Preview"
-                            id={
-                                pos === imagePosition
-                                    ? style['imagedisplayed']
-                                    : style['']
-                            }
+                            id={pos === imagePosition ? style['imagedisplayed'] : style['']}
                         />
-                    </>,
+                    </>
                 );
             }
         });
@@ -208,11 +173,7 @@ export default function Lightbox(props) {
         <>
             <div className={style.main} {...handlers}>
                 {isVisibleEdit && (
-                    <div
-                        className={style.saveIcon}
-                        datatooltip="Uložiť"
-                        onClick={makeImagesSave}
-                    >
+                    <div className={style.saveIcon} datatooltip="Uložiť" onClick={makeImagesSave}>
                         <FontAwesomeIcon icon={faFloppyDisk} />
                     </div>
                 )}
@@ -220,16 +181,13 @@ export default function Lightbox(props) {
                     <div
                         className={style.trashIcon}
                         datatooltip="Zmazať fotografiu"
-                        onClick={() =>
-                            makeImageDelete(imageURLsList[imagePosition])
-                        }
+                        onClick={() => makeImageDelete(imageURLsList[imagePosition])}
                     >
                         <FontAwesomeIcon icon={faTrash} />
                     </div>
                 )}
                 {!isVisibleEdit &&
-                    (component === 'editcomponent' ||
-                        component === 'newcomponent') && (
+                    (component === 'editcomponent' || component === 'newcomponent') && (
                         <div
                             className={style.editIcon}
                             onClick={() => setIsVisibleEdit(true)}
@@ -242,10 +200,7 @@ export default function Lightbox(props) {
                     <div
                         className={style.prev}
                         onClick={() => {
-                            imageDisplayChange(
-                                -1,
-                                imageURLsList[imagePosition],
-                            );
+                            imageDisplayChange(-1, imageURLsList[imagePosition]);
                         }}
                     >
                         &#10094;
@@ -256,30 +211,19 @@ export default function Lightbox(props) {
                     <div
                         className={style.next}
                         onClick={() => {
-                            imageDisplayChange(
-                                +1,
-                                imageURLsList[imagePosition],
-                            );
+                            imageDisplayChange(+1, imageURLsList[imagePosition]);
                         }}
                     >
                         &#10095;
                     </div>
 
-                    <div
-                        className={style.cancel}
-                        onClick={props.closeModal}
-                        datatooltip="Zavrieť"
-                    >
+                    <div className={style.cancel} onClick={props.closeModal} datatooltip="Zavrieť">
                         <FontAwesomeIcon icon={faXmark} />
                     </div>
                 </div>
                 <div className={style.imageListBox}>
-                    <div className={style.imageListBox1}>
-                        {newImageUrlsRender1}
-                    </div>
-                    <div className={style.imageListBox2}>
-                        {newImageUrlsRender2}
-                    </div>
+                    <div className={style.imageListBox1}>{newImageUrlsRender1}</div>
+                    <div className={style.imageListBox2}>{newImageUrlsRender2}</div>
                 </div>
             </div>
         </>

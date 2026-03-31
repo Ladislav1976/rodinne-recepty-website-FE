@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import StepsInput from '../components/StepsInput';
 import SaveLoading from '../reports/SaveLoading';
 import SaveSaved from '../reports/SaveSaved';
-import DeleteConfirm from '../reports/DeleteConfirm';
 import SaveError from '../reports/SaveError';
 
 import Lightbox from '../components/Lightbox';
-import style from '../assets/styles/Pages/NewFood.module.css';
+import style from '../assets/styles/pages/NewFood.module.css';
 import IngredientInput from '../components/IngredientInput';
 import LeftPanelFilter from '../components/LeftPanelFilter';
 
@@ -16,12 +15,8 @@ import UrlInput from '../components/UrlInput';
 import Modal from '../modals/Modal';
 import ModalPreview from '../modals/ModalPreview';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faSpinner,
-    faTrash,
-    faBackward,
-    faFloppyDisk,
-} from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faTrash, faBackward, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+
 import { useParams } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useQueryClient } from '@tanstack/react-query';
@@ -37,32 +32,39 @@ import useAuth from '../hooks/useAuth';
 import MenuToggle from '../components/MenuToggle';
 import ModalMessage from '../modals/ModalMessage';
 import Message from '../reports/Message';
-// import { faFloppyDisk } from '@fortawesome/free-regular-svg-icons';
+import Confirm from '../reports/Confirm';
 
 function EditFood(props) {
     const id = useParams();
     let ID = parseInt(id.id);
     const [isSaving, setIsSaving] = useState(false);
+
     const [unitsDw, setUnitsDw] = useState([]);
     const [tagGroupsDw, setTagGroupsDw] = useState([]);
+    const [searchParams] = useSearchParams();
+    const is_deleted = searchParams.get('is_deleted');
+
     const controller = new AbortController();
     const component = 'editcomponent';
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
     let uniqueID = new Date().toISOString();
-    const { setUsercont, ordering, pageSize, search, setPage } = useAuth();
 
-    const itemsDw = useItemsDownload(ID, axiosPrivate, isSaving);
+    const { setUsercont, ordering, pageSize, page, setPage } = useAuth();
+
+    const paramsFoods = new URLSearchParams(window.location.search);
+    paramsFoods.set('ordering', ordering);
+    paramsFoods.set('page', page);
+    paramsFoods.set('page_size', pageSize);
+    paramsFoods.set('search', '');
+
+    const paramsFoodView = new URLSearchParams(window.location.search);
+
+    const itemsDw = useItemsDownload(ID, axiosPrivate, isSaving, paramsFoodView);
 
     const queryClient = useQueryClient();
 
-    const params = new URLSearchParams({
-        ordering: ordering,
-        page: 1,
-        page_size: pageSize,
-        search: search,
-    });
-    const navFoods = `/recepty?${params.toString()}`;
+    const navFoods = `/recepty?${paramsFoods.toString()}`;
     const nameRef = useRef();
 
     const [foodID, setFoodID] = useState('');
@@ -92,14 +94,12 @@ function EditFood(props) {
             setUsercont(itemsDw.data.usercont);
             setUnitsDw(itemsDw.data.units);
             setTagGroupsDw(itemsDw.data.tagGroups);
-
-            // nameRef.current?.focus();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itemsDw.data, foodID]);
 
     const [images, setImages] = useState([]);
-
+    const [loadedImagesCount, setLoadedImagesCount] = useState();
     const [modalLoadingFlag, setModalLoadingFlag] = useState(false);
     const [modalSavedFlag, setModalSavedFlag] = useState(false);
     const [modalDeleteFlag, setModalDeleteFlag] = useState(false);
@@ -121,18 +121,9 @@ function EditFood(props) {
     const [modalLightboxFlag, setModalLightboxFlag] = useState(false);
     const [isVisibleEdit, setIsVisibleEdit] = useState(false);
 
-    const putFood = usePutFood(
-        axiosPrivate,
-        setModalLoadingFlag,
-        showMessage,
-        makeImagesRecord,
-    );
-    const deleteFood = useDeleteFood(
-        axiosPrivate,
-        // setModalLoadingFlag,
-        // handlerSetModalError,
-        // handlerFoodDeleteConfirmed,
-    );
+    const putFood = usePutFood(axiosPrivate, setModalLoadingFlag, showMessage, makeImagesRecord);
+    const deleteFood = useDeleteFood(axiosPrivate, is_deleted);
+
     const postImage = usePostImage(axiosPrivate);
     const putImage = usePutImage(axiosPrivate, controller);
     const deleteImage = useDeleteImage(axiosPrivate);
@@ -144,78 +135,42 @@ function EditFood(props) {
 
     function handleFoodDelete() {
         setModalDeleteFlag(true);
+        setMessage(`Tento recept bude natrvalo vymazaný.`);
     }
 
     function handleFoodSave(e) {
         e.preventDefault();
         setIsSaving(true);
-        const filterIngredients = ingredientsList.filter(
-            (ingre) => ingre.position !== 'delete',
-        );
+        const filterIngredients = ingredientsList.filter((ingre) => ingre.position !== 'delete');
 
-        if (
-            !name &&
-            filterIngredients.length === 0 &&
-            foodTagSet.size === 0 &&
-            stepsList === ''
-        ) {
+        if (!name && filterIngredients.length === 0 && foodTagSet.size === 0 && stepsList === '') {
             alert('Nazov , Suroviny, Druj jedla, Postup nie se uvedene');
-        } else if (
-            filterIngredients.length === 0 &&
-            foodTagSet.size === 0 &&
-            stepsList === ''
-        ) {
+        } else if (filterIngredients.length === 0 && foodTagSet.size === 0 && stepsList === '') {
             handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: , Suroviny, Druj jedla, Postup',
+                'Doplň chýbajúce informácie: , Suroviny, Druj jedla, Postup'
             );
         } else if (!name && foodTagSet.size === 0 && stepsList === '') {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov , Druj jedla, Postup',
-            );
-        } else if (
-            !name &&
-            filterIngredients.length === 0 &&
-            stepsList === ''
-        ) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov, Suroviny, Postup',
-            );
-        } else if (
-            !name &&
-            filterIngredients.length === 0 &&
-            foodTagSet.size === 0
-        ) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov, Suroviny, Druj jedla',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov , Druj jedla, Postup');
+        } else if (!name && filterIngredients.length === 0 && stepsList === '') {
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov, Suroviny, Postup');
+        } else if (!name && filterIngredients.length === 0 && foodTagSet.size === 0) {
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov, Suroviny, Druj jedla');
         } else if (!name && filterIngredients.length === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov,Suroviny',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov,Suroviny');
         } else if (!name && foodTagSet.size === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: ,Nazov, Druj jedla',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: ,Nazov, Druj jedla');
         } else if (!name && stepsList === '') {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov, Postup',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov, Postup');
         } else if (filterIngredients.length === 0 && foodTagSet.size === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Suroviny,Druj jedla',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Suroviny,Druj jedla');
         } else if (filterIngredients.length === 0 && stepsList === '') {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Suroviny,Postup',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Suroviny,Postup');
         } else if (!name) {
             handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov');
         } else if (filterIngredients.length === 0) {
             handlerSetModalErrorMissing('Doplň chýbajúce informácie: Suroviny');
         } else if (foodTagSet.size === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Druj jedla',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Druj jedla');
         } else if (stepsList === '') {
             handlerSetModalErrorMissing('Druj jedla nie je uvedeny');
         } else {
@@ -266,8 +221,7 @@ function EditFood(props) {
 
         return array.some((item) => {
             if (String(item?.id) !== String(tag?.id)) return false;
-            const tagMatch =
-                item?.foodTag?.toLowerCase() === tag?.foodTag?.toLowerCase();
+            const tagMatch = item?.foodTag?.toLowerCase() === tag?.foodTag?.toLowerCase();
             const emailMatch = item?.email === tag?.email;
 
             return tagMatch || emailMatch;
@@ -282,16 +236,6 @@ function EditFood(props) {
         } else {
             addTagTofoodTagSet(tag);
         }
-    }
-
-    // eslint-disable-next-line no-unused-vars
-    function normalizeText(text) {
-        // Funkcia na odstranenie diakritiky
-        return text
-            .trim()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase();
     }
 
     function addTagTofoodTagSet(foodTag) {
@@ -322,7 +266,7 @@ function EditFood(props) {
         setIngredientsList(newIngredientsList);
     }
     function updateIngreNameInIngredientsList(group, groupName) {
-        if (!groupName || !group) return;
+        if (!group) return;
         let position = getPosition(group.id, ingredientsList);
         let newIngredientsList = ingredientsList.slice();
         newIngredientsList.splice(position, 1, {
@@ -422,8 +366,7 @@ function EditFood(props) {
                 Boolean(item?.id === 0) &&
                 Boolean(item?.searchTag && tag?.searchTag) &&
                 item?.searchTag === tag?.searchTag;
-            const match =
-                (tagMatch && idMatch) || (emailMatch && idMatch) || searchMatch;
+            const match = (tagMatch && idMatch) || (emailMatch && idMatch) || searchMatch;
             return !match;
         });
         let newFoodTagSet = new Set(filteredArray);
@@ -474,7 +417,7 @@ function EditFood(props) {
                     food.id,
                     folderName,
                     res.imageForBackEnd,
-                    position,
+                    position
                 ),
                 formdataForRCatch: {
                     food: food.id,
@@ -530,7 +473,7 @@ function EditFood(props) {
                 queryClient.invalidateQueries({
                     queryKey: ['foodsList'],
                 });
-                handlerSetModalSave('Uložené', false);
+                handlerSaveConfirmed('Uložené', false);
             }
         } catch (err) {
             console.error('ERROR recept sa nepodarilo uložiť.', err);
@@ -542,8 +485,6 @@ function EditFood(props) {
         }
     }
     async function foodDelete() {
-        // setModalDeleteFlag(false);
-        // setModalLoadingFlag(true);
         return await deleteFood.mutateAsync({ id: foodID });
     }
 
@@ -569,13 +510,7 @@ function EditFood(props) {
 
     function ingredientsGroupMove(group, move) {
         if (!group || !move) return;
-        // let position = getPosition(group.id, ingredientsList);
 
-        // let newIngredientsList = ingredientsList.slice();
-        // newIngredientsList.splice(position, 1, {
-        //     ...group,
-        //     ingredients: itemMove(move, ing, group.ingredients),
-        // });
         setIngredientsList(itemMove(move, group, ingredientsList));
     }
 
@@ -605,10 +540,9 @@ function EditFood(props) {
 
     function handlerFoodDeleteCancel() {
         setModalDeleteFlag(false);
-        navigate(`/recepty/${id.id}/edit`);
     }
 
-    function handlerFoodDeleteConfirmed(message, isError) {
+    function handlerDeleteConfirmed(message, isError) {
         setModalDeleteFlag(false);
         showMessage(message, isError);
         setTimeout(() => {
@@ -620,11 +554,11 @@ function EditFood(props) {
         }, 3000);
     }
 
-    function handlerSetModalSave(message, isError) {
+    function handlerSaveConfirmed(message, isError) {
         setModalLoadingFlag(false);
         showMessage(message, isError);
         setTimeout(() => {
-            if (!isError) navigate(`/recepty/${ID}/`);
+            if (!isError) navigate(`/recepty/${ID}?${paramsFoodView.toString()}`);
         }, 3000);
     }
 
@@ -649,7 +583,6 @@ function EditFood(props) {
             handdlerMessage();
         } else {
             showMessage(message, true);
-            // handlerSetModalError(message);
         }
     }
 
@@ -708,6 +641,15 @@ function EditFood(props) {
         setImages([...e.target.files]);
     }
 
+    useEffect(() => {
+        setLoadedImagesCount(0);
+    }, []);
+
+    function handleImgLoader() {
+        setLoadedImagesCount((prev) => prev + 1);
+    }
+
+    const allImagesLoaded = loadedImagesCount >= imageURLsList.length;
     return (
         <>
             {itemsDw.isLoading && !itemsDw.data ? (
@@ -720,34 +662,34 @@ function EditFood(props) {
                     ></FontAwesomeIcon>
                 </div>
             ) : (
-                <form className={style.main} onSubmit={handleFoodSave}>
+                <form
+                    className={style.main}
+                    onSubmit={handleFoodSave}
+                    style={{
+                        opacity: allImagesLoaded ? 1 : 0,
+                        visibility: allImagesLoaded ? 'visible' : 'hidden',
+                    }}
+                >
                     <div className={style.panel}>
                         <MenuToggle toggle={[toggle, setToggle]} />
                         <div className={style.messagebox}>{errMsg}</div>
 
                         <div className={style.buttonBox}>
                             <button
-                                className={style.foodButton}
-                                id={style.foodButtonSave}
+                                className={`${style.foodButton} ${style.foodButtonSave}`}
                                 type="submit"
                             >
-                                <FontAwesomeIcon
-                                    icon={faFloppyDisk}
-                                    disabled={isSaving}
-                                />
+                                <FontAwesomeIcon icon={faFloppyDisk} disabled={isSaving} />
                             </button>
+
                             <div
-                                className={style.foodButton}
-                                id={style.foodButtonDelete}
+                                className={`${style.foodButton} ${style.foodButtonDelete}`}
                                 onClick={handleFoodDelete}
-                                // datatooltip="Vymazať"
                             >
                                 <FontAwesomeIcon icon={faTrash} />
                             </div>
-                            <div
-                                className={style.foodButton}
-                                onClick={() => navigate(-1)}
-                            >
+
+                            <div className={style.foodButton} onClick={() => navigate(-1)}>
                                 <FontAwesomeIcon icon={faBackward} />
                             </div>
                         </div>
@@ -765,18 +707,12 @@ function EditFood(props) {
 
                             <IngredientInput
                                 addToIngredientList={addToIngredientList}
-                                addIngreGroupToIngredientList={
-                                    addIngreGroupToIngredientList
-                                }
-                                updateIngreNameInIngredientsList={
-                                    updateIngreNameInIngredientsList
-                                }
+                                addIngreGroupToIngredientList={addIngreGroupToIngredientList}
+                                updateIngreNameInIngredientsList={updateIngreNameInIngredientsList}
                                 ingredientMove={ingredientMove}
                                 ingredientsGroupMove={ingredientsGroupMove}
                                 ingredientsList={ingredientsList}
-                                handlerSetModalErrorMissing={
-                                    handlerSetModalErrorMissing
-                                }
+                                handlerSetModalErrorMissing={handlerSetModalErrorMissing}
                                 makeIngredientsDelete={makeIngredientsDelete}
                                 makeIngreGroupDelete={makeIngreGroupDelete}
                                 component={component}
@@ -788,6 +724,7 @@ function EditFood(props) {
                                 setModalFlag={setModalLightboxFlag}
                                 handlerImage={handlerImage}
                                 onImageChange={onImageChange}
+                                handleImgLoader={handleImgLoader}
                                 component={component}
                             ></Image>
                             <div className={style.thirdColumn}>
@@ -797,9 +734,7 @@ function EditFood(props) {
                                     deleteUrl={makeUrlToDelete}
                                     updateUrlList={updateUrlList}
                                     handleAddUrl={handleAddUrl}
-                                    handlerSetModalErrorMissing={
-                                        handlerSetModalErrorMissing
-                                    }
+                                    handlerSetModalErrorMissing={handlerSetModalErrorMissing}
                                 ></UrlInput>
 
                                 <StepsInput
@@ -812,10 +747,7 @@ function EditFood(props) {
                                 ></StepsInput>
                             </div>
                             <div className={style.fooodnamebox}>
-                                <label
-                                    className={style.name}
-                                    htmlFor="NázovReceptu"
-                                >
+                                <label className={style.name} htmlFor="NázovReceptu">
                                     Názov:
                                 </label>
                                 <input
@@ -824,17 +756,14 @@ function EditFood(props) {
                                     name="Názov receptu"
                                     ref={nameRef}
                                     value={name}
-                                    // onKeyDown={nameKeyDown}
                                     tabIndex="1"
                                     type="text"
                                     maxLength="300"
                                     onChange={(e) => setName(e.target.value)}
                                 />
-                                <div className={style.name}> </div>
                             </div>
                             <div className={style.date}>
-                                Vytvorené: <br />{' '}
-                                {user.map((res) => res.first_name)}{' '}
+                                Vytvorené: <br /> {user.map((res) => res.first_name)}{' '}
                                 {user.map((res) => res.last_name)}
                                 <br />
                                 {new Date(date).toLocaleDateString('sk-SK')}
@@ -843,44 +772,33 @@ function EditFood(props) {
                     </div>
                 </form>
             )}
-            <Modal
-                visible={modalLoadingFlag}
-                setModalFlag={setModalLoadingFlag}
-            >
+            <Modal visible={modalLoadingFlag} setModalFlag={setModalLoadingFlag}>
                 <SaveLoading></SaveLoading>
             </Modal>
             <Modal visible={modalSavedFlag} setModalFlag={setModalSavedFlag}>
                 <SaveSaved></SaveSaved>
             </Modal>
-            <ModalMessage
-                visible={modalDeleteFlag}
-                setModalFlag={setModalDeleteFlag}
-            >
-                <DeleteConfirm
-                    item={'recept'}
+            <ModalMessage visible={modalDeleteFlag} setModalFlag={setModalDeleteFlag}>
+                <Confirm
                     errMsg={errMsg}
-                    handlerFoodDeleteConfirmed={handlerFoodDeleteConfirmed}
+                    handleDoConfirmed={handlerDeleteConfirmed}
                     showMessage={showMessage}
-                    onDelete={foodDelete}
+                    message={message}
+                    do={foodDelete}
                     setIsSaving={setIsSaving}
-                    onDeleteCancel={handlerFoodDeleteCancel}
-                ></DeleteConfirm>
+                    cancel={handlerFoodDeleteCancel}
+                    is_deleted={is_deleted}
+                ></Confirm>
             </ModalMessage>
 
-            <ModalMessage
-                visible={modalMessageFlag}
-                setModalFlag={setModalMessageFlag}
-            >
+            <ModalMessage visible={modalMessageFlag} setModalFlag={setModalMessageFlag}>
                 <Message item={message} isError={isError}></Message>
             </ModalMessage>
             <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
                 <SaveError></SaveError>
             </Modal>
 
-            <ModalPreview
-                visible={modalLightboxFlag}
-                setModalFlag={setModalLightboxFlag}
-            >
+            <ModalPreview visible={modalLightboxFlag} setModalFlag={setModalLightboxFlag}>
                 <Lightbox
                     imageURLsList={[imageURLsList, setImageURLsList]}
                     closeModal={closeModal}

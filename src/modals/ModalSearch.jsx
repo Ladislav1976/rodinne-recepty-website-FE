@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import style from '../assets/styles/Modals/ModalSearch.module.css';
+import style from '../assets/styles/modals/ModalSearch.module.css';
 import { createPortal } from 'react-dom';
 
 export default function ModalSearch(props) {
@@ -31,6 +31,6 @@ export default function ModalSearch(props) {
                 {props.children}
             </div>
         </div>,
-        document.body,
+        document.body
     );
 }

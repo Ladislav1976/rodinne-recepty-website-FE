@@ -1,4 +1,4 @@
-import style from '../assets/styles/Pages/Setting.module.css';
+import style from '../assets/styles/pages/Setting.module.css';
 import TagGroup from '../components/TagGroup';
 import Tag from '../components/Tag';
 import Unit from '../components/Unit';
@@ -8,7 +8,6 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../modals/Modal';
-import DeleteConfirm from '../reports/DeleteConfirm';
 import { useDeleteTag } from '../hooks/Mutations/useDeleteTag';
 import { useDeleteGroup } from '../hooks/Mutations/useDeleteGroup';
 import { useDeleteUnit } from '../hooks/Mutations/useDeleteUnit';
@@ -16,6 +15,7 @@ import { useEffect, useState } from 'react';
 import ModalMessage from '../modals/ModalMessage';
 import Message from '../reports/Message';
 import { usePutUnits } from '../hooks/Mutations/usePutUnits';
+import Confirm from '../reports/Confirm';
 export default function Setting() {
     const axiosPrivate = useAxiosPrivate();
     const controller = new AbortController();
@@ -47,18 +47,21 @@ export default function Setting() {
     function handleTagDelete(tag) {
         if (!Number.isInteger(tag.id)) return;
         setTagToDelete(tag);
+        setMessage(`Tento "${tag.foodTag}" bude natrvalo vymazaný.`);
         setModalDeleteFlag(true);
     }
 
     function handleGroupDelete(tag) {
         if (!Number.isInteger(tag.id)) return;
         setGroupToDelete(tag);
+        setMessage(`Tento "${tag.groupName}" bude natrvalo vymazaný.`);
         setModalDeleteFlag(true);
     }
 
     function handleUnitDelete(unit) {
         if (!Number.isInteger(unit.id)) return;
         setUnitToDelete(unit);
+        setMessage(`Tento "${unit.unit}" bude natrvalo vymazaný.`);
         setModalDeleteFlag(true);
     }
     function handlerFoodDeleteConfirmed(message, isError) {
@@ -117,8 +120,7 @@ export default function Setting() {
 
     function moveUnits(move, unit) {
         const hasOrderChanged = (oldList, newList) => {
-            if (!oldList || !newList || oldList.length !== newList.length)
-                return true;
+            if (!oldList || !newList || oldList.length !== newList.length) return true;
 
             return newList.some((item, index) => item.id !== oldList[index].id);
         };
@@ -179,16 +181,13 @@ export default function Setting() {
             return await handleDeleteUnit();
         }
     }
+
     function sortingGroups(array) {
-        return array
-            ? [...array].sort((a, b) => a.groupName.localeCompare(b.groupName))
-            : [];
+        return array ? [...array].sort((a, b) => a.groupName.localeCompare(b.groupName)) : [];
     }
 
     function sortingTags(array) {
-        return array
-            ? [...array].sort((a, b) => a.foodTag.localeCompare(b.foodTag))
-            : [];
+        return array ? [...array].sort((a, b) => a.foodTag.localeCompare(b.foodTag)) : [];
     }
     if (tagGroupQf.isLoading || unitQf.isLoading) {
         return <div className={style.loadingContainer}>Načítavam ...</div>;
@@ -207,9 +206,7 @@ export default function Setting() {
                             <Unit />
                         </div>
                         <div className={style.unitContainer}>
-                            <table
-                                className={`${style.tagTable} ${style.unit}`}
-                            >
+                            <table className={`${style.tagTable} ${style.unit}`}>
                                 <thead>
                                     <tr>
                                         <th>Jednotka</th>
@@ -219,61 +216,35 @@ export default function Setting() {
                                     {unitQf.isSuccess &&
                                         units.map((unit) => (
                                             <tr key={unit.id}>
-                                                <td
-                                                    className={
-                                                        style.groupHeaderCell
-                                                    }
-                                                >
+                                                <td className={style.groupHeaderCell}>
                                                     <div>{unit.unit}</div>
-                                                    <div
-                                                        className={
-                                                            style.upddownIcons
-                                                        }
-                                                    >
+                                                    <div className={style.upddownIcons}>
                                                         <div
                                                             className={style.up}
                                                             onClick={() => {
-                                                                moveUnits(
-                                                                    -1,
-                                                                    unit,
-                                                                );
+                                                                moveUnits(-1, unit);
                                                             }}
                                                         >
                                                             <FontAwesomeIcon
-                                                                icon={
-                                                                    faAngleDown
-                                                                }
+                                                                icon={faAngleDown}
                                                             ></FontAwesomeIcon>
                                                         </div>{' '}
                                                         <div
-                                                            className={
-                                                                style.down
-                                                            }
+                                                            className={style.down}
                                                             onClick={() => {
-                                                                moveUnits(
-                                                                    1,
-                                                                    unit,
-                                                                );
+                                                                moveUnits(1, unit);
                                                             }}
                                                         >
                                                             <FontAwesomeIcon
-                                                                icon={
-                                                                    faAngleDown
-                                                                }
+                                                                icon={faAngleDown}
                                                             ></FontAwesomeIcon>{' '}
                                                         </div>
                                                     </div>{' '}
-                                                    <div
-                                                        className={
-                                                            style.deleteIcon
-                                                        }
-                                                    >
+                                                    <div className={style.deleteIcon}>
                                                         <FontAwesomeIcon
                                                             icon={faTrash}
                                                             onClick={() => {
-                                                                handleUnitDelete(
-                                                                    unit,
-                                                                );
+                                                                handleUnitDelete(unit);
                                                             }}
                                                         />
                                                     </div>
@@ -293,14 +264,9 @@ export default function Setting() {
                         <div className={style.tagsContainer}>
                             {tagGroupQf.isSuccess &&
                                 sortingGroups(groups).map((group) => {
-                                    // Tagy zoradene podla abecedy
                                     const sortedTags = sortingTags(group?.tags);
-
                                     return (
-                                        <table
-                                            className={style.tagTable}
-                                            key={group.id}
-                                        >
+                                        <table className={style.tagTable} key={group.id}>
                                             <thead>
                                                 <tr>
                                                     <th>Kategória</th>
@@ -309,102 +275,57 @@ export default function Setting() {
                                             </thead>
                                             <tbody>
                                                 {sortedTags.length > 0 ? (
-                                                    sortedTags.map(
-                                                        (tag, index) => (
-                                                            <tr
-                                                                key={`${group.id}${tag.id}`}
-                                                            >
-                                                                {index ===
-                                                                    0 && (
-                                                                    <td
-                                                                        rowSpan={
-                                                                            group
-                                                                                .tags
-                                                                                .length
-                                                                        }
-                                                                        className={
-                                                                            style.groupHeaderCell
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            group.groupName
-                                                                        }{' '}
-                                                                        <div
-                                                                            className={
-                                                                                style.deleteIcon
-                                                                            }
-                                                                        >
-                                                                            <FontAwesomeIcon
-                                                                                icon={
-                                                                                    faTrash
-                                                                                }
-                                                                                onClick={() => {
-                                                                                    handleGroupDelete(
-                                                                                        group,
-                                                                                    );
-                                                                                }}
-                                                                            />
-                                                                        </div>
-                                                                    </td>
-                                                                )}
+                                                    sortedTags.map((tag, index) => (
+                                                        <tr key={`${group.id}${tag.id}`}>
+                                                            {index === 0 && (
                                                                 <td
+                                                                    rowSpan={group.tags.length}
                                                                     className={
-                                                                        style.tagCell
+                                                                        style.groupHeaderCell
                                                                     }
                                                                 >
-                                                                    {
-                                                                        tag.foodTag
-                                                                    }
+                                                                    {group.groupName}{' '}
                                                                     <div
-                                                                        className={
-                                                                            style.deleteIcon
-                                                                        }
+                                                                        className={style.deleteIcon}
                                                                     >
                                                                         <FontAwesomeIcon
-                                                                            icon={
-                                                                                faTrash
-                                                                            }
+                                                                            icon={faTrash}
                                                                             onClick={() => {
-                                                                                handleTagDelete(
-                                                                                    tag,
+                                                                                handleGroupDelete(
+                                                                                    group
                                                                                 );
                                                                             }}
                                                                         />
                                                                     </div>
                                                                 </td>
-                                                            </tr>
-                                                        ),
-                                                    )
+                                                            )}
+                                                            <td className={style.tagCell}>
+                                                                {tag.foodTag}
+                                                                <div className={style.deleteIcon}>
+                                                                    <FontAwesomeIcon
+                                                                        icon={faTrash}
+                                                                        onClick={() => {
+                                                                            handleTagDelete(tag);
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
                                                 ) : (
                                                     <tr key={group.id}>
-                                                        <td
-                                                            className={
-                                                                style.groupHeaderCell
-                                                            }
-                                                        >
+                                                        <td className={style.groupHeaderCell}>
                                                             {group.groupName}{' '}
-                                                            <div
-                                                                className={
-                                                                    style.deleteIcon
-                                                                }
-                                                            >
+                                                            <div className={style.deleteIcon}>
                                                                 <FontAwesomeIcon
-                                                                    icon={
-                                                                        faTrash
-                                                                    }
+                                                                    icon={faTrash}
                                                                     onClick={() => {
-                                                                        handleGroupDelete(
-                                                                            group,
-                                                                        );
+                                                                        handleGroupDelete(group);
                                                                     }}
                                                                 />
                                                             </div>
                                                         </td>
-                                                        <td
-                                                            className={
-                                                                style.tagCell
-                                                            }
-                                                        >
+                                                        <td className={style.tagCell}>
                                                             <i>-</i>
                                                         </td>
                                                     </tr>
@@ -418,23 +339,16 @@ export default function Setting() {
                 </div>
             </div>
             <Modal visible={modalDeleteFlag} setModalFlag={setModalDeleteFlag}>
-                <DeleteConfirm
-                    item={
-                        tagToDelete.foodTag ||
-                        groupToDelete.groupName ||
-                        unitToDelete.unit
-                    }
-                    handlerFoodDeleteConfirmed={handlerFoodDeleteConfirmed}
+                <Confirm
+                    handleDoConfirmed={handlerFoodDeleteConfirmed}
                     showMessage={showMessage}
+                    message={message}
                     setIsSaving={() => {}}
-                    onDelete={handleDelete}
-                    onDeleteCancel={deleteTagCanceled}
-                ></DeleteConfirm>
+                    do={handleDelete}
+                    cancel={deleteTagCanceled}
+                ></Confirm>
             </Modal>
-            <ModalMessage
-                visible={modalMessageFlag}
-                setModalFlag={setModalMessageFlag}
-            >
+            <ModalMessage visible={modalMessageFlag} setModalFlag={setModalMessageFlag}>
                 <Message item={message} isError={isError}></Message>
             </ModalMessage>
         </>

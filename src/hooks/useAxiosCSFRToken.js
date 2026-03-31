@@ -15,7 +15,7 @@ export default function useAxiosCSFRToken(props) {
                 }
                 return config;
             },
-            (error) => Promise.reject(error),
+            (error) => Promise.reject(error)
         );
         const responseIntercept = axiosCSFRToken.interceptors.response.use(
             (response) => response,
@@ -30,7 +30,7 @@ export default function useAxiosCSFRToken(props) {
                     return axiosCSFRToken(prevRequest);
                 }
                 return Promise.reject(error);
-            },
+            }
         );
 
         return () => {

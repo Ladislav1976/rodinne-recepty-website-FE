@@ -8,14 +8,16 @@
     background-color: white;
     width: 18rem;
     min-height: 100%;
-    overflow-y: auto;
+    overflow: hidden auto;
     border-right: var(--border3px);
 }
+
 .totalFoodsCount {
     color: var(--greydark);
     position: relative;
     margin: 0 0.5rem 0.5rem;
 }
+
 .sidebarFilter label {
     font-weight: bold;
 }
@@ -23,6 +25,7 @@
 .displayNone {
     display: none;
 }
+
 .food {
     margin: 0;
 }
@@ -31,10 +34,7 @@
     width: 50px;
     height: 50px;
     margin: 5px;
-    border-top-left-radius: 50% 50%;
-    border-top-right-radius: 50% 50%;
-    border-bottom-right-radius: 50% 50%;
-    border-bottom-left-radius: 50% 50%;
+    border-radius: 50%;
 }
 
 .buttonEdit {
@@ -85,7 +85,6 @@
     color: white;
     font-size: 0.7rem;
     background-color: var(--orange);
-
     width: 1rem;
     height: 1rem;
     border-radius: 50%;
@@ -100,7 +99,6 @@
     flex-shrink: 0;
     align-items: center;
     background-color: white;
-    padding: auto;
     border-bottom: solid 1px;
     border-bottom: var(--border);
     z-index: 10;
@@ -115,7 +113,7 @@
     cursor: pointer;
 
     &:hover {
-        background-color: rgb(255, 228, 177);
+        background-color: rgb(255 228 177);
     }
 }
 
@@ -126,7 +124,6 @@
     justify-content: flex-start;
     height: 3rem;
     align-items: center;
-    padding: auto;
     color: var(--greydark);
     background-color: white;
     opacity: 0;
@@ -144,14 +141,16 @@
         transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
         opacity 0.6s ease-out;
 }
+
 .filterOption.unChecked {
     display: none;
 }
+
 .filterOption__clickable:hover {
     cursor: pointer;
 
     &:hover {
-        background-color: rgb(255, 246, 228);
+        background-color: rgb(255 246 228);
         color: var(--orange);
     }
 }
@@ -191,16 +190,13 @@
     display: flex;
     align-items: center;
     text-align: center;
-
     justify-content: center;
     color: var(--greydark);
     border-radius: 50%;
     user-select: none;
-    -webkit-user-select: none;
     font-size: 14px;
     width: 25px;
     height: 25px;
-    padding: auto;
 }
 
 .arrowUp {
@@ -227,7 +223,7 @@
 
 .labelEdit,
 .labelView {
-    color: rgb(157, 156, 156);
+    color: rgb(157 156 156);
 }
 
 .labelEdit,
@@ -251,6 +247,7 @@
 .select_body select option {
     font-size: 0.8rem;
 }
+
 .selectContainer {
     margin-bottom: 3rem;
 }
@@ -286,6 +283,7 @@
     transform: rotate(-90deg);
     transition-duration: var(--transDuration);
 }
+
 .icon_down {
     transform: rotate(90deg);
     transition-duration: var(--transDuration);
@@ -309,38 +307,39 @@
     max-height: 1000px;
     transition: max-height 0.6s ease-in-out;
 }
+
 .cancelButton {
     display: none;
 }
+
 @media (width <= 1300px) {
     .container {
         max-width: 17rem;
         min-height: 100dvh;
         background-color: white;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: hidden auto;
     }
 
     .sidebarFilter {
         position: fixed;
         top: 0;
-        background-color: rgba(26, 25, 25, 0.911);
+        background-color: rgb(26 25 25 / 0.911);
         left: 0;
         height: 100dvh;
         width: 100%;
         transform: translateX(-100%);
         transition:
-            transform var(--transDuration) ease-in-out,
+            transform var(--transDuration) linear,
             visibility var(--transDuration);
         visibility: hidden;
         overflow: hidden;
         z-index: 13;
     }
+
     .sidebarFilter.isActive {
         transform: translateX(0);
         visibility: visible;
         min-width: 300px;
-        /* left: 0; */
     }
 
     .cancelButton {

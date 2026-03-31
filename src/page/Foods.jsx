@@ -1,4 +1,4 @@
-import style from '../assets/styles/Pages/Foods.module.css';
+import style from '../assets/styles/pages/Foods.module.css';
 import { useState, useEffect } from 'react';
 import Modal from '../modals/Modal';
 import ModalSearch from '../modals/ModalSearch';
@@ -10,7 +10,8 @@ import SaveError from '../reports/SaveError';
 import MenuToggle from '../components/MenuToggle';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { useFoodsDownload } from '../hooks/Queries/useFoodsDownload';
 import useAuth from '../hooks/useAuth';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
@@ -22,44 +23,31 @@ function Foods(props) {
 
     const navigate = useNavigate();
     const [toggle, setToggle] = useState(false);
+    const [loadedImagesCount, setLoadedImagesCount] = useState();
 
     const [foods, setFoods] = useState([]);
+
     const [users, setUsers] = useState();
     const [tagGroups, setTagGroups] = useState();
     const [foodTags, setFoodTags] = useState();
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams(window.location.search);
+    const paramsFoodView = new URLSearchParams(window.location.search);
 
     const foodTagsPar = searchParams.getAll('foodTags');
     const user__id__inPar = searchParams.getAll('user__id__in');
     const searchPar = searchParams.get('search');
     const pageSizePar = searchParams.get('page_size');
     const pagePar = searchParams.get('page');
-    const orderingPar = searchParams.get('ordering');
+    const deletedPar = searchParams.get('is_deleted');
     const { ref: refTop, inView: inViewTop } = useInView();
     const { ref: refBottom, inView: inViewBottom } = useInView();
 
-    const {
-        page,
-        setPage,
-        pageSize,
-        setPageSize,
-        ordering,
-        setOrdering,
-        setSearch,
-    } = useAuth();
+    const { auth, setPage, pageSize, setPageSize, ordering, setOrdering } = useAuth();
 
     const location = useLocation();
 
-    const foodsQf = useFoodsDownload(
-        axiosPrivate,
-        foodTagsPar,
-        searchPar,
-        orderingPar,
-        pagePar,
-        pageSizePar,
-        user__id__inPar,
-    );
+    const foodsQf = useFoodsDownload(axiosPrivate, paramsFoodView, auth);
 
     useEffect(() => {
         if (foodsQf?.data !== undefined) {
@@ -68,60 +56,27 @@ function Foods(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [foodsQf?.isLoading, foodsQf?.data, users, tagGroups]);
 
-    useEffect(() => {
-        if (!orderingPar || !pagePar || !pageSizePar) {
-            setSearchParams({
-                ordering: ordering,
-                page: page,
-                page_size: pageSize,
-                foodTags: foodTagsPar,
-                user__id__in: user__id__inPar,
-            });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    function paramsUpdater(params) {
-        if (foodTagsPar != null) {
-            return (params.foodTags = foodTagsPar);
-        }
-        if (user__id__inPar != null) {
-            return (params.user__id__in = user__id__inPar);
-        }
-        if (searchPar != null) {
-            return (params.search = searchPar);
-        }
-    }
-
     function orderingHandler(e) {
-        setOrdering(e.target.value);
-        let params = {};
-        paramsUpdater(params);
-        params.ordering = e.target.value;
-        params.page = 1;
-        params.page_size = pageSize;
+        paramsFoodView.set('ordering', e.target.value);
+        paramsFoodView.set('page', 1);
+
         setPage(1);
-        setSearchParams(params);
+        setSearchParams(paramsFoodView);
+        setOrdering(e.target.value);
     }
+
     function pageSizeChange(e) {
+        paramsFoodView.set('page_size', e.target.value);
+        paramsFoodView.set('page', 1);
+        setSearchParams(paramsFoodView);
         setPageSize(e.target.value);
-        let params = {};
-        paramsUpdater(params);
-        params.ordering = ordering;
-        params.page = 1;
-        params.page_size = e.target.value;
-        setSearchParams(params);
         setPage(1);
     }
 
     function pageChange(newpage) {
+        paramsFoodView.set('page', newpage);
         setPage(newpage);
-        let params = {};
-        paramsUpdater(params);
-        params.ordering = ordering;
-        params.page = newpage;
-        params.page_size = pageSize;
-        setSearchParams(params);
+        setSearchParams(paramsFoodView);
     }
 
     function searchLoader() {
@@ -130,6 +85,7 @@ function Foods(props) {
         let updatedSet = new Set(filterTagSet);
 
         let changed = false;
+
         if (
             searchPar &&
             !tagSearchInArray([...updatedSet], {
@@ -137,7 +93,6 @@ function Foods(props) {
                 searchTag: searchPar,
                 foodTag: searchPar,
             })
-            //
         ) {
             updatedSet.add({ id: 0, searchTag: searchPar, foodTag: searchPar });
             changed = true;
@@ -151,7 +106,6 @@ function Foods(props) {
                     updatedSet.add(tagObj);
                     changed = true;
                 }
-                // }
             });
         }
         if (user__id__inPar.length > 0 && users) {
@@ -166,22 +120,33 @@ function Foods(props) {
                 }
             });
         }
+        if (
+            deletedPar &&
+            deletedPar === 'true' &&
+            !tagSearchInArray([...updatedSet], {
+                id: 0,
+                foodTag: 'deleted',
+                deleted: deletedPar,
+            })
+        ) {
+            updatedSet.add({ id: 0, foodTag: 'deleted', deleted: deletedPar });
+            changed = true;
+        }
 
         if (changed) {
             setFilterTagSet(updatedSet);
 
-            const nextFoodTagIds = getTagsByType(updatedSet, false, false);
-            const nextUserIds = getTagsByType(updatedSet, true, false);
-            const searchString = getTagsByType(updatedSet, false, true);
+            const nextFoodTagIds = getTagsByType(updatedSet, false, false, false);
+            const nextUserIds = getTagsByType(updatedSet, true, false, false);
+            const searchString = getTagsByType(updatedSet, false, true, false);
+            const deletedBoolean = getTagsByType(updatedSet, false, false, true);
+            searchParams.set('foodTags', nextFoodTagIds);
+            searchParams.set('user__id__in', nextUserIds.join(','));
+            searchParams.set('page', pagePar || 1);
+            searchParams.set('search', searchString);
+            searchParams.set('is_deleted', deletedBoolean);
 
-            setSearchParams({
-                ordering: ordering,
-                foodTags: nextFoodTagIds,
-                user__id__in: nextUserIds.join(','),
-                page: pagePar || 1,
-                page_size: pageSize,
-                search: searchString,
-            });
+            setSearchParams(searchParams);
         }
     }
 
@@ -219,9 +184,7 @@ function Foods(props) {
         if (isMobile && parseInt(pagePar) > 1) {
             setFoods((prev) => {
                 const existingIds = new Set(prev.map((f) => f.id));
-                const uniqueNew = transformedFoods.filter(
-                    (f) => !existingIds.has(f.id),
-                );
+                const uniqueNew = transformedFoods.filter((f) => !existingIds.has(f.id));
                 return [...prev, ...uniqueNew];
             });
         } else {
@@ -230,21 +193,11 @@ function Foods(props) {
     }, [foodsQf.data, foodsQf.isSuccess, foodsQf.isLoading, isMobile, pagePar]);
 
     useEffect(() => {
-        if (
-            inViewBottom &&
-            isMobile &&
-            !foodsQf.isFetching &&
-            foodsQf?.data?.next
-        ) {
+        if (inViewBottom && isMobile && !foodsQf.isFetching && foodsQf?.data?.next) {
             const currentP = parseInt(pagePar || 1);
             pageChange(currentP + 1);
         }
-        if (
-            inViewTop &&
-            isMobile &&
-            !foodsQf.isFetching &&
-            foodsQf?.data?.previous
-        ) {
+        if (inViewTop && isMobile && !foodsQf.isFetching && foodsQf?.data?.previous) {
             const currentP = parseInt(pagePar || 1);
             pageChange(currentP - 1);
         }
@@ -264,26 +217,37 @@ function Foods(props) {
     const [modalSearchFlag, setModalSearchFlag] = useState(false);
     const [isVisibleSearch, setIsVisibleSearch] = useState(false);
 
-    function getTagsByType(set, wantEmail, wantsearch) {
-        let foodTags = Array.from(set)
-            .filter((item) =>
-                wantEmail
-                    ? !!item?.email
-                    : !wantsearch
-                      ? !item?.email
-                      : item?.searchTag,
-            )
-            .map((item) => (!wantsearch ? item.id : item.searchTag))
+    function getTagsByType(set, mode) {
+        return Array.from(set)
+            .filter((item) => {
+                switch (mode) {
+                    case 'email':
+                        return !!item?.email;
+                    case 'search':
+                        return !!item?.searchTag;
+                    case 'deleted':
+                        return !!item?.deleted;
+                    case 'tag':
+                        return !item?.email;
+                    default:
+                        return false;
+                }
+            })
+            .map((item) => {
+                if (mode === 'search') return item.searchTag;
+                if (mode === 'deleted') return item.deleted;
+                return item.id;
+            })
             .filter(Boolean);
-        return foodTags;
     }
-    function addTagToFoodTagSet(tag) {
-        let newTagSet = new Set(filterTagSet);
+    function addTagToFoodTagSet(tag, array) {
+        let newTagSet = new Set(array);
 
         newTagSet.add(tag);
-        const tagIds = getTagsByType(newTagSet, false, false);
-        const userIds = getTagsByType(newTagSet, true, false);
-        const searchString = getTagsByType(newTagSet, false, true);
+        const tagIds = getTagsByType(newTagSet, 'tag');
+        const userIds = getTagsByType(newTagSet, 'email');
+        const searchString = getTagsByType(newTagSet, 'search');
+        const deletedBoolean = getTagsByType(newTagSet, 'deleted');
 
         setSearchParams({
             foodTags: tagIds,
@@ -291,6 +255,7 @@ function Foods(props) {
             ordering: ordering,
             page_size: pageSize,
             search: searchString,
+            is_deleted: deletedBoolean.length > 0 ? deletedBoolean[0] : '',
             page: 1,
         });
 
@@ -300,12 +265,33 @@ function Foods(props) {
 
     function searchAddToTagList(tag) {
         if (!tag) return;
-        setSearch(tag);
-        addTagToFoodTagSet({ id: 0, searchTag: tag, foodTag: tag });
+
+        addTagToFoodTagSet(
+            {
+                id: 0,
+                searchTag: tag,
+                foodTag: tag,
+            },
+            []
+        );
+    }
+
+    function deletedAddToTagList(tag) {
+        if (!tag) return;
+
+        addTagToFoodTagSet(
+            {
+                id: 0,
+
+                foodTag: 'deleted',
+                deleted: tag,
+            },
+            []
+        );
     }
 
     function removeFromTagSet(tag) {
-        const filteredArray = Array.from(filterTagSet).filter((item) => {
+        const newFilterTagSet = Array.from(filterTagSet).filter((item) => {
             const idMatch = item?.id === tag?.id;
             const tagMatch =
                 Boolean(item?.id !== 0) &&
@@ -319,32 +305,36 @@ function Foods(props) {
                 Boolean(item?.id === 0) &&
                 Boolean(item?.searchTag && tag?.searchTag) &&
                 item?.searchTag === tag?.searchTag;
+            const deletedMatch =
+                Boolean(item?.id === 0) &&
+                Boolean(item?.deleted && tag?.deleted) &&
+                item?.deleted === tag?.deleted;
+
             const match =
-                (tagMatch && idMatch) || (emailMatch && idMatch) || searchMatch;
+                (tagMatch && idMatch) ||
+                (emailMatch && idMatch) ||
+                (idMatch && searchMatch) ||
+                (idMatch && deletedMatch);
             return !match;
         });
 
-        let newFilterTagSet = new Set(filteredArray);
-
-        setFilterTagSet(filteredArray);
+        searchParams.set('page', 1);
+        setFilterTagSet(newFilterTagSet);
         if (newFilterTagSet.size === 0) {
-            setSearchParams({
-                ordering: ordering,
-                page: 1,
-                page_size: pageSize,
-            });
+            searchParams.set('page', 1);
+            setSearchParams(searchParams);
         } else {
-            const tagIds = getTagsByType(newFilterTagSet, false, false);
-            const userIds = getTagsByType(newFilterTagSet, true, false);
-            const searchString = getTagsByType(newFilterTagSet, false, true);
-            setSearchParams({
-                foodTags: tagIds,
-                user__id__in: userIds,
-                search: searchString,
-                ordering: ordering,
-                page: 1,
-                page_size: pageSize,
-            });
+            const tagIds = getTagsByType(newFilterTagSet, 'tag');
+            const userIds = getTagsByType(newFilterTagSet, 'email');
+            const searchString = getTagsByType(newFilterTagSet, 'search');
+            const deletedBoolean = getTagsByType(newFilterTagSet, 'deleted');
+
+            searchParams.set('foodTags', tagIds);
+            searchParams.set('user__id__in', userIds);
+            searchParams.set('search', searchString);
+            searchParams.set('is_deleted', deletedBoolean === 'true' ? 'true' : 'false');
+            searchParams.set('page', 1);
+            setSearchParams(searchParams);
         }
     }
 
@@ -365,21 +355,33 @@ function Foods(props) {
                 Boolean(item?.id === 0) &&
                 Boolean(item?.searchTag && tag?.searchTag) &&
                 item?.searchTag === tag?.searchTag;
+            const deletedMatch =
+                Boolean(item?.id === 0) &&
+                Boolean(item?.deleted && tag?.deleted) &&
+                item?.foodTag === tag?.foodTag &&
+                item?.deleted === tag?.deleted;
 
-            return (
-                (tagMatch && idMatch) || (emailMatch && idMatch) || searchMatch
-            );
+            return (tagMatch && idMatch) || (emailMatch && idMatch) || searchMatch || deletedMatch;
         });
     }
     function filterTagSetCheck(tag) {
         const response = tagSearchInArray([...filterTagSet], tag);
+
         if (!response) {
-            addTagToFoodTagSet(tag);
+            addTagToFoodTagSet(tag, filterTagSet);
         } else {
             removeFromTagSet(tag);
         }
     }
+    useEffect(() => {
+        setLoadedImagesCount(0);
+    }, []);
 
+    function handleImgLoader() {
+        setLoadedImagesCount((prev) => prev + 1);
+    }
+
+    const allImagesLoaded = loadedImagesCount >= foods.length;
     return (
         <>
             {foodsQf.isLoading ? (
@@ -393,60 +395,56 @@ function Foods(props) {
                 </div>
             ) : (
                 <>
-                    <div className={style.foodsmain}>
+                    <div
+                        className={style.foodsmain}
+                        style={{
+                            opacity: allImagesLoaded ? 1 : 0,
+                            visibility: allImagesLoaded ? 'visible' : 'hidden',
+                        }}
+                    >
                         {isMobile && (
-                            <div
-                                ref={refTop}
-                                style={{ height: '2px', position: 'absolute' }}
-                            />
+                            <div ref={refTop} style={{ height: '2px', position: 'absolute' }} />
                         )}
                         <div className={style.panel}>
                             <MenuToggle toggle={[toggle, setToggle]} />
-
                             <TagInput
                                 filterTagListState={filterTagSet}
                                 searchAddToTagList={searchAddToTagList}
                                 removeFromTagList={removeFromTagSet}
                                 setModalFlag={setModalSearchFlag}
                             />
-
-                            <div
-                                className={`${style.foodButton}`}
+                            <button
+                                className={`${style.button}`}
                                 onClick={() =>
                                     navigate(`/recepty/novy_recept/`, {
                                         state: { foods: location },
                                     })
                                 }
                             >
-                                Nový recept
-                            </div>
-                            <div
-                                className={`${style.iconButton}`}
-                                onClick={() =>
-                                    navigate(`/recepty/novy_recept/`, {
-                                        state: { foods: location },
-                                    })
-                                }
+                                <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                            </button>{' '}
+                            <button
+                                className={style.button}
+                                onClick={() => deletedAddToTagList('true')}
+                                style={{
+                                    color: deletedPar === 'true' ? 'red' : '',
+                                }}
                             >
-                                <FontAwesomeIcon
-                                    icon={faPlus}
-                                ></FontAwesomeIcon>
-                            </div>
+                                <FontAwesomeIcon className={style.faXmark} icon={faXmark} />
+                                <FontAwesomeIcon className={style.faTrashCan} icon={faTrashCan} />
+                            </button>
                         </div>
                         <div className={style.main}>
                             <LeftPanelFilter
                                 onFoodTagSet={filterTagSet}
                                 handleAddTagToFoodTagsList={filterTagSetCheck}
-                                // handleAddTagToFoodTagsList2={foodTagListCheck2}
                                 foodTagsContainer={foodsQf?.data?.tags_list}
                                 orderingHandler={orderingHandler}
                                 component={component}
                                 toggle={[toggle, setToggle]}
                                 users={users || []}
                                 tagGroups={tagGroups || []}
-                                total_foods_count={
-                                    foodsQf?.data?.total_foods_count || ''
-                                }
+                                total_foods_count={foodsQf?.data?.total_foods_count || ''}
                             />
 
                             <FoodItemList
@@ -455,37 +453,28 @@ function Foods(props) {
                                 location={location}
                                 pageSizeChange={pageSizeChange}
                                 pageChange={pageChange}
-                                page={page}
-                                pageSize={pageSize}
+                                page={Number(pagePar)}
+                                pageSize={pageSizePar}
+                                deletedPar={deletedPar}
                                 foodsQf={foodsQf}
                                 isMobile={isMobile}
+                                handleImgLoader={handleImgLoader}
                             ></FoodItemList>
                         </div>
 
-                        <Modal
-                            visible={modalErrorFlag}
-                            setModalFlag={setModalErrorFlag}
-                        >
+                        <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
                             <SaveError></SaveError>
                         </Modal>
-                        <ModalSearch
-                            visible={modalSearchFlag}
-                            setModalFlag={setModalSearchFlag}
-                        >
+                        <ModalSearch visible={modalSearchFlag} setModalFlag={setModalSearchFlag}>
                             <TagInputMobile
-                                isVisibleEdit={[
-                                    isVisibleSearch,
-                                    setIsVisibleSearch,
-                                ]}
+                                isVisibleEdit={[isVisibleSearch, setIsVisibleSearch]}
                                 filterTagListState={filterTagSet}
                                 searchAddToTagList={searchAddToTagList}
                                 removeFromTagList={removeFromTagSet}
                                 setModalFlag={setModalSearchFlag}
                             />
                         </ModalSearch>
-                        {isMobile && (
-                            <div ref={refBottom} style={{ height: '2px' }} />
-                        )}
+                        {isMobile && <div ref={refBottom} style={{ height: '2px' }} />}
                     </div>{' '}
                 </>
             )}

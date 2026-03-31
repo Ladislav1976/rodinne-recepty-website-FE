@@ -4,8 +4,7 @@ import { createPostImagefood } from '../use-post';
 export const usePostImage = (axiosPrivate) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (formData) =>
-            createPostImagefood(axiosPrivate, formData.imageFormForBackEnd),
+        mutationFn: (formData) => createPostImagefood(axiosPrivate, formData.imageFormForBackEnd),
 
         onMutate: async (newImageObj) => {
             const newImage = newImageObj.formdataForRCatch;
@@ -28,10 +27,7 @@ export const usePostImage = (axiosPrivate) => {
             console.error('Error Post Imagefood :', err);
 
             if (context?.previousImages != null) {
-                queryClient.setQueryData(
-                    context.queryKey,
-                    context.previousImages,
-                );
+                queryClient.setQueryData(context.queryKey, context.previousImages);
             } else {
                 queryClient.removeQueries({ queryKey: context.queryKey });
             }
@@ -41,9 +37,7 @@ export const usePostImage = (axiosPrivate) => {
             if (data?.data) {
                 queryClient.setQueryData(context.queryKey, (old) => {
                     if (!Array.isArray(old)) return [data.data];
-                    return old.map((image) =>
-                        image.id === context.tempId ? data.data : image,
-                    );
+                    return old.map((image) => (image.id === context.tempId ? data.data : image));
                 });
             }
         },

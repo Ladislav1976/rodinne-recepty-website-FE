@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import style from '../assets/styles/Components/UserProfile.module.css';
+import style from '../assets/styles/components/UserProfile.module.css';
 import { usePutUser } from '../hooks/Mutations/usePutUser';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import default_image from '../image/user_image.png';
@@ -57,12 +57,10 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
             if (res && res.imageForBackEnd) {
                 let form = new FormData();
 
-                // form.append('email', userCard.email);
-                // form.append('role', userCard.role);
                 form.append('avatar', res.imageForBackEnd);
                 form.append(
                     'upload_folder',
-                    `${userCard.id}-${userCard.first_name || 'user'}-${userCard.last_name || 'profile'}`,
+                    `${userCard.id}-${userCard.first_name || 'user'}-${userCard.last_name || 'profile'}`
                 );
 
                 const formdataPut = {
@@ -80,8 +78,6 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                     });
                     errRef.current.focus();
                 }
-
-                // });
             } else {
                 handlerSetError('Prosím, vyberte obrázok.');
             }
@@ -101,7 +97,7 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
             });
         }
     }, [userCard, imagePreview]);
-    // images for Posting
+
     useEffect(() => {
         if (images.length < 1) return;
 
@@ -131,7 +127,13 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
     ];
 
     return (
-        <div className={style.main} key={userCard.id}>
+        <div
+            className={style.main}
+            key={userCard.id}
+            style={{
+                opacity: loaded ? 1 : 0,
+            }}
+        >
             <form className={style.form} onSubmit={handlePostRole}>
                 <h4>Základné údaje</h4>
                 <div className={style.user_info}>
@@ -149,10 +151,6 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                             fetchPriority="high"
                             alt="Profilová fotka"
                             onLoad={() => setLoaded(true)}
-                            style={{
-                                opacity: loaded ? 1 : 0,
-                                transition: 'opacity 0.5s ease-in',
-                            }}
                         />
                         <input
                             className={style.imageinput}
@@ -170,9 +168,7 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                                 datatooltip="Pridať fotografiu"
                             >
                                 {' '}
-                                <FontAwesomeIcon
-                                    icon={faCamera}
-                                ></FontAwesomeIcon>
+                                <FontAwesomeIcon icon={faCamera}></FontAwesomeIcon>
                             </label>
                         </div>{' '}
                     </div>
@@ -199,9 +195,7 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                                     <th>Profil</th>
                                     <td>
                                         {ROLES.map((r) =>
-                                            r.role === userCard?.role
-                                                ? r.viewRole
-                                                : '',
+                                            r.role === userCard?.role ? r.viewRole : ''
                                         )}
                                     </td>
                                 </tr>
@@ -209,24 +203,7 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                         </table>
                     </div>
                 </div>{' '}
-                {/* <h4>Základnéee údaje</h4> */}
                 <div className={style.button_container}>
-                    {/* <button
-                        type="submit"
-                        className={style.iconSave}
-                        datatooltip="Uložiť"
-                        // disabled={!step ? true : false}
-                        // onClick={handleSave}
-                    >
-                        <FontAwesomeIcon icon={faFloppyDisk} />
-                    </button>
-                    <div
-                        className={style.iconCancel}
-                        onClick={closeModal}
-                        datatooltip="Zavrieť"
-                    >
-                        <FontAwesomeIcon icon={faXmark} />
-                    </div> */}
                     <button
                         type="button"
                         className={`${style.button} ${style.cancel}`}
@@ -234,10 +211,7 @@ export default function UserProfile({ userCard, imagePreview, closeModal }) {
                     >
                         Zrušiť
                     </button>
-                    <button
-                        type="submit"
-                        className={`${style.button} ${style.save}`}
-                    >
+                    <button type="submit" className={`${style.button} ${style.save}`}>
                         Uložiť
                     </button>
                 </div>

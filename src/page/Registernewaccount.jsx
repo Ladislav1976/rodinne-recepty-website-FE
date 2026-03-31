@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 
 import { faCheck, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import style from '../assets/styles/Pages/RegisterNewAccount.module.css';
+import style from '../assets/styles/pages/RegisterNewAccount.module.css';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import CSRFToken from './CSFRToken';
 import ModalMessage from '../modals/ModalMessage';
@@ -13,7 +13,7 @@ import useAuth from '../hooks/useAuth';
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const EMAIL_REGEX =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-// const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+
 const REGISTER_URL = 'register';
 
 export default function RegisterNewAccount() {
@@ -93,7 +93,7 @@ export default function RegisterNewAccount() {
                 }),
                 {
                     signal: controller.signal,
-                },
+                }
             );
             showMessage(`Nový účet pre ${email} bol vytvorený!`, false);
 
@@ -106,10 +106,7 @@ export default function RegisterNewAccount() {
             if (!err?.response) {
                 showMessage('No Server Response', true);
             } else if (err.response?.status === 409) {
-                showMessage(
-                    `Tento ${err.response?.data.message} je už zaregistrovaný`,
-                    true,
-                );
+                showMessage(`Tento ${err.response?.data.message} je už zaregistrovaný`, true);
             } else {
                 showMessage('Registrácia zlyhala', true);
             }
@@ -120,11 +117,7 @@ export default function RegisterNewAccount() {
     return (
         <>
             <div className={style.main}>
-                <div
-                    className={
-                        !isLoading ? style.submitContainer : style.offScreen
-                    }
-                >
+                <div className={!isLoading ? style.submitContainer : style.offScreen}>
                     <form
                         onSubmit={handleSubmit}
                         className={!isLoading ? style.form : style.offscreen}
@@ -136,18 +129,12 @@ export default function RegisterNewAccount() {
                                 Meno:
                                 <FontAwesomeIcon
                                     icon={faCheck}
-                                    className={
-                                        validFirst_name
-                                            ? style.valid
-                                            : style.hide
-                                    }
+                                    className={validFirst_name ? style.valid : style.hide}
                                 />
                                 <FontAwesomeIcon
                                     icon={faTimes}
                                     className={
-                                        validFirst_name || !first_name
-                                            ? style.hide
-                                            : style.invalid
+                                        validFirst_name || !first_name ? style.hide : style.invalid
                                     }
                                 />
                             </label>
@@ -158,14 +145,10 @@ export default function RegisterNewAccount() {
                                     id="KrstnéMeno"
                                     ref={first_name_Ref}
                                     autoComplete="off"
-                                    onChange={(e) =>
-                                        setFirst_name(e.target.value)
-                                    }
+                                    onChange={(e) => setFirst_name(e.target.value)}
                                     value={first_name}
                                     required
-                                    aria-invalid={
-                                        validFirst_name ? 'false' : 'true'
-                                    }
+                                    aria-invalid={validFirst_name ? 'false' : 'true'}
                                     aria-describedby="uidnote"
                                 />
                             </div>
@@ -173,18 +156,12 @@ export default function RegisterNewAccount() {
                                 Priezvisko:
                                 <FontAwesomeIcon
                                     icon={faCheck}
-                                    className={
-                                        validLast_name
-                                            ? style.valid
-                                            : style.hide
-                                    }
+                                    className={validLast_name ? style.valid : style.hide}
                                 />
                                 <FontAwesomeIcon
                                     icon={faTimes}
                                     className={
-                                        validLast_name || !last_name
-                                            ? style.hide
-                                            : style.invalid
+                                        validLast_name || !last_name ? style.hide : style.invalid
                                     }
                                 />
                             </label>
@@ -194,31 +171,21 @@ export default function RegisterNewAccount() {
                                     className={style.input}
                                     id="Priezvisko"
                                     autoComplete="off"
-                                    onChange={(e) =>
-                                        setLast_name(e.target.value)
-                                    }
+                                    onChange={(e) => setLast_name(e.target.value)}
                                     value={last_name}
                                     required
-                                    aria-invalid={
-                                        validLast_name ? 'false' : 'true'
-                                    }
+                                    aria-invalid={validLast_name ? 'false' : 'true'}
                                 />
                             </div>
                             <label className={style.label} htmlFor="email">
                                 Email:
                                 <FontAwesomeIcon
                                     icon={faCheck}
-                                    className={
-                                        validEmail ? style.valid : style.hide
-                                    }
+                                    className={validEmail ? style.valid : style.hide}
                                 />
                                 <FontAwesomeIcon
                                     icon={faTimes}
-                                    className={
-                                        validEmail || !email
-                                            ? style.hide
-                                            : style.invalid
-                                    }
+                                    className={validEmail || !email ? style.hide : style.invalid}
                                 />
                             </label>
                             <div className={style.inputBox}>
@@ -239,22 +206,12 @@ export default function RegisterNewAccount() {
                         <button
                             className={style.button}
                             disabled={
-                                !validFirst_name ||
-                                !validLast_name ||
-                                !validEmail
-                                    ? true
-                                    : false
+                                !validFirst_name || !validLast_name || !validEmail ? true : false
                             }
                         >
                             Odoslať
                         </button>
-                        <div
-                            className={
-                                isLoading
-                                    ? style.loadingContainer
-                                    : style.offScreen
-                            }
-                        >
+                        <div className={isLoading ? style.loadingContainer : style.offScreen}>
                             <FontAwesomeIcon
                                 className={style.loadingIcon}
                                 icon={faSpinner}
@@ -265,10 +222,7 @@ export default function RegisterNewAccount() {
                     </form>
                 </div>
             </div>{' '}
-            <ModalMessage
-                visible={modalMessageFlag}
-                setModalFlag={setModalMessageFlag}
-            >
+            <ModalMessage visible={modalMessageFlag} setModalFlag={setModalMessageFlag}>
                 <Message item={message} isError={isError}></Message>
             </ModalMessage>
         </>

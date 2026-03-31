@@ -6,44 +6,38 @@ export const useQueriesItems = (ID, axiosPrivate) => {
         queries: [
             {
                 queryKey: ['users'],
-                queryFn: (queryKey) =>
-                    getDataPrivate(axiosPrivate, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate, queryKey.queryKey),
                 placeholderData: (previousData) => previousData,
             },
 
             {
                 queryKey: ['foods', ID],
                 enabled: !!ID,
-                // && !!tags && !!users,
-                queryFn: (queryKey) =>
-                    getDataPrivateID(axiosPrivate, queryKey.queryKey),
+
+                queryFn: (queryKey) => getDataPrivateID(axiosPrivate, queryKey.queryKey),
                 placeholderData: (previousData) => previousData,
             },
             {
                 queryKey: ['ingredient'],
-                queryFn: (queryKey) =>
-                    getDataPrivate(axiosPrivate, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate, queryKey.queryKey),
 
                 placeholderData: (previousData) => previousData,
             },
 
             {
                 queryKey: ['unit'],
-                queryFn: (queryKey) =>
-                    getDataPrivate(axiosPrivate, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate, queryKey.queryKey),
                 placeholderData: (previousData) => previousData,
             },
 
             {
                 queryKey: ['foodTags'],
-                queryFn: (queryKey) =>
-                    getDataPrivate(axiosPrivate, queryKey.queryKey),
+                queryFn: (queryKey) => getDataPrivate(axiosPrivate, queryKey.queryKey),
 
                 placeholderData: (previousData) => previousData,
             },
         ],
         combine: (results) => {
-            // usersQf, foodQf, ingredientQf, unitsQf, tagsQf
             return {
                 data: {
                     usersQf: results[0].data,

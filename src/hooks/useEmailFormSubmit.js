@@ -1,9 +1,4 @@
-export default function useEmailFormSubmit(
-    dataName,
-    dataSteps,
-    dataIngredients,
-    dataUrls,
-) {
+export default function useEmailFormSubmit(dataName, dataSteps, dataIngredients, dataUrls) {
     let textingre = '';
     let textstep = '';
     let texturls = '';
@@ -22,29 +17,25 @@ export default function useEmailFormSubmit(
                               res.ingredient.ingredient
                           }\n\n`;
                       })}`;
-                  }),
+                  })
               )}`
             : '';
 
     const steps =
         dataSteps.length > 0
             ? `Postup: \n${textstep.concat(
-                  dataSteps.map((res, index) => `${index + 1}. ${res.step}\n`),
+                  dataSteps.map((res, index) => `${index + 1}. ${res.step}\n`)
               )}`
             : '';
     const urlsTemp =
         dataUrls.length > 0
-            ? texturls.concat(
-                  dataUrls.map((res, index) => `${index + 1}. ${res.url}\n`),
-              )
+            ? texturls.concat(dataUrls.map((res, index) => `${index + 1}. ${res.url}\n`))
             : '';
     let urls = '';
     if (urlsTemp) {
         urls = `URL: \n${urlsTemp}`;
     }
 
-    const res = `RECEPT: \n\n${name}\n\n${ingredient}\n\n${steps}\n\n${urls}`
-        .split(',')
-        .join('');
+    const res = `RECEPT: \n\n${name}\n\n${ingredient}\n\n${steps}\n\n${urls}`.split(',').join('');
     return res;
 }

@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
-import style from '../assets/styles/Components/IngredientInput.module.css';
+import style from '../assets/styles/components/IngredientInput.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import {
-    faTrash,
-    faAngleDown,
-    faPlus,
-} from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useDebounce from '../hooks/useDebounce';
 
 function Quantity(props) {
@@ -30,58 +26,82 @@ function Ingredient(props) {
 }
 function Ing(props) {
     const component = props.component;
-
+    console.log(props.is_deleted);
     return (
         <>
             <div className={style.ingredientContent}>
-                <div className={style.qtUnit}>
+                <div
+                    className={style.qtUnit}
+                    style={{
+                        color: !props.is_deleted
+                            ? ''
+                            : props.deleted_at === props.ing.deleted_at
+                              ? 'green'
+                              : '',
+
+                        textDecoration: !props.is_deleted
+                            ? ''
+                            : props.deleted_at === props.ing.deleted_at
+                              ? 'underline'
+                              : '',
+                        fontWeight: !props.is_deleted
+                            ? ''
+                            : props.deleted_at === props.ing.deleted_at
+                              ? 'bold'
+                              : '',
+                    }}
+                >
                     <Quantity quantity={props.ing?.quantity} />
                     <Unit unit={props.ing?.unit?.unit} />
                 </div>
-                <div className={style.ingreUpDown}>
+                <div
+                    className={style.ingreUpDown}
+                    style={{
+                        textDecoration: !props.is_deleted
+                            ? ''
+                            : props.deleted_at === props.ing.deleted_at
+                              ? 'underline'
+                              : '',
+                        fontWeight: !props.is_deleted
+                            ? ''
+                            : props.deleted_at === props.ing.deleted_at
+                              ? 'bold'
+                              : '',
+
+                        color: !props.is_deleted
+                            ? ''
+                            : props.deleted_at === props.ing.deleted_at
+                              ? 'green'
+                              : '',
+                    }}
+                >
                     <Ingredient ing={props.ing?.ingredient?.ingredient} />
-                    {(component === 'editcomponent' ||
-                        component === 'newcomponent') && (
+                    {(component === 'editcomponent' || component === 'newcomponent') && (
                         <>
                             <div className={style.upddownbox}>
                                 <div className={style.upddownIcons}>
                                     <div
                                         className={style.up}
                                         onClick={() => {
-                                            props.ingredientMove(
-                                                props.group,
-                                                -1,
-                                                props.ing,
-                                            );
+                                            props.ingredientMove(props.group, -1, props.ing);
                                         }}
                                     >
-                                        <FontAwesomeIcon
-                                            icon={faAngleDown}
-                                        ></FontAwesomeIcon>
+                                        <FontAwesomeIcon icon={faAngleDown}></FontAwesomeIcon>
                                     </div>{' '}
                                     <div
                                         className={style.down}
                                         onClick={() => {
-                                            props.ingredientMove(
-                                                props.group,
-                                                1,
-                                                props.ing,
-                                            );
+                                            props.ingredientMove(props.group, 1, props.ing);
                                         }}
                                     >
-                                        <FontAwesomeIcon
-                                            icon={faAngleDown}
-                                        ></FontAwesomeIcon>{' '}
+                                        <FontAwesomeIcon icon={faAngleDown}></FontAwesomeIcon>{' '}
                                     </div>
                                 </div>{' '}
                                 <FontAwesomeIcon
                                     className={style.iconDelete}
                                     icon={faTrash}
                                     onClick={() => {
-                                        props.makeIngredientsDelete(
-                                            props.group,
-                                            props.ing,
-                                        );
+                                        props.makeIngredientsDelete(props.group, props.ing);
                                     }}
                                 ></FontAwesomeIcon>
                             </div>
@@ -104,22 +124,14 @@ function IngredientGroup(props) {
     const component = props.component;
 
     function handleAddIngredients() {
-        props.addToIngredientList(
-            group,
-            addedQuantity,
-            addedUnit,
-            addedIngredient,
-        );
+        props.addToIngredientList(group, addedQuantity, addedUnit, addedIngredient);
         setAddedIngredient('');
         setAddedQuantity(1);
         setAddedUnit(unitQf ? unitQf[0] : '');
     }
 
     function cleanString(text) {
-        return text
-            .trim() // Odstráni medzery zo začiatku a konca
-            .replace(/\s+/g, ' ') // Nahradí 2 a viac medzier v strede jednou medzerou
-            .toLowerCase();
+        return text.trim().replace(/\s+/g, ' ').toLowerCase();
     }
     function handleChangeIngredient(event) {
         let uniqueID = new Date().toISOString();
@@ -145,7 +157,7 @@ function IngredientGroup(props) {
         setAddedUnit(res);
     }
 
-    const debouncedGroupName = useDebounce(groupName, 10000);
+    const debouncedGroupName = useDebounce(groupName, 1000);
 
     useEffect(() => {
         if (debouncedGroupName !== groupName) {
@@ -154,40 +166,34 @@ function IngredientGroup(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedGroupName, groupName]);
 
-    const ingredientListRender = [];
-    group.ingredients.forEach((ingre, index) => {
-        if (ingre.statusDelete === false) {
-            ingredientListRender.push(
-                <Ing
-                    unitQf={unitQf}
-                    ing={ingre}
-                    group={group}
-                    key={index}
-                    index={index}
-                    makeIngredientsDelete={props.makeIngredientsDelete}
-                    component={component}
-                    ingredientMove={props.ingredientMove}
-                />,
-            );
-        }
-    });
-
     return (
         <>
             <div className={style.ingredientsbox}>
                 {component === 'viewcomponent' && (
-                    <div className={style.title}>
-                        <p>{group.groupName} :</p>
+                    <div
+                        className={style.title}
+                        style={{
+                            color: !props.is_deleted
+                                ? ''
+                                : props.deleted_at === group.deleted_at
+                                  ? 'green'
+                                  : '',
+                            textDecoration: !props.is_deleted
+                                ? ''
+                                : props.deleted_at === group.deleted_at
+                                  ? 'underline'
+                                  : '',
+                            textDecorationColor: 'green',
+                        }}
+                    >
+                        <p>{group.groupName}</p>
                     </div>
                 )}
 
-                {(component === 'editcomponent' ||
-                    component === 'newcomponent') && (
+                {(component === 'editcomponent' || component === 'newcomponent') && (
                     <div className={style.ingredientcontainer}>
                         <div className={style.title}>
-                            <div className={style.ingreGroupid}>
-                                {props.index + 1}.
-                            </div>
+                            <div className={style.ingreGroupid}>{props.index + 1}.</div>
 
                             <input
                                 className={style.groupNameEdit}
@@ -195,9 +201,7 @@ function IngredientGroup(props) {
                                 name="groupName"
                                 aria-label="Existujúca skupina ingrediencíí"
                                 value={groupName}
-                                // onKeyDown={nameKeyDown}
                                 type="text"
-                                // maxLength="100"
                                 onChange={(e) => setGroupName(e.target.value)}
                             />
 
@@ -206,30 +210,18 @@ function IngredientGroup(props) {
                                     <div
                                         className={style.up}
                                         onClick={() => {
-                                            props.ingredientsGroupMove(
-                                                group,
-                                                -1,
-                                                props.ing,
-                                            );
+                                            props.ingredientsGroupMove(group, -1, props.ing);
                                         }}
                                     >
-                                        <FontAwesomeIcon
-                                            icon={faAngleDown}
-                                        ></FontAwesomeIcon>
+                                        <FontAwesomeIcon icon={faAngleDown}></FontAwesomeIcon>
                                     </div>{' '}
                                     <div
                                         className={style.down}
                                         onClick={() => {
-                                            props.ingredientsGroupMove(
-                                                group,
-                                                1,
-                                                props.ing,
-                                            );
+                                            props.ingredientsGroupMove(group, 1, props.ing);
                                         }}
                                     >
-                                        <FontAwesomeIcon
-                                            icon={faAngleDown}
-                                        ></FontAwesomeIcon>{' '}
+                                        <FontAwesomeIcon icon={faAngleDown}></FontAwesomeIcon>{' '}
                                     </div>
                                 </div>{' '}
                                 <FontAwesomeIcon
@@ -240,13 +232,6 @@ function IngredientGroup(props) {
                                     }}
                                 ></FontAwesomeIcon>
                             </div>
-                            {/* <FontAwesomeIcon
-                                className={style.iconDelete}
-                                icon={faTrash}
-                                onClick={() => {
-                                    props.makeIngreGroupDelete(group);
-                                }}
-                            ></FontAwesomeIcon> */}
                         </div>
                         <input
                             type="text"
@@ -257,50 +242,15 @@ function IngredientGroup(props) {
                             value={addedQuantity}
                             onChange={handleAddQuantity}
                         />
-                        {/* <input
-                                type="text"
-                                className={style.unit}
-                                id="tm"
-                                value={addedUnit}
-                                onChange={handleChangeUnit}
-                            /> */}
-                        {/* <select
-                            className={style.unit}
-                            onChange={handleChangeUnit}
-                            value={addedUnit}
-                        
-                            onKeyDown={props.unitKeyDown}
-                        >
-                            <option>-</option>
-                            <option>ks</option>
-                            <option>kg</option>
-                            <option>g</option>
-                            <option>dg</option>
-                            <option>ml</option>
-                            <option>dl</option>
-                            <option>liter</option>
-                            <option>pl</option>
-                            <option>čl</option>
-                            <option>kl</option>
-                            <option>štipka</option>
-                            <option>bal.</option>
-                            <option>podľa potreby</option>
-                            <option>plátky</option>
-                            <option>konzerva</option>
-                        </select> */}
+
                         <select
                             className={style.unit}
                             aria-label="Existujúce jednotky na výber"
-                            onChange={(e) =>
-                                handleAddUnit(parseInt(e.target.value))
-                            }
+                            onChange={(e) => handleAddUnit(parseInt(e.target.value))}
                             value={addedUnit ? addedUnit.id : ''}
                             onKeyDown={props.unitKeyDown}
                         >
-                            <option
-                                value={unitQf[0]?.id ? unitQf[0].id : ''}
-                                aria-label="Jednotka"
-                            >
+                            <option value={unitQf[0]?.id ? unitQf[0].id : ''} aria-label="Jednotka">
                                 {unitQf[0]?.unit ? unitQf[0]?.unit : ''}
                             </option>
                             {(unitQf || []).slice(1).map(
@@ -309,7 +259,7 @@ function IngredientGroup(props) {
                                         <option key={unit.id} value={unit.id}>
                                             {unit.unit}
                                         </option>
-                                    ),
+                                    )
                             )}
                         </select>
 
@@ -322,13 +272,8 @@ function IngredientGroup(props) {
                             onKeyDown={props.ingKeyDown}
                             onChange={handleChangeIngredient}
                         />
-                        {/* <div
-                        className={style.ingredientButton}
-                        onClick={addIngredientToTagList}
-                    >
-                        Pridať
-                    </div> */}
-                        <div className={style.iconAdd}>
+
+                        <div className={style.iconAddIngre}>
                             <FontAwesomeIcon
                                 icon={faPlus}
                                 onClick={handleAddIngredients}
@@ -337,7 +282,24 @@ function IngredientGroup(props) {
                     </div>
                 )}
                 <div className={style.ingredientListRender}>
-                    {ingredientListRender}
+                    {group.ingredients
+                        .filter((a) => a.statusDelete === false)
+                        .map((ingre, index) => {
+                            return (
+                                <Ing
+                                    unitQf={unitQf}
+                                    ing={ingre}
+                                    group={group}
+                                    key={index}
+                                    index={index}
+                                    makeIngredientsDelete={props.makeIngredientsDelete}
+                                    component={component}
+                                    ingredientMove={props.ingredientMove}
+                                    is_deleted={props.is_deleted}
+                                    deleted_at={props.deleted_at}
+                                />
+                            );
+                        })}
                 </div>
             </div>
         </>
@@ -346,22 +308,14 @@ function IngredientGroup(props) {
 
 export default function IngredientInput(props) {
     const unitQf = props.unitsDw || [];
-    const [addedGroup, setAddedGroup] = useState('');
+    const [addedGroup, setAddedGroup] = useState('Suroviny');
+    const [inputNewGroupIsVisible, setInputNewGroupIsVisible] = useState(false);
     const component = props.component;
-    let ingredientsSet = props.ingredientsList;
 
     function cleanString(text) {
-        return text
-            .trim() // Odstráni medzery zo začiatku a konca
-            .replace(/\s+/g, ' '); // Nahradí 2 a viac medzier v strede jednou medzerou
-        // .toLowerCase();
+        return text.trim().replace(/\s+/g, ' ');
     }
     function handleChangeGroup(event) {
-        // let uniqueID = new Date().toISOString();
-        // const groupObj = {
-        //     id: uniqueID,
-        //     groupName: cleanString(event.target.value),
-        // };
         setAddedGroup(cleanString(event.target.value));
     }
 
@@ -369,58 +323,72 @@ export default function IngredientInput(props) {
         props.addIngreGroupToIngredientList(addedGroup);
         setAddedGroup('');
     }
-    const ingredientsGroupRender = [];
 
-    ingredientsSet.forEach((group, index) => {
-        if (group.statusDelete === false) {
-            ingredientsGroupRender.push(
-                <IngredientGroup
-                    unitQf={unitQf}
-                    group={group}
-                    key={group.id}
-                    index={index}
-                    makeIngredientsDelete={props.makeIngredientsDelete}
-                    addToIngredientList={props.addToIngredientList}
-                    component={component}
-                    ingredientMove={props.ingredientMove}
-                    ingredientsGroupMove={props.ingredientsGroupMove}
-                    makeIngreGroupDelete={props.makeIngreGroupDelete}
-                    updateIngreNameInIngredientsList={
-                        props.updateIngreNameInIngredientsList
-                    }
-                />,
-            );
-        }
-    });
     return (
         <>
             <div className={style.ingredientsGroupBox}>
-                {(component === 'editcomponent' ||
-                    component === 'newcomponent') && (
-                    <div className={style.ingredientsGroupcontainer}>
-                        <div className={style.title}>
-                            <p>Ingrediencie :</p>
-                        </div>
-                        <input
-                            type="text"
-                            name="newGroup"
-                            className={style.groupInput}
-                            aria-label="Nová skupina ingrediencíí"
-                            id="tm"
-                            value={addedGroup}
-                            placeholder="Pridať skupinu ingrediencií"
-                            onChange={handleChangeGroup}
-                        />
-                        <div
-                            className={style.iconAdd}
-                            onClick={handleAddIngredientsGroup}
-                        >
-                            <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
-                        </div>
-                    </div>
-                )}
+                <div className={style.ingredientsGroupcontainer}>
+                    <div className={style.title}>
+                        <p>Ingrediencie :</p>{' '}
+                    </div>{' '}
+                    {(component === 'editcomponent' || component === 'newcomponent') && (
+                        <>
+                            {component === 'editcomponent' && !inputNewGroupIsVisible && (
+                                <div
+                                    className={style.iconGroupVisible}
+                                    onClick={() => setInputNewGroupIsVisible(true)}
+                                >
+                                    <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                                </div>
+                            )}
+                            {(component === 'newcomponent' ||
+                                (component === 'editcomponent' && inputNewGroupIsVisible)) && (
+                                <>
+                                    <input
+                                        type="text"
+                                        name="newGroup"
+                                        className={style.groupInput}
+                                        aria-label="Nová skupina ingrediencíí"
+                                        id="tm"
+                                        value={addedGroup}
+                                        placeholder="Pridať skupinu ingrediencií"
+                                        onChange={handleChangeGroup}
+                                    />
+                                    <div
+                                        className={style.iconAddGroup}
+                                        onClick={handleAddIngredientsGroup}
+                                    >
+                                        <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                                    </div>
+                                </>
+                            )}
+                        </>
+                    )}
+                </div>
                 <div className={style.ingredientsGroupRender}>
-                    {ingredientsGroupRender}
+                    {props.ingredientsList
+                        .filter((i) => i.statusDelete === false)
+                        .map((group, index) => {
+                            return (
+                                <IngredientGroup
+                                    unitQf={unitQf}
+                                    group={group}
+                                    key={group.id}
+                                    index={index}
+                                    makeIngredientsDelete={props.makeIngredientsDelete}
+                                    addToIngredientList={props.addToIngredientList}
+                                    component={component}
+                                    ingredientMove={props.ingredientMove}
+                                    ingredientsGroupMove={props.ingredientsGroupMove}
+                                    makeIngreGroupDelete={props.makeIngreGroupDelete}
+                                    updateIngreNameInIngredientsList={
+                                        props.updateIngreNameInIngredientsList
+                                    }
+                                    is_deleted={props.is_deleted}
+                                    deleted_at={props.deleted_at}
+                                />
+                            );
+                        })}
                 </div>
             </div>
         </>

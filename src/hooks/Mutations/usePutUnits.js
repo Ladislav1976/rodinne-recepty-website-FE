@@ -12,21 +12,16 @@ export const usePutUnits = (axiosPrivate, controller) => {
 
             queryClient.setQueryData(queryKey, (old) => {
                 if (!Array.isArray(old)) return [];
-                return old.map((u) =>
-                    u.id === updatedUnit.id ? { ...u, ...updatedUnit } : u,
-                );
+                return old.map((u) => (u.id === updatedUnit.id ? { ...u, ...updatedUnit } : u));
             });
             return { previousUnits, queryKey };
         },
         onError: (err, previousUnits, context) => {
             console.error('Error Put Unit:', err);
-            // throw err;
+
             if (context?.queryKey) {
                 if (context?.previousUnits != null) {
-                    queryClient.setQueryData(
-                        context.queryKey,
-                        context.previousUnits,
-                    );
+                    queryClient.setQueryData(context.queryKey, context.previousUnits);
                 } else {
                     queryClient.removeQueries({ queryKey: context.queryKey });
                 }

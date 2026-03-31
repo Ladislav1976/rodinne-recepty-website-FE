@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import style from '../assets/styles/Modals/ModalProfile.module.css';
+import style from '../assets/styles/modals/ModalProfile.module.css';
 import { createPortal } from 'react-dom';
 
 export default function ModalProfile(props) {
@@ -31,6 +31,6 @@ export default function ModalProfile(props) {
                 {props.children}
             </div>
         </div>,
-        document.body,
+        document.body
     );
 }

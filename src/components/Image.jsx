@@ -1,4 +1,4 @@
-import style from '../assets/styles/Components/Image.module.css';
+import style from '../assets/styles/components/Image.module.css';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faXmark, faCamera } from '@fortawesome/free-solid-svg-icons';
@@ -22,9 +22,10 @@ function Img(props) {
                         src={props.image.image}
                         loading="eager"
                         fetchPriority="high"
-                        // loading="lazy"
-                        // onLoad={() => props.setImgLoader((prev) => prev + 1)}
-                        onLoad={() => setLoaded(true)}
+                        onLoad={() => {
+                            props.handleImgLoader();
+                            setLoaded(true);
+                        }}
                         style={{
                             opacity: loaded ? 1 : 0,
                             transition: 'opacity 0.5s ease-in',
@@ -32,10 +33,7 @@ function Img(props) {
                         alt="Preview"
                     />
                 </div>
-                <div
-                    className={style.imageclicker}
-                    onClick={() => props.uploader(props.image)}
-                >
+                <div className={style.imageclicker} onClick={() => props.uploader(props.image)}>
                     {' '}
                     <div className={style.imagecross}>
                         <FontAwesomeIcon icon={faXmark} />
@@ -48,8 +46,7 @@ function Img(props) {
                 />
                 <div
                     className={
-                        props.component === 'editcomponent' ||
-                        props.component === 'newcomponent'
+                        props.component === 'editcomponent' || props.component === 'newcomponent'
                             ? style.deleteIcon
                             : style.displayNone
                     }
@@ -70,9 +67,7 @@ export default function Image(props) {
 
     const [imgLoader, setImgLoader] = useState(0);
     const [load, setLoad] = useState(false);
-    let imageURLs = (props.imageURLs || []).filter(
-        (e) => e.statusDelete !== true,
-    );
+    let imageURLs = (props.imageURLs || []).filter((e) => e.statusDelete !== true);
 
     useEffect(() => {
         if (imgLoader === props.imageURLs.length) {
@@ -100,7 +95,8 @@ export default function Image(props) {
                     uploader={uploader}
                     component={props.component}
                     makeImageDelete={props.makeImageDelete}
-                />,
+                    handleImgLoader={props.handleImgLoader}
+                />
             );
         }
     });
@@ -129,9 +125,7 @@ export default function Image(props) {
                                     className={style.imageIcon}
                                     datatooltip="Pridať fotografiu"
                                 >
-                                    <FontAwesomeIcon
-                                        icon={faCamera}
-                                    ></FontAwesomeIcon>
+                                    <FontAwesomeIcon icon={faCamera}></FontAwesomeIcon>
                                 </label>
                             </div>
                         </>
@@ -142,9 +136,7 @@ export default function Image(props) {
                             No Files chosen
                         </p>
                     )}
-                    <div className={style.imagerender}>
-                        {newImageUrlsRender}
-                    </div>
+                    <div className={style.imagerender}>{newImageUrlsRender}</div>
                 </div>
             )}
         </>

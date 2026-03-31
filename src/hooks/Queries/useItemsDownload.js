@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useFood } from './useFood';
 
-export const useItemsDownload = (ID, axiosPrivate, isSaving) => {
-    const foodQf = useFood(ID, axiosPrivate, isSaving);
+export const useItemsDownload = (ID, axiosPrivate, isSaving, params) => {
+    const foodQf = useFood(ID, axiosPrivate, isSaving, params);
 
     const isLoading = foodQf.isLoading;
     const isError = foodQf.isError;
@@ -20,13 +20,9 @@ export const useItemsDownload = (ID, axiosPrivate, isSaving) => {
 
             const imagesArray = ensureArray(foodQf?.data?.images);
             const stepsArray = ensureArray(foodQf?.data?.steps);
-            const tagsArray = Array.isArray(foodQf?.data?.foodTags)
-                ? foodQf.data.foodTags
-                : [];
+            const tagsArray = Array.isArray(foodQf?.data?.foodTags) ? foodQf.data.foodTags : [];
             const urlsArray = ensureArray(foodQf?.data?.urls);
-            const ingredientGroupArray = ensureArray(
-                foodQf?.data?.ingredientsGroup,
-            );
+            const ingredientGroupArray = ensureArray(foodQf?.data?.ingredientsGroup);
             const unitsArray = ensureArray(foodQf?.data?.unitsQf);
             const tagGroupsArray = ensureArray(foodQf?.data?.tagGroupQf);
 
@@ -46,12 +42,11 @@ export const useItemsDownload = (ID, axiosPrivate, isSaving) => {
 
                 tags: tagsArray,
 
-                steps: stepsArray
-                    .map((element) => ({
-                        ...element,
-                        statusDelete: false,
-                    }))
-                    .sort((a, b) => a.position - b.position),
+                steps: stepsArray.map((element) => ({
+                    ...element,
+                    statusDelete: false,
+                })),
+
                 images: imagesArray
                     .map((element) => ({
                         ...element,
@@ -70,45 +65,34 @@ export const useItemsDownload = (ID, axiosPrivate, isSaving) => {
                             ingredients: group.ingredients.map((element) => {
                                 return {
                                     id: element.id,
-                                    quantity: element.quantity
-                                        ? element.quantity
-                                        : '',
+                                    quantity: element.quantity ? element.quantity : '',
                                     ingredient: element.ingredientName
                                         ? element.ingredientName
                                         : [],
                                     unit: element.units ? element.units : [],
                                     position: element.position,
                                     statusDelete: false,
+                                    is_deleted: element.is_deleted ? element.is_deleted : '',
+                                    deleted_at: element.deleted_at ? element.deleted_at : '',
                                 };
                             }),
                         };
                     })
                     .sort((a, b) => a.position - b.position),
-                // ingredients: ingredientsArray
-                //     .map((element, i) => {
-                //         return {
-                //             id: element.id,
-                //             quantity: element.quantity ? element.quantity : '',
-                //             ingredient: element.ingredientName[0]
-                //                 ? element.ingredientName[0]
-                //                 : [],
-                //             unit: element.units[0] ? element.units[0] : [],
-                //             position: element.position,
-                //             statusDelete: false,
-                //         };
-                //     })
-                //     .sort((a, b) => a.position - b.position),
+                is_deleted: foodQf?.data?.is_deleted ? foodQf?.data?.is_deleted : '',
+                deleted_at: foodQf?.data?.deleted_at ? foodQf?.data?.deleted_at : '',
                 units: unitsArray,
                 tagGroups: tagGroupsArray,
             };
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isLoading, foodQf.data],
+        [isLoading, foodQf.data]
     );
 
     return {
         data: formattedData,
         isLoading,
         isError,
+        refetch: foodQf.refetch,
     };
 };

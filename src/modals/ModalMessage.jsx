@@ -1,4 +1,4 @@
-import style from '../assets/styles/Modals/ModalDelete.module.css';
+import style from '../assets/styles/modals/ModalMessage.module.css';
 import { createPortal } from 'react-dom';
 import { useEffect } from 'react';
 
@@ -30,6 +30,6 @@ export default function ModalMessage(props) {
                 {props.children}
             </div>
         </div>,
-        document.body,
+        document.body
     );
 }

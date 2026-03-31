@@ -2,7 +2,6 @@ import useLocalStorage from './useLocalStorage';
 
 const useInput = (key, initValue) => {
     const [value, setValue] = useLocalStorage(key, initValue);
-    // const [value, setValue] = useState(key, initValue)
 
     const reset = () => setValue(initValue);
 

@@ -1,4 +1,4 @@
-import style from '../assets/styles/Layouts/AdminLayout.module.css';
+import style from '../assets/styles/layouts/AdminLayout.module.css';
 import Users from './Users';
 
 export default function Admin() {

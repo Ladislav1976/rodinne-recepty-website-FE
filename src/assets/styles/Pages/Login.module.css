@@ -8,9 +8,10 @@
     flex-grow: 1;
     min-height: 100%;
     box-sizing: border-box;
-    background-color: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
+    background: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
     overflow-y: auto;
 }
+
 .layerMain {
     background: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
     border-radius: 2rem;
@@ -20,9 +21,9 @@
     justify-content: center;
     align-items: center;
     position: relative;
-
     z-index: 1;
 }
+
 .photo {
     width: 40rem;
     aspect-ratio: 1/1;
@@ -32,6 +33,7 @@
     background-position: center;
     background-size: cover;
 }
+
 .mainbox {
     position: relative;
     display: flex;
@@ -39,11 +41,10 @@
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-
     backdrop-filter: blur(10px);
     border-radius: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgb(255 255 255 / 0.3);
+    box-shadow: 0 8px 32px 0 rgb(31 38 135 / 0.37);
     padding: 2rem;
     height: 100%;
     width: auto;
@@ -58,17 +59,18 @@
     flex-direction: row;
     align-items: center;
     z-index: 100;
+
     & p {
         font-size: 0.8rem;
         color: grey;
         margin: 0;
     }
 }
+
 .resetLink {
     font-size: 0.8rem;
     text-decoration: none;
     color: var(--greydark);
-    /* text-decoration: underline; */
     margin-left: 0.2rem;
 }
 
@@ -81,9 +83,11 @@
     justify-content: inherit;
     align-items: inherit;
 }
+
 .line > a {
-    color: rgb(0, 47, 255);
+    color: rgb(0 47 255);
 }
+
 .loginContainer {
     position: relative;
     display: flex;
@@ -103,10 +107,10 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    /* margin: 1rem; */
     margin-bottom: 3rem;
     padding: 0 3.5rem;
     width: 100%;
+
     & h1,
     h2,
     h3,
@@ -116,16 +120,20 @@
         margin: 0.3rem;
         font-weight: normal;
     }
+
     & h5 {
         font-size: 0.7rem;
     }
 }
+
 .errmsg {
-    color: rgb(231, 35, 35);
+    color: rgb(231 35 35);
 }
+
 .succmsg {
     padding-bottom: 2rem;
 }
+
 .errmsg,
 .succmsg {
     position: absolute;
@@ -140,6 +148,7 @@
     text-align: center;
     visibility: visible;
 }
+
 .semafor {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -154,6 +163,7 @@
     position: absolute;
     left: -9999px;
 }
+
 .form {
     display: flex;
     justify-content: center;
@@ -164,6 +174,7 @@
     padding: 0 3rem;
     margin: 0;
 }
+
 .inputContainer {
     position: relative;
     display: flex;
@@ -180,7 +191,6 @@
 
 .inputBox {
     position: relative;
-    display: block;
     box-sizing: border-box;
     width: 100%;
     height: auto;
@@ -201,6 +211,7 @@
     margin: 0;
     width: 100%;
 }
+
 .inputBox .input {
     background-color: white;
     font-size: 1rem;
@@ -217,11 +228,10 @@
 .inputBox .input:-webkit-autofill:hover,
 .inputBox .input:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--greydark) !important;
-
     transition: background-color 5000s ease-in-out 0s;
-
-    box-shadow: 0 0 0px 1000px white inset !important;
+    box-shadow: 0 0 0 1000px white inset !important;
 }
+
 .inputBox .input::-ms-reveal {
     display: none;
 }
@@ -235,13 +245,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: rgba(124, 124, 124, 0.623);
+    color: rgb(124 124 124 / 0.623);
     width: 2.5rem;
     aspect-ratio: 1/1;
     top: 0;
     left: 0;
     margin-left: 0.5rem;
-
     cursor: pointer;
 }
 
@@ -249,6 +258,7 @@
     color: red;
     margin-left: 0.3rem;
 }
+
 .valid {
     color: limegreen;
     margin-left: 0.3rem;
@@ -267,6 +277,7 @@
         visibility: visible;
     }
 }
+
 .instructions {
     display: none;
     position: absolute;
@@ -277,6 +288,7 @@
     background-color: white;
     backdrop-filter: blur(10px);
     padding: 0.5rem;
+    width: 100%;
     z-index: 1;
 }
 
@@ -297,12 +309,12 @@
 .instructions > svg {
     margin-right: 0.25rem;
 }
+
 .button {
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: var(--orange);
     width: 100%;
     height: 2.5rem;
     border-radius: 0.6rem;
@@ -310,10 +322,10 @@
     background-color: var(--greydark);
     color: white;
     cursor: pointer;
+
     &:hover {
         background-color: var(--orange);
         border: 1 px solid var(--greydark);
-
         color: white;
     }
 }
@@ -321,9 +333,11 @@
 .button span {
     margin-left: 1rem;
 }
+
 .lineLogo {
     display: none;
 }
+
 .receptyLogo {
     position: absolute;
     top: 2rem;
@@ -339,6 +353,7 @@
     border-radius: 5rem;
     z-index: 2;
 }
+
 .loadingContainer {
     position: absolute;
     width: 100%;
@@ -355,9 +370,11 @@
     .form {
         padding: 0 2rem;
     }
+
     .mainbox {
         min-height: 600px;
     }
+
     .inputContainer {
         min-width: 0;
     }
@@ -367,9 +384,10 @@
     }
 
     .inputBox {
-        padding: 0 0 1rem 0;
+        padding: 0 0 1rem;
         margin: 0 1rem;
     }
+
     .inputBox input {
         width: 100%;
     }
@@ -377,8 +395,10 @@
     .photo {
         display: none;
     }
+
     .topbox {
         align-items: center;
+
         & h1 {
             font-size: 1.5rem;
             padding: 1rem 0;
@@ -391,6 +411,7 @@
         height: auto;
         z-index: 10;
     }
+
     .inputBox input {
         width: 100%;
     }
@@ -400,15 +421,14 @@
     .layerMain {
         margin: 0;
         padding: 0;
-        width: auto;
         border-radius: 0;
         height: 100dvh;
         width: 100dvw;
         display: flex;
         flex-direction: column;
-
         flex: none;
     }
+
     .loginContainer {
         justify-content: flex-start;
         align-items: center;
@@ -421,6 +441,7 @@
         font-size: 1rem;
         padding: 0 0 0.5rem 0.5rem;
     }
+
     .form {
         justify-content: flex-start;
         align-items: center;
@@ -430,40 +451,49 @@
 
     .inputBox {
         width: 100%;
-        padding: 0 0 1rem 0;
+        padding: 0 0 1rem;
     }
+
     .button,
     .inputBox .input {
         font-size: 1.2rem;
         border-radius: 1rem;
         height: 3rem;
         box-sizing: border-box;
-        margin: 0 0rem;
+        margin: 0;
     }
+
     .inputBox .icon {
         height: 3rem;
     }
+
     .button {
         padding: 1rem;
+
         &:hover {
             background-color: var(--greydark);
             border: 1 px solid var(--greydark);
             color: white;
         }
     }
+
     .topbox {
         padding: 0;
+
         & h1 {
             font-size: 1.5rem;
             padding: 0.5rem 0;
         }
+
         & h5 {
             font-size: 1rem;
         }
+
         & h4 {
             font-size: 1.2rem;
         }
     }
+
     .mainbox {
         background: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
         backdrop-filter: none;
@@ -477,6 +507,7 @@
         width: 100%;
         border-radius: 0;
     }
+
     .receptyLogo {
         position: absolute;
         top: 3%;
@@ -484,6 +515,7 @@
         right: 2rem;
         background-color: var(--orange);
     }
+
     .lineLogo {
         position: relative;
         top: 5%;
@@ -495,13 +527,13 @@
         border: none;
         z-index: 1;
     }
+
     .lineGrey {
         position: relative;
         min-height: 5rem;
         background-color: var(--greydark);
         width: 100%;
         color: white;
-        border: none;
         text-align: left;
         padding: 1.75rem 0 0 1rem;
         font-size: 1.2rem;
@@ -509,21 +541,13 @@
         background-clip: padding-box;
         border: none;
     }
+
     .lineTrans {
         min-width: 100px;
         aspect-ratio: 1/1;
         margin-top: -1px;
         background-color: var(--greydark);
-        -webkit-mask-image: radial-gradient(
-            circle at 0% 100%,
-            transparent 50px,
-            black 41px
-        );
-        mask-image: radial-gradient(
-            circle at 0% 100%,
-            transparent 100px,
-            black 41px
-        );
+        mask-image: radial-gradient(circle at 0% 100%, transparent 100px, black 41px);
         z-index: 20;
     }
 
