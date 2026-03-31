@@ -4,9 +4,7 @@ export default function TopDropDown(props) {
     return (
         <>
             <div
-                className={`${style.sidebar} ${
-                    props.toggle ? style.isactive : ''
-                }`}
+                className={`${style.sidebar} ${props.toggle ? style.isactive : ''}`}
                 onClick={(e) => {
                     e.stopPropagation();
                 }}
@@ -14,10 +12,7 @@ export default function TopDropDown(props) {
                 <h3>Menu</h3>
 
                 <nav className={style.menu}>
-                    <a
-                        href="/"
-                        className={`${style.menuItem} ${style.isActive}`}
-                    >
+                    <a href="/" className={`${style.menuItem} ${style.isActive}`}>
                         HOME
                     </a>
                     <a href={props.nav} className={style.menuItem}>

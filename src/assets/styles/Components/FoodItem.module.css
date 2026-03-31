@@ -26,7 +26,8 @@
     font-weight: bold;
     padding: 0.3rem 0.8rem;
 }
-@media (max-width: 764px) {
+
+@media (width <= 764px) {
     .foodName {
         font-size: 1rem;
         font-weight: normal;

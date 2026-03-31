@@ -1,11 +1,5 @@
 /* eslint-disable no-unused-vars */
-import {
-    BrowserRouter as Router,
-    Route,
-    Routes,
-    Link,
-    Navigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
 import Foods from './page/Foods';
 import FoodsLayout from './layouts/FoodsLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -49,16 +43,11 @@ function App() {
 
                     <Route path="unauthorized" element={<Unauthorized />} />
                     <Route path="reset" element={<Reset />} />
-                    <Route
-                        path="reset_password/:token/"
-                        element={<ResetPassword />}
-                    />
+                    <Route path="reset_password/:token/" element={<ResetPassword />} />
 
                     {/* Protected  */}
                     <Route element={<PersistLogin />}>
-                        <Route
-                            element={<PersistLayout setErrMsg={setErrMsg} />}
-                        >
+                        <Route element={<PersistLayout setErrMsg={setErrMsg} />}>
                             <Route
                                 element={
                                     <RequireAuth
@@ -72,10 +61,7 @@ function App() {
                                 }
                             >
                                 <Route path="/" element={<Home />}></Route>
-                                <Route
-                                    path="/recepty"
-                                    element={<FoodsLayout />}
-                                >
+                                <Route path="/recepty" element={<FoodsLayout />}>
                                     <Route index element={<Foods />}></Route>
                                     <Route
                                         path=":id/"
@@ -89,10 +75,7 @@ function App() {
                                         path="novy_recept/"
                                         element={<NewFood errMsg={errMsg} />}
                                     ></Route>
-                                    <Route
-                                        path="search/:search/"
-                                        element={<Foods />}
-                                    ></Route>
+                                    <Route path="search/:search/" element={<Foods />}></Route>
                                     <Route
                                         element={
                                             <RequireAuthUserEdit
@@ -106,30 +89,16 @@ function App() {
                                     >
                                         <Route
                                             path="/recepty/:id/edit"
-                                            element={
-                                                <EditFood
-                                                    errMsg={[errMsg, setErrMsg]}
-                                                />
-                                            }
+                                            element={<EditFood errMsg={[errMsg, setErrMsg]} />}
                                         ></Route>
                                     </Route>
                                 </Route>
                             </Route>
-                            <Route
-                                element={
-                                    <RequireAuth allowedRoles={[ROLES.Admin]} />
-                                }
-                            >
+                            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
                                 <Route path="/admin" element={<AdminLayout />}>
-                                    <Route
-                                        path="setting"
-                                        element={<Setting />}
-                                    />
+                                    <Route path="setting" element={<Setting />} />
                                     <Route path="users" element={<Admin />} />
-                                    <Route
-                                        path="register"
-                                        element={<RegisterNewAccount />}
-                                    />
+                                    <Route path="register" element={<RegisterNewAccount />} />
                                 </Route>
                             </Route>
                         </Route>

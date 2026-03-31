@@ -1,7 +1,7 @@
-import style from '../assets/styles/Modals/ModalPreview.module.css';
+import style from '../assets/styles/modals/ModalPreview.module.css';
 import { createPortal } from 'react-dom';
 import { useEffect } from 'react';
-//props.visible -> says if modal should appear
+
 export default function ModalPreview(props) {
     useEffect(() => {
         if (props.visible) {
@@ -32,6 +32,6 @@ export default function ModalPreview(props) {
                 {props.children}
             </div>
         </div>,
-        document.body,
+        document.body
     );
 }

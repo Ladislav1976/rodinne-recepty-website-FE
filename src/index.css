@@ -1,24 +1,22 @@
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
 :root {
     --main-font:
-        'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-        'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-
-    --lightgrey-color: rgb(184, 186, 187);
+        'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', geneva,
+        verdana, sans-serif;
+    --lightgrey-color: rgb(184 186 187);
     --main-line-height: 1.6;
-    /* --orange: rgb(238, 128, 64); */
-    --font-lobster: Lobster, sans-serif;
-    --greydark: #444444;
-    /* --greydark: rgb(63, 64, 73); */
-
+    --font-lobster: lobster, sans-serif;
+    --greydark: #444;
     --orange: orange;
     --border3px: 3px solid #b8babb;
     --border: 1px solid #b8babb;
     --whitesmoke: whitesmoke;
-    --grey: rgb(209, 209, 209);
+    --grey: rgb(209 209 209);
     --marginLeft: 15px;
     --transDuration: 0.3s;
 }
@@ -36,14 +34,11 @@ body,
     height: auto;
     min-height: 100%;
     width: 100%;
-    /* overflow-x: hidden;
-    overflow-y: auto; */
-    scrollbar-gutter: auto;
+    scrollbar-gutter: stable;
 }
 
 code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .persistCheck label {
@@ -56,24 +51,23 @@ code {
     margin: 0 5px 2px 2px;
 }
 
-/* V index.css - aplikuje sa na celú stránku */
 ::-webkit-scrollbar {
     width: 15px;
     height: 15px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Farba pozadia (koľajnice) */
+    background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #c1c1c1; /* Farba posuvníka (to, čo chytáš) */
+    background: #c1c1c1;
     border-radius: 5px;
-    border: 2px solid #f1f1f1; /* Vytvorí efekt odsadenia */
+    border: 2px solid #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8; /* Farba pri hoveri */
+    background: #a8a8a8;
 }
 
 * {
@@ -81,9 +75,6 @@ code {
     scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
-/* html {
-    scrollbar-gutter: stable;
-} */
 input,
 button,
 textarea,
@@ -99,6 +90,7 @@ select {
     width: 100%;
     min-height: 100dvh;
 }
+
 header {
     position: sticky;
     top: 0;
@@ -106,13 +98,7 @@ header {
     border-bottom: none;
     box-sizing: border-box;
 }
-/* footer {
-    position: sticky;
-    bottom: 0;
-    z-index: 12;
-    border-bottom: none;
-    box-sizing: border-box;
-} */
+
 main {
     position: relative;
     display: flex;
@@ -120,29 +106,24 @@ main {
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-
     flex: 1;
 }
-/* footer {
-    padding: 1.6rem 0;
-    background-color: var(--c-white);
-    border-top: 1px solid var(--c-border);
-} */
+
 .tsqd-parent-container {
-    display: none !important;
+    /* display: none !important; */
 }
 
 @font-face {
     font-family: Lobster;
     src: url('../src/assets/fonts/LobsterTwo-Regular.ttf');
 }
+
 @media (width <= 600px) {
     body {
         height: auto;
         min-height: 100%;
-        /* overflow-y: auto; */
-        /* -webkit-overflow-scrolling: touch; */
     }
+
     html {
         height: -webkit-fill-available;
     }

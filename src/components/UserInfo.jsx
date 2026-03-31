@@ -1,5 +1,5 @@
 import useAuth from '../hooks/useAuth';
-import style from '../assets/styles/Components/UserInfo.module.css';
+import style from '../assets/styles/components/UserInfo.module.css';
 import user_image from '../image/user_image.png';
 import { useState, useEffect } from 'react';
 
@@ -28,21 +28,11 @@ export default function UserInfo(props) {
 
     return (
         <>
-            <div
-                className={style.containerUser}
-                onClick={() => setModalUserProfileFlag(true)}
-            >
-                <img
-                    className={style.imgage}
-                    src={imagePreview || user_image}
-                    alt="usder_image"
-                />
+            <div className={style.containerUser} onClick={() => setModalUserProfileFlag(true)}>
+                <img className={style.imgage} src={imagePreview || user_image} alt="usder_image" />
                 <div className={style.name}>{auth?.userRes?.first_name}</div>
                 <div className={style.name}>{auth?.userRes?.last_name}</div>
-                <ModalProfile
-                    visible={modalUserProfileFlag}
-                    setModalFlag={setModalUserProfileFlag}
-                >
+                <ModalProfile visible={modalUserProfileFlag} setModalFlag={setModalUserProfileFlag}>
                     <UserProfile
                         userCard={auth?.userRes}
                         imagePreview={imagePreview}

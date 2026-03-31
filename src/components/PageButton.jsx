@@ -1,4 +1,4 @@
-import style from '../assets/styles/Components/PageButton.module.css';
+import style from '../assets/styles/components/PageButton.module.css';
 
 function PageButton(props) {
     const page = props.page;

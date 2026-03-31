@@ -7,7 +7,7 @@ import SaveSaved from '../reports/SaveSaved';
 import SaveError from '../reports/SaveError';
 
 import Lightbox from '../components/Lightbox';
-import style from '../assets/styles/Pages/NewFood.module.css';
+import style from '../assets/styles/pages/NewFood.module.css';
 import IngredientInput from '../components/IngredientInput';
 import LeftPanelFilter from '../components/LeftPanelFilter';
 import Image from '../components/Image';
@@ -81,12 +81,7 @@ function NewFood(props) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const postFood = usePostFood(
-        axiosPrivate,
-        setModalLoadingFlag,
-        showMessage,
-        makeImagesRecord,
-    );
+    const postFood = usePostFood(axiosPrivate, setModalLoadingFlag, showMessage, makeImagesRecord);
 
     const nameRef = useRef();
 
@@ -98,9 +93,7 @@ function NewFood(props) {
 
     function handleFoodSave(e) {
         e.preventDefault();
-        const filterIngredients = ingredientsList.filter(
-            (ingre) => ingre.position !== 'delete',
-        );
+        const filterIngredients = ingredientsList.filter((ingre) => ingre.position !== 'delete');
         if (
             name === '' &&
             filterIngredients.length === 0 &&
@@ -108,7 +101,7 @@ function NewFood(props) {
             stepsList.length === 0
         ) {
             handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov jedla, Suroviny, Druj jedla, Postup',
+                'Doplň chýbajúce informácie: Nazov jedla, Suroviny, Druj jedla, Postup'
             );
         } else if (
             filterIngredients.length === 0 &&
@@ -116,60 +109,30 @@ function NewFood(props) {
             stepsList.length === 0
         ) {
             handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: , Suroviny, Druj jedla, Postup',
+                'Doplň chýbajúce informácie: , Suroviny, Druj jedla, Postup'
             );
-        } else if (
-            name === '' &&
-            foodTagSet.size === 0 &&
-            stepsList.length === 0
-        ) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov , Druj jedla, Postup',
-            );
-        } else if (
-            name === '' &&
-            filterIngredients.length === 0 &&
-            stepsList.length === 0
-        ) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov, Suroviny, Postup',
-            );
-        } else if (
-            name === '' &&
-            filterIngredients.length === 0 &&
-            foodTagSet.size === 0
-        ) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov, Suroviny, Druj jedla',
-            );
+        } else if (name === '' && foodTagSet.size === 0 && stepsList.length === 0) {
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov , Druj jedla, Postup');
+        } else if (name === '' && filterIngredients.length === 0 && stepsList.length === 0) {
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov, Suroviny, Postup');
+        } else if (name === '' && filterIngredients.length === 0 && foodTagSet.size === 0) {
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov, Suroviny, Druj jedla');
         } else if (name === '' && filterIngredients.length === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov,Suroviny',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov,Suroviny');
         } else if (name === '' && foodTagSet.size === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: ,Nazov, Druj jedla',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: ,Nazov, Druj jedla');
         } else if (name === '' && stepsList.length === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Nazov, Postup',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov, Postup');
         } else if (filterIngredients.length === 0 && foodTagSet.size === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Suroviny,Druj jedla',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Suroviny,Druj jedla');
         } else if (filterIngredients.length === 0 && stepsList.length === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Suroviny,Postup',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Suroviny,Postup');
         } else if (name === '') {
             handlerSetModalErrorMissing('Doplň chýbajúce informácie: Nazov');
         } else if (filterIngredients.length === 0) {
             handlerSetModalErrorMissing('Doplň chýbajúce informácie: Suroviny');
         } else if (foodTagSet.size === 0) {
-            handlerSetModalErrorMissing(
-                'Doplň chýbajúce informácie: Druj jedla',
-            );
+            handlerSetModalErrorMissing('Doplň chýbajúce informácie: Druj jedla');
         } else if (stepsList.length === 0) {
             handlerSetModalErrorMissing('Doplň chýbajúce informácie: Postup');
         } else {
@@ -182,7 +145,6 @@ function NewFood(props) {
                     ?.filter((i) => !i.statusDelete)
                     .map((res, index) => {
                         return {
-                            // id: res.id,
                             step: res.step,
                             position: index + 1,
                         };
@@ -191,8 +153,6 @@ function NewFood(props) {
                     ?.filter((i) => !i.statusDelete)
                     .map((res, index) => {
                         return {
-                            // id: res.id,
-
                             url: res.url,
                             urlname: res.urlname,
                         };
@@ -221,8 +181,7 @@ function NewFood(props) {
 
         return array.some((item) => {
             if (String(item?.id) !== String(tag?.id)) return false;
-            const tagMatch =
-                item?.foodTag?.toLowerCase() === tag?.foodTag?.toLowerCase();
+            const tagMatch = item?.foodTag?.toLowerCase() === tag?.foodTag?.toLowerCase();
             const emailMatch = item?.email === tag?.email;
 
             return tagMatch || emailMatch;
@@ -235,16 +194,6 @@ function NewFood(props) {
         } else {
             addTagTofoodTagSet(tag);
         }
-    }
-
-    // eslint-disable-next-line no-unused-vars
-    function normalizeText(text) {
-        // Funkcia na odstranenie diakritiky
-        return text
-            .trim()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase();
     }
 
     function addTagTofoodTagSet(foodTag) {
@@ -330,20 +279,14 @@ function NewFood(props) {
                 newID,
                 { i: oldID, step: step },
                 { i: newID, step: step },
-                stepsList,
-            ),
+                stepsList
+            )
         );
     }
 
     function updateUrlList(oldID, newID, url) {
         setUrlList(
-            updateItemList(
-                oldID,
-                newID,
-                { i: oldID, url: url },
-                { i: newID, url: url },
-                urlList,
-            ),
+            updateItemList(oldID, newID, { i: oldID, url: url }, { i: newID, url: url }, urlList)
         );
     }
 
@@ -396,8 +339,7 @@ function NewFood(props) {
                 Boolean(item?.id === 0) &&
                 Boolean(item?.searchTag && tag?.searchTag) &&
                 item?.searchTag === tag?.searchTag;
-            const match =
-                (tagMatch && idMatch) || (emailMatch && idMatch) || searchMatch;
+            const match = (tagMatch && idMatch) || (emailMatch && idMatch) || searchMatch;
             return !match;
         });
         let newFoodTagSet = new Set(filteredArray);
@@ -409,7 +351,6 @@ function NewFood(props) {
         let array = [];
         res.forEach((r) => {
             if (!r) return;
-            // zmazane (status 204)
             if (r.status === 204) return;
             if (r.data && r.data.id) {
                 array.push(r.data.id);
@@ -442,7 +383,7 @@ function NewFood(props) {
                     food.id,
                     folderName,
                     res.imageForBackEnd,
-                    position,
+                    position
                 ),
                 formdataForRCatch: {
                     food: food.id,
@@ -488,7 +429,7 @@ function NewFood(props) {
                 queryClient.invalidateQueries({
                     queryKey: ['foods', foodCreated.id],
                 });
-                handlerSetModalSave('Uložené', false);
+                handlerSaveConfirmed('Uložené', false);
             }
         } catch (err) {
             console.error('ERROR recept sa nepodarilo uložiť.', err);
@@ -533,7 +474,7 @@ function NewFood(props) {
             }
         }
     }
-    function handlerSetModalSave(message, isError) {
+    function handlerSaveConfirmed(message, isError) {
         setModalLoadingFlag(false);
         showMessage(message, isError);
         setTimeout(() => {
@@ -594,7 +535,7 @@ function NewFood(props) {
         });
         setImageURLsList(newImageURLsList);
     }
-    // images for Posting
+
     useEffect(() => {
         let newImageUrlsPost = imageURLsList.slice();
 
@@ -628,16 +569,12 @@ function NewFood(props) {
                     <div className={style.messagebox}>{errMsg}</div>
                     <div className={style.buttonBox}>
                         <button
-                            className={style.foodButton}
-                            id={style.foodButtonSave}
+                            className={`${style.foodButton} ${style.foodButtonSave}`}
                             type="submit"
                         >
                             <FontAwesomeIcon icon={faFloppyDisk} />
                         </button>
-                        <div
-                            className={style.foodButton}
-                            onClick={() => goBack()}
-                        >
+                        <div className={style.foodButton} onClick={() => goBack()}>
                             <FontAwesomeIcon icon={faBackward} />
                         </div>
                     </div>
@@ -655,13 +592,9 @@ function NewFood(props) {
 
                         <IngredientInput
                             addToIngredientList={addToIngredientList}
-                            addIngreGroupToIngredientList={
-                                addIngreGroupToIngredientList
-                            }
+                            addIngreGroupToIngredientList={addIngreGroupToIngredientList}
                             ingredientsList={ingredientsList}
-                            handlerSetModalErrorMissing={
-                                handlerSetModalErrorMissing
-                            }
+                            handlerSetModalErrorMissing={handlerSetModalErrorMissing}
                             ingredientMove={ingredientMove}
                             removeFromIngredientList={makeIngredientsDelete}
                             makeIngreGroupDelete={makeIngreGroupDelete}
@@ -714,10 +647,7 @@ function NewFood(props) {
                     </div>
                 </div>
             </form>
-            <Modal
-                visible={modalLoadingFlag}
-                setModalFlag={setModalLoadingFlag}
-            >
+            <Modal visible={modalLoadingFlag} setModalFlag={setModalLoadingFlag}>
                 <SaveLoading></SaveLoading>
             </Modal>
             <Modal visible={modalSavedFlag} setModalFlag={setModalSavedFlag}>
@@ -726,16 +656,10 @@ function NewFood(props) {
             <Modal visible={modalErrorFlag} setModalFlag={setModalErrorFlag}>
                 <SaveError></SaveError>
             </Modal>{' '}
-            <ModalMessage
-                visible={modalMessageFlag}
-                setModalFlag={setModalMessageFlag}
-            >
+            <ModalMessage visible={modalMessageFlag} setModalFlag={setModalMessageFlag}>
                 <Message item={message} isError={isError}></Message>
             </ModalMessage>
-            <ModalPreview
-                visible={modalLightboxFlag}
-                setModalFlag={setModalLightboxFlag}
-            >
+            <ModalPreview visible={modalLightboxFlag} setModalFlag={setModalLightboxFlag}>
                 <Lightbox
                     imageURLsList={imageURLsList}
                     closeModal={closeModal}

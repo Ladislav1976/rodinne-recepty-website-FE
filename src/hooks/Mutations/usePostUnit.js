@@ -23,15 +23,10 @@ export const usePostUnit = (axiosPrivate) => {
         onError: (err, newUnit, context) => {
             console.error('Error Post Unit :', err);
             if (context?.previousUnits) {
-                queryClient.setQueryData(
-                    context.queryKey,
-                    context.previousUnits,
-                );
+                queryClient.setQueryData(context.queryKey, context.previousUnits);
             } else {
                 queryClient.setQueryData(context.queryKey, (old) => {
-                    return Array.isArray(old)
-                        ? old.filter((u) => u.id !== context.tempId)
-                        : [];
+                    return Array.isArray(old) ? old.filter((u) => u.id !== context.tempId) : [];
                 });
             }
         },
@@ -39,9 +34,7 @@ export const usePostUnit = (axiosPrivate) => {
             if (data?.data) {
                 queryClient.setQueryData(context.queryKey, (old) => {
                     if (!Array.isArray(old)) return [data.data];
-                    return old.map((unit) =>
-                        unit.id === context.tempId ? data.data : unit,
-                    );
+                    return old.map((unit) => (unit.id === context.tempId ? data.data : unit));
                 });
             }
             queryClient.invalidateQueries(context.queryKey);

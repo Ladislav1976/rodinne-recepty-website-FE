@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import style from '../assets/styles/Reports/Save.module.css';
+import style from '../assets/styles/reports/Save.module.css';
 
 export default function SaveLoading(props) {
     return (

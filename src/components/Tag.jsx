@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import style from '../assets/styles/Components/Tag.module.css';
+import style from '../assets/styles/components/Tag.module.css';
 
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
@@ -22,9 +22,7 @@ export default function Tag({ tagGroupQf }) {
         }, 3000);
     }
     function sortingOptions(array) {
-        return array
-            ? [...array].sort((a, b) => a.groupName.localeCompare(b.groupName))
-            : [];
+        return array ? [...array].sort((a, b) => a.groupName.localeCompare(b.groupName)) : [];
     }
 
     async function handleSave(e) {
@@ -81,13 +79,10 @@ export default function Tag({ tagGroupQf }) {
                         {sortingOptions(tagGroupQf?.data).map(
                             (group) =>
                                 group && (
-                                    <option
-                                        key={group.id || group.groupName}
-                                        value={group.id}
-                                    >
+                                    <option key={group.id || group.groupName} value={group.id}>
                                         {group.groupName}
                                     </option>
-                                ),
+                                )
                         )}
                     </select>
                     <input

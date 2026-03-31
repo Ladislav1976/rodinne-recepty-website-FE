@@ -27,9 +27,7 @@ export const usePutUser = ({
 
             queryClient.setQueryData(queryKey, (old) => {
                 if (!Array.isArray(old)) return [];
-                return old.map((u) =>
-                    u.id === updatedUser.id ? { ...u, ...updatedUser } : u,
-                );
+                return old.map((u) => (u.id === updatedUser.id ? { ...u, ...updatedUser } : u));
             });
             return { previousUsers };
         },

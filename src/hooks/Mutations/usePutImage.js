@@ -4,8 +4,7 @@ import { createPutImagefood } from '../use-post';
 export const usePutImage = (axiosPrivate, controller) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (putFormdata) =>
-            createPutImagefood(axiosPrivate, putFormdata, controller),
+        mutationFn: (putFormdata) => createPutImagefood(axiosPrivate, putFormdata, controller),
         retry: 3,
         onMutate: async (image) => {
             const queryKey = ['imagefood', image.food];
@@ -19,10 +18,7 @@ export const usePutImage = (axiosPrivate, controller) => {
 
             if (context?.queryKey) {
                 if (context?.previousImage != null) {
-                    queryClient.setQueryData(
-                        context.queryKey,
-                        context.previousFood,
-                    );
+                    queryClient.setQueryData(context.queryKey, context.previousFood);
                 } else {
                     queryClient.removeQueries({ queryKey: context.queryKey });
                 }

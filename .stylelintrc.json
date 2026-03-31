@@ -1,0 +1,12 @@
+{
+    "extends": ["stylelint-config-standard"],
+    "rules": {
+        "alpha-value-notation": "number",
+        "color-function-notation": "modern",
+        "selector-class-pattern": null,
+        "custom-property-pattern": null,
+        "import-notation": "string",
+        "no-descending-specificity": null,
+        "declaration-block-no-shorthand-property-overrides": null
+    }
+}

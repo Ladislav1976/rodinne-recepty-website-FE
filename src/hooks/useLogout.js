@@ -19,13 +19,12 @@ const useLogout = (errRef, handlerSetErrMessage) => {
                 {},
                 {
                     headers: {
-                        // Accept: 'application/json',
                         'Content-Type': 'application/json',
                         'X-CSRFToken': Cookies.get('csrftoken'),
                     },
                     withCredentials: true,
                     signal: controller.signal,
-                },
+                }
             );
 
             if (response.status === 204) {
@@ -37,7 +36,6 @@ const useLogout = (errRef, handlerSetErrMessage) => {
                 handlerSetErrMessage('Porucha servera');
             } else if (err.response?.status === 404) {
                 handlerSetErrMessage('Odhásenie zlyhalo');
-                // errRef.current.focus();
             }
         }
     };

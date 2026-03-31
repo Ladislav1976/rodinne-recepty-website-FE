@@ -1,36 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { getDataPrivateParams } from '../use-get';
 
-export const useFoods = (
-    axiosPrivate,
-    foodTags,
-    search,
-    ordering,
-    page,
-    page_size,
-    user__id__in,
-) => {
+export const useFoods = (axiosPrivate, paramsFoodView) => {
     return useQuery({
-        queryKey: [
-            'foodsList',
-            foodTags,
-            search,
-            ordering,
-            page,
-            page_size,
-            user__id__in,
-        ],
+        queryKey: ['foodsList', paramsFoodView.toString()],
         queryFn: (queryKey) =>
-            getDataPrivateParams(
-                axiosPrivate,
-                queryKey.queryKey,
-                foodTags,
-                user__id__in,
-                search,
-                ordering,
-                page,
-                page_size,
-            ),
+            getDataPrivateParams(axiosPrivate, queryKey.queryKey, paramsFoodView),
+
         staleTime: 10 * (60 * 1000),
         gcTime: 15 * (60 * 1000),
         refetchOnMount: true,

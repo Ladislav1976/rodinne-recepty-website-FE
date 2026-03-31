@@ -6,20 +6,20 @@
     height: 100dvh;
     display: flex;
     justify-content: flex-end;
-    background-color: transparent;
-    z-index: 15;
     transform: translateX(100%);
     transition:
         transform 0.3s ease-in-out,
         visibility var(--transDuration);
     visibility: hidden;
-    background-color: rgba(26, 25, 25, 0.911);
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    background-color: rgb(26 25 25 / 0.911);
+    box-shadow: -5px 0 15px rgb(0 0 0 / 0.1);
     z-index: 9999;
 }
+
 .cancelButton {
     display: none;
 }
+
 @media (width <= 1300px) {
     .sidebarAdmin.isActive {
         transform: translateX(0);
@@ -38,6 +38,7 @@
         background-color: white;
         z-index: 16;
     }
+
     .container > .li {
         display: flex;
         position: relative;
@@ -46,10 +47,8 @@
         width: 80%;
         flex-shrink: 0;
         align-items: center;
-        padding: auto;
         border-bottom: solid 1px;
         border-bottom: var(--border);
-
         z-index: 10;
     }
 

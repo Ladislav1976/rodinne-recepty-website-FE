@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import axios from '../api/axios';
-import style from '../assets/styles/Pages/Login.module.css';
+import style from '../assets/styles/pages/Login.module.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
@@ -9,23 +9,19 @@ import useInput from '../hooks/useInput';
 
 import receptyLogo from '../image/rodinneReceptyLogoCutted.png';
 
-import {
-    faEye,
-    faEyeSlash,
-    faEnvelope,
-} from '@fortawesome/free-regular-svg-icons';
+import { faEye, faEyeSlash, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 const LOGIN_URL = 'login';
 const EMAIL_REGEX =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default function Login() {
-    const { setAuth, setCSRFToken, setPage, setPageSize, setOrdering } =
+    const { setAuth, setCSRFToken, setPage, setPageSize, setOrdering, persist, setPersist } =
         useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || '/';
+    const from = location.state?.from?.pathname + location.state?.from?.search || '/';
 
     const emailRef = useRef();
 
@@ -40,7 +36,6 @@ export default function Login() {
 
     const [validEmail, setValidEmail] = useState(false);
 
-    // const [check, toggleCheck] = useToggle('persist', false);
     const togglePwdVisibility = () => {
         setShowPwd((prev) => !prev);
     };
@@ -80,7 +75,7 @@ export default function Login() {
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true,
-                },
+                }
             );
 
             const access_token = response?.data?.access_token;
@@ -112,37 +107,31 @@ export default function Login() {
         }
     }
 
-    // const tooglePersist = () => {
-    //     setPersist(prev => !prev)
-    // }
+    useEffect(() => {
+        setPersist(true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    // useEffect(() => {
-    //     localStorage.setItem('persist', persist)
-    // }, [persist])
+    useEffect(() => {
+        localStorage.setItem('persist', persist);
+    }, [persist]);
     return (
         <>
             <div className={style.main}>
                 <div className={style.layerMain}>
                     <div className={style.mainbox}>
                         <div className={style.lineLogo}>
-                            <div className={style.lineGrey}>
-                                Rodinne recepty
-                            </div>
+                            <div className={style.lineGrey}>Rodinne recepty</div>
                             <div className={style.lineTrans}></div>
                         </div>
                         <div className={style.receptyLogo}>
-                            <img
-                                src={receptyLogo}
-                                alt="Rodinné recepty - logo"
-                            />
+                            <img src={receptyLogo} alt="Rodinné recepty - logo" />
                         </div>
                         <div className={style.loginContainer}>
                             {' '}
                             <div
                                 ref={errRef}
-                                className={
-                                    errMsg ? style.errmsg : style.offscreen
-                                }
+                                className={errMsg ? style.errmsg : style.offscreen}
                                 aria-live="assertive"
                             >
                                 {errMsg}
@@ -151,10 +140,7 @@ export default function Login() {
                                 <h1>Vitajte späť!</h1>
                                 <h4>Prihláste sa</h4>
                             </div>
-                            <form
-                                className={style.form}
-                                onSubmit={handleSubmit}
-                            >
+                            <form className={style.form} onSubmit={handleSubmit}>
                                 <div className={style.inputContainer}>
                                     <div className={style.inputBox}>
                                         <input
@@ -167,14 +153,10 @@ export default function Login() {
                                             autoComplete="off"
                                             {...emailAttribs}
                                             required
-                                            aria-invalid={
-                                                validEmail ? 'false' : 'true'
-                                            }
+                                            aria-invalid={validEmail ? 'false' : 'true'}
                                         />
                                         <div className={style.icon}>
-                                            <FontAwesomeIcon
-                                                icon={faEnvelope}
-                                            />
+                                            <FontAwesomeIcon icon={faEnvelope} />
                                         </div>{' '}
                                     </div>
                                     <div className={style.inputBox}>
@@ -183,30 +165,22 @@ export default function Login() {
                                             className={style.input}
                                             aria-label="Potvrdiť emailovú adresu"
                                             id="Emailová adresa dva"
-                                            onChange={(e) =>
-                                                setPwd(e.target.value)
-                                            }
+                                            onChange={(e) => setPwd(e.target.value)}
                                             value={pwd}
                                             required
                                         />{' '}
                                         <div className={style.icon} id="eye">
                                             <FontAwesomeIcon
-                                                icon={
-                                                    showPwd ? faEye : faEyeSlash
-                                                }
+                                                icon={showPwd ? faEye : faEyeSlash}
                                                 onClick={togglePwdVisibility}
                                                 style={{
-                                                    color: showPwd
-                                                        ? 'limegreen'
-                                                        : 'inherit',
+                                                    color: showPwd ? 'limegreen' : 'inherit',
                                                 }}
                                             />
                                         </div>{' '}
                                         <div
                                             className={
-                                                isLoading
-                                                    ? style.loadingContainer
-                                                    : style.hide
+                                                isLoading ? style.loadingContainer : style.hide
                                             }
                                         >
                                             <FontAwesomeIcon

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import style from '../assets/styles/Components/Unit.module.css';
+import style from '../assets/styles/components/Unit.module.css';
 
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import style from '../assets/styles/Components/LeftPanelFilter.module.css';
+import style from '../assets/styles/components/LeftPanelFilter.module.css';
 import useAuth from '../hooks/useAuth';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,6 +12,7 @@ function FilterOption(props) {
         if (!tag || !props.filterTagListArray) return false;
 
         return props.filterTagListArray.some((item) => {
+            if (item?.foodTag === true || item?.email === true) return false;
             const tagMatch =
                 Boolean(item?.foodTag && tag?.foodTag) &&
                 item?.foodTag?.toLowerCase() === tag?.foodTag?.toLowerCase() &&
@@ -83,10 +84,7 @@ function FilterOption(props) {
 
                 <b className={style.tagQuantity}>
                     {props.foodTagsContainer
-                        ? `  (${
-                              props.tagList[props.index1].tags[props.index2]
-                                  .quantity
-                          })`
+                        ? `  (${props.tagList[props.index1].tags[props.index2].quantity})`
                         : ''}
                 </b>
             </div>
@@ -116,15 +114,18 @@ function FilterCategory(props) {
         }
         if (component === 'editcomponent' || 'viewcomponent') {
             let result = false;
+
             for (let i = 0; i < props.filterTagListArray.length; i++) {
                 for (let u = 0; u < array?.tags.length; u++) {
                     const tagMatch =
+                        props.filterTagListArray[i]?.foodTag !== true &&
                         props.filterTagListArray[i]?.foodTag?.toLowerCase() ===
-                        array?.tags[u]?.foodTag?.toLowerCase();
+                            array?.tags[u]?.foodTag?.toLowerCase();
                     const emailMatch =
                         Boolean(
+                            props.filterTagListArray[i]?.foodTag !== true &&
                             props.filterTagListArray[i].email &&
-                            array?.tags[u]?.foodTag,
+                            array?.tags[u]?.foodTag
                         ) &&
                         props.filterTagListArray[i]?.email?.toLowerCase() ===
                             array?.tags[u]?.foodTag?.toLowerCase();
@@ -183,9 +184,7 @@ function FilterCategory(props) {
     const getDynamicLabel = () => {
         if (props.type === 'ordering' && props.tag.tags) {
             const currentTagValue = props.filterTagListArray?.[0]?.foodTag;
-            const activeOption = props.tag.tags.find(
-                (child) => child.foodTag === currentTagValue,
-            );
+            const activeOption = props.tag.tags.find((child) => child.foodTag === currentTagValue);
 
             return activeOption ? activeOption.label : props.tag.groupName;
         }
@@ -209,33 +208,22 @@ function FilterCategory(props) {
                 component={props.component}
                 tagList={props.tagList}
                 filterTagListArray={props.filterTagListArray}
-            />,
+            />
         );
     });
 
     return (
         <>
-            <div
-                className={handleCheckboxContainer()}
-                onClick={() => setterOpen()}
-            >
+            <div className={handleCheckboxContainer()} onClick={() => setterOpen()}>
                 <div className={labelParents()}>
                     {getDynamicLabel()}{' '}
                     <b className={style.tagQuantity}>
-                        {props.foodTagsContainer
-                            ? `(${sumQt(props.tagList[props.index1])})`
-                            : ''}
+                        {props.foodTagsContainer ? `(${sumQt(props.tagList[props.index1])})` : ''}
                     </b>
                 </div>
                 <div className={upDownCSS()}>&#10094;</div>
             </div>
-            <div
-                className={`${style.tagsContainer} ${
-                    open ? style.isActive : ''
-                }`}
-            >
-                {array}
-            </div>
+            <div className={`${style.tagsContainer} ${open ? style.isActive : ''}`}>{array}</div>
         </>
     );
 }
@@ -275,9 +263,7 @@ export default function LeftPanelFilter(props) {
     }
 
     function sortingTags(array) {
-        return array
-            ? [...array].sort((a, b) => a.foodTag.localeCompare(b.foodTag))
-            : [];
+        return array ? [...array].sort((a, b) => a.foodTag.localeCompare(b.foodTag)) : [];
     }
     let tagList = sortingGroups(tagGroups);
 
@@ -349,7 +335,7 @@ export default function LeftPanelFilter(props) {
                 filterTagListArray={filterTagListArray}
                 component={component}
                 tagList={tagList}
-            />,
+            />
         );
     });
 
@@ -358,9 +344,7 @@ export default function LeftPanelFilter(props) {
     return (
         <>
             <div
-                className={`${style.sidebarFilter} ${
-                    toggle ? style.isActive : ''
-                }`}
+                className={`${style.sidebarFilter} ${toggle ? style.isActive : ''}`}
                 onClick={(e) => {
                     if (toggle && e.target === e.currentTarget) {
                         setToggle(!toggle);
@@ -410,9 +394,7 @@ export default function LeftPanelFilter(props) {
 
                     <div className={style.filterContainer}>
                         <label className={style.selectLabel}>
-                            {component === 'foodscomponent'
-                                ? 'FILTER: '
-                                : 'Druh jedla: '}
+                            {component === 'foodscomponent' ? 'FILTER: ' : 'Druh jedla: '}
                         </label>
                         {component === 'foodscomponent' && (
                             <FilterCategory
@@ -420,9 +402,7 @@ export default function LeftPanelFilter(props) {
                                 key={`${usersOptions.groupName}`}
                                 tag={usersOptions}
                                 filterTagListArray={filterTagListArray}
-                                handleAddTagToFoodTagsList={
-                                    handleAddTagToFoodTagsList
-                                }
+                                handleAddTagToFoodTagsList={handleAddTagToFoodTagsList}
                                 component={component}
                                 tagList={usersOptions}
                             />

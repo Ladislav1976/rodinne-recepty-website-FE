@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 
-import style from '../assets/styles/Pages/Login.module.css';
+import style from '../assets/styles/pages/Login.module.css';
 import { useNavigate } from 'react-router-dom';
 import CSRFToken from './CSFRToken';
 import { Link } from 'react-router-dom';
@@ -8,14 +8,14 @@ import Cookies from 'js-cookie';
 import axios from '../api/axios';
 import receptyLogo from '../image/rodinneReceptyLogoCutted.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfoCircle, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 const RESET_URL = 'forgot-password/';
 
 const EMAIL_REGEX =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-// /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 function Succcess() {
     return (
         <div
@@ -40,6 +40,7 @@ export default function Reset() {
     const [errMsg, setErrMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
 
     const [validEmail, setValidEmail] = useState(false);
 
@@ -80,8 +81,6 @@ export default function Reset() {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': Cookies.get('csrftoken'),
                 },
-
-                // withCredentials: true
             });
 
             successMsgShow();
@@ -103,9 +102,7 @@ export default function Reset() {
                 <div className={style.layerMain}>
                     <div className={style.mainbox}>
                         <div className={style.lineLogo}>
-                            <div className={style.lineGrey}>
-                                Rodinne recepty
-                            </div>
+                            <div className={style.lineGrey}>Rodinne recepty</div>
                             <div className={style.lineTrans}></div>
                         </div>
                         <div className={style.receptyLogo}>
@@ -121,25 +118,17 @@ export default function Reset() {
                         <div className={style.loginContainer}>
                             <div
                                 ref={successRef}
-                                className={
-                                    successMsg ? style.succmsg : style.offscreen
-                                }
+                                className={successMsg ? style.succmsg : style.offscreen}
                                 aria-live="assertive"
                             ></div>
                             <div
                                 ref={errRef}
-                                className={
-                                    errMsg ? style.errmsg : style.offscreen
-                                }
+                                className={errMsg ? style.errmsg : style.offscreen}
                                 aria-live="assertive"
                             >
                                 {errMsg}
                             </div>{' '}
-                            <div
-                                className={style.topbox}
-                                ref={successRef}
-                                aria-live="assertive"
-                            >
+                            <div className={style.topbox} ref={successRef} aria-live="assertive">
                                 {' '}
                                 <h1>Zmena hesla</h1>
                                 {successMsg ? (
@@ -152,39 +141,47 @@ export default function Reset() {
                                     </>
                                 )}
                             </div>
-                            <div
-                                className={
-                                    isLoading
-                                        ? style.loadingContainer
-                                        : style.hide
-                                }
-                            >
+                            <div className={isLoading ? style.loadingContainer : style.hide}>
                                 <FontAwesomeIcon
                                     className={style.loadingIcon}
                                     icon={faSpinner}
                                     spin
                                 ></FontAwesomeIcon>
                             </div>
-                            <form
-                                className={style.form}
-                                onSubmit={handleSubmit}
-                            >
+                            <form className={style.form} onSubmit={handleSubmit}>
                                 <CSRFToken />
 
                                 <div className={style.inputContainer}>
                                     <div className={style.inputBox}>
-                                        <label
-                                            className={style.label}
-                                            htmlFor="email"
-                                        >
+                                        <label className={style.label} htmlFor="email">
                                             Email:
                                             <FontAwesomeIcon
+                                                icon={faInfoCircle}
+                                                className={style.info}
+                                                onClick={() => setShowInfo(!showInfo)}
+                                            />
+                                            <div
+                                                id="emailinfo"
+                                                className={`
+                                    ${style.instructions} 
+                                    ${showInfo ? style.showMobile : ''}
+                                        `}
+                                            >
+                                                <FontAwesomeIcon icon={faInfoCircle} />
+                                                <strong>Musí obsahovať:</strong>
+                                                <br /> - veľké a malé písmená, číslice, špeciálne
+                                                znaky.
+                                                <br />
+                                                Povolené špeciálne znaky:&nbsp;
+                                                <span aria-label="výkričník">!</span>{' '}
+                                                <span aria-label="zavináč ">@</span>{' '}
+                                                <span aria-label="mriežka">#</span>{' '}
+                                                <span aria-label="značka dolára">$</span>{' '}
+                                                <span aria-label="percento">%</span>{' '}
+                                            </div>
+                                            <FontAwesomeIcon
                                                 icon={faCheck}
-                                                className={
-                                                    validEmail
-                                                        ? style.valid
-                                                        : style.hide
-                                                }
+                                                className={validEmail ? style.valid : style.hide}
                                             />
                                             <FontAwesomeIcon
                                                 icon={faTimes}
@@ -202,20 +199,14 @@ export default function Reset() {
                                             ref={emailRef}
                                             placeholder="Vložte svoj email"
                                             autoComplete="off"
-                                            onChange={(e) =>
-                                                setEmail(e.target.value)
-                                            }
+                                            onChange={(e) => setEmail(e.target.value)}
                                             value={email}
                                             required
-                                            aria-invalid={
-                                                validEmail ? 'false' : 'true'
-                                            }
-                                            // aria-describedby="uidnote"
+                                            aria-invalid={validEmail ? 'false' : 'true'}
+                                            aria-describedby="emailinfo"
                                         />{' '}
                                         <div className={style.icon}>
-                                            <FontAwesomeIcon
-                                                icon={faEnvelope}
-                                            />
+                                            <FontAwesomeIcon icon={faEnvelope} />
                                         </div>{' '}
                                     </div>
                                     <button

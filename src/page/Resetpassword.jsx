@@ -1,13 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    faCheck,
-    faTimes,
-    faInfoCircle,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import style from '../assets/styles/Pages/Login.module.css';
+import style from '../assets/styles/pages/Login.module.css';
 import axios from '../api/axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -15,7 +11,6 @@ import CSRFToken from './CSFRToken';
 import Cookies from 'js-cookie';
 import receptyLogo from '../image/rodinneReceptyLogoCutted.png';
 
-// const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const passwordChecks = {
     length: (p) => p.length >= 8,
     hasUpper: (p) => /[A-Z]/.test(p),
@@ -37,13 +32,12 @@ export default function ResetPassword() {
     const [pwd, setPwd] = useState('');
     const [showPwd, setShowPwd] = useState(false);
     const [validPwd, setValidPwd] = useState(false);
-    // const [pwdFocus, setPwdFocus] = useState(false);
 
     const [matchPwd, setMatchPwd] = useState('');
     const [showCnPwd, setShowCnPwd] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
     const [validMatch, setValidMatch] = useState(false);
-    // const [matchFocus, setMatchFocus] = useState(false);
+
     const [points, setPoints] = useState(false);
     const [color, setColor] = useState(false);
     const [pwdStrength, setPwdStrength] = useState('Žiadne heslo');
@@ -56,9 +50,7 @@ export default function ResetPassword() {
     };
 
     useEffect(() => {
-        const currentPoints = Object.values(passwordChecks).filter((check) =>
-            check(pwd),
-        ).length;
+        const currentPoints = Object.values(passwordChecks).filter((check) => check(pwd)).length;
         setPoints(currentPoints);
 
         if (pwd.length === 0) {
@@ -96,7 +88,6 @@ export default function ResetPassword() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        // setIsLoading(true);
         const v1 = PWD_REGEX.test(pwd);
         if (!v1) {
             setErrMsg('Invalid Entry');
@@ -118,7 +109,7 @@ export default function ResetPassword() {
                         'X-CSRFToken': Cookies.get('csrftoken'),
                     },
                     withCredentials: true,
-                },
+                }
             );
 
             if (response.data) {
@@ -142,23 +133,11 @@ export default function ResetPassword() {
 
     return (
         <>
-            {/* {success ? (
-                <main className={style.main}>
-                    <section>
-                        <h1>Success!</h1>
-                        <p>
-                            <a href="recepty">Sign In</a>
-                        </p>
-                    </section>
-                </main>
-            ) : ( */}
             <div className={style.main}>
                 <div className={style.layerMain}>
                     <div className={style.mainbox}>
                         <div className={style.lineLogo}>
-                            <div className={style.lineGrey}>
-                                Rodinne recepty
-                            </div>
+                            <div className={style.lineGrey}>Rodinne recepty</div>
                             <div className={style.lineTrans}></div>
                         </div>{' '}
                         <div className={style.receptyLogo}>
@@ -171,28 +150,17 @@ export default function ResetPassword() {
                                 Prihlásiť sa
                             </Link>
                         </div>
-                        {/* {success && (
-                            <div className={style.main}>
-                                <section>
-                                    <h1>Zmena hesla prebehla úspešne!</h1>
-                                </section>
-                            </div>
-                        )} */}
                         <div className={style.loginContainer}>
                             <div
                                 ref={successRef}
-                                className={
-                                    successMsg ? style.succmsg : style.offscreen
-                                }
+                                className={successMsg ? style.succmsg : style.offscreen}
                                 aria-live="assertive"
                             >
                                 {successMsg}
                             </div>
                             <div
                                 ref={errRef}
-                                className={
-                                    errMsg ? style.errmsg : style.offscreen
-                                }
+                                className={errMsg ? style.errmsg : style.offscreen}
                                 aria-live="assertive"
                             >
                                 {errMsg}
@@ -200,37 +168,17 @@ export default function ResetPassword() {
                             <div className={style.topbox}>
                                 <h1>Zmeniť heslo</h1>
                             </div>
-                            {/* <div
-                                className={
-                                    isLoading
-                                        ? style.loadingContainer
-                                        : style.hide
-                                }
-                            >
-                                <FontAwesomeIcon
-                                    className={style.loadingIcon}
-                                    icon={faSpinner}
-                                    spin
-                                ></FontAwesomeIcon>
-                            </div> */}
-                            <form
-                                className={style.form}
-                                onSubmit={handleSubmit}
-                            >
+
+                            <form className={style.form} onSubmit={handleSubmit}>
                                 <CSRFToken />
                                 <div className={style.inputContainer}>
                                     <div className={style.inputBox}>
-                                        <label
-                                            className={style.label}
-                                            htmlFor="password"
-                                        >
+                                        <label className={style.label} htmlFor="password">
                                             Heslo:
                                             <FontAwesomeIcon
                                                 icon={faInfoCircle}
                                                 className={style.info}
-                                                onClick={() =>
-                                                    setShowInfo(!showInfo)
-                                                }
+                                                onClick={() => setShowInfo(!showInfo)}
                                             />
                                             <div
                                                 id="status-heslo"
@@ -239,51 +187,29 @@ export default function ResetPassword() {
                                     ${showInfo ? style.showMobile : ''}
                                         `}
                                             >
-                                                <FontAwesomeIcon
-                                                    icon={faInfoCircle}
-                                                />
-                                                <strong>
-                                                    Požiadavky na heslo:
-                                                </strong>
-                                                <br /> 8 to 24 znakov, veľké a
-                                                malé písmená, číslicu a
-                                                špeciálny znak.
+                                                <FontAwesomeIcon icon={faInfoCircle} />
+                                                <strong>Požiadavky na heslo:</strong>
+                                                <br /> 8 to 24 znakov, veľké a malé písmená, číslicu
+                                                a špeciálny znak.
                                                 <br />
-                                                Povolené špeciálne znaky: ! @ #
-                                                $ % *
+                                                Povolené špeciálne znaky: &nbsp;
+                                                <span aria-label="výkričník">!</span>{' '}
+                                                <span aria-label="zavináč ">@</span>{' '}
+                                                <span aria-label="mriežka">#</span>{' '}
+                                                <span aria-label="značka dolára">$</span>{' '}
+                                                <span aria-label="percento">%</span>{' '}
+                                                <span aria-label="hviezdička">*</span>
                                             </div>
-                                            {/* <FontAwesomeIcon
-                                                icon={faCheck}
-                                                className={
-                                                    validPwd
-                                                        ? style.valid
-                                                        : style.hide
-                                                }
-                                            />
-                                            <FontAwesomeIcon
-                                                icon={faTimes}
-                                                className={
-                                                    validPwd || !pwd
-                                                        ? style.hide
-                                                        : style.invalid
-                                                }
-                                            /> */}
                                         </label>
                                         <input
                                             type={showPwd ? 'text' : 'password'}
                                             className={style.input}
                                             id="password"
-                                            onChange={(e) =>
-                                                setPwd(e.target.value)
-                                            }
+                                            onChange={(e) => setPwd(e.target.value)}
                                             value={pwd}
                                             required
-                                            aria-invalid={
-                                                validPwd ? 'false' : 'true'
-                                            }
+                                            aria-invalid={validPwd ? 'false' : 'true'}
                                             aria-describedby="status-heslo"
-                                            // onFocus={() => setPwdFocus(true)}
-                                            // onBlur={() => setPwdFocus(false)}
                                         />{' '}
                                         <div className={style.semafor}>
                                             {[1, 2, 3, 4, 5].map((num) => (
@@ -292,47 +218,31 @@ export default function ResetPassword() {
                                                     aria-label={pwdStrength}
                                                     key={num}
                                                     className={`${style.light}${
-                                                        points >= num
-                                                            ? style.isActive
-                                                            : ''
+                                                        points >= num ? style.isActive : ''
                                                     }`}
                                                     style={{
                                                         backgroundColor:
-                                                            points >= num
-                                                                ? color
-                                                                : 'grey',
-                                                        opacity:
-                                                            points >= num
-                                                                ? 1
-                                                                : 0.3, // Nepovinné: zhasnuté svetlá budú jemne priesvitné
+                                                            points >= num ? color : 'grey',
+                                                        opacity: points >= num ? 1 : 0.3,
                                                     }}
                                                 ></div>
                                             ))}
                                         </div>
                                         <div
                                             className={style.icon}
-                                            onClick={() =>
-                                                togglePwdVisibility(setShowPwd)
-                                            }
+                                            onClick={() => togglePwdVisibility(setShowPwd)}
                                             id="eye"
                                         >
                                             <FontAwesomeIcon
-                                                icon={
-                                                    showPwd ? faEye : faEyeSlash
-                                                }
+                                                icon={showPwd ? faEye : faEyeSlash}
                                                 style={{
-                                                    color: showPwd
-                                                        ? 'limegreen'
-                                                        : 'inherit',
+                                                    color: showPwd ? 'limegreen' : 'inherit',
                                                 }}
                                             />
                                         </div>{' '}
                                     </div>
                                     <div className={style.inputBox}>
-                                        <label
-                                            className={style.label}
-                                            htmlFor="passwordConfirm"
-                                        >
+                                        <label className={style.label} htmlFor="passwordConfirm">
                                             Potvrdiť heslo:
                                             <FontAwesomeIcon
                                                 icon={faCheck}
@@ -355,63 +265,29 @@ export default function ResetPassword() {
                                             type="password"
                                             className={style.input}
                                             id="passwordConfirm"
-                                            onChange={(e) =>
-                                                setMatchPwd(e.target.value)
-                                            }
+                                            onChange={(e) => setMatchPwd(e.target.value)}
                                             value={matchPwd}
                                             required
-                                            aria-invalid={
-                                                validMatch ? 'false' : 'true'
-                                            }
+                                            aria-invalid={validMatch ? 'false' : 'true'}
                                             aria-describedby="oko"
-                                            // onFocus={() => setMatchFocus(true)}
-                                            // onBlur={() => setMatchFocus(false)}
                                         />
                                         <div
                                             className={style.icon}
-                                            onClick={() =>
-                                                togglePwdVisibility(
-                                                    setShowCnPwd,
-                                                )
-                                            }
+                                            onClick={() => togglePwdVisibility(setShowCnPwd)}
                                             id="oko"
                                         >
                                             <FontAwesomeIcon
-                                                icon={
-                                                    showCnPwd
-                                                        ? faEye
-                                                        : faEyeSlash
-                                                }
+                                                icon={showCnPwd ? faEye : faEyeSlash}
                                                 style={{
-                                                    color: showCnPwd
-                                                        ? 'limegreen'
-                                                        : 'inherit',
+                                                    color: showCnPwd ? 'limegreen' : 'inherit',
                                                 }}
                                             />
                                         </div>{' '}
-                                        {/* <p
-                                                id="confirmnote"
-                                                className={
-                                                    matchFocus && !validMatch
-                                                        ? style.instructions
-                                                        : style.offscreen
-                                                }
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faInfoCircle}
-                                                />
-                                                Must match the first password
-                                                input field.
-                                            </p> */}
                                     </div>{' '}
                                     <button
                                         type="submit"
                                         className={style.button}
-                                        disabled={
-                                            !validPwd || !validMatch
-                                                ? true
-                                                : false
-                                        }
+                                        disabled={!validPwd || !validMatch ? true : false}
                                     >
                                         Odoslať
                                     </button>

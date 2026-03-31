@@ -1,12 +1,12 @@
-// import axios from 'axios';
 import axios from '../api/axios';
+import qs from 'qs';
 
 export async function createPostStep(axiosPrivate, step) {
     return await axiosPrivate.post('steps/', step).then((res) => res);
 }
 
 export async function createPutStep(axiosPrivate, step) {
-    return await axiosPrivate.put(`steps/${step.id}/`, step).then((res) => res);
+    return await axiosPrivate.patch(`steps-restore/${step.id}/`, step).then((res) => res);
 }
 
 export async function createDeleteStep(axiosPrivate, step) {
@@ -63,13 +63,7 @@ export async function createPostIngredient(axiosPrivate, { ingredient }) {
 }
 
 export async function createPostIngredients(axiosPrivate, ingredients) {
-    return await axiosPrivate
-        .post(
-            'ingredients/',
-            // id:ingredients.id,  units:ingredients.units, quantity:ingredients.quantity, ingredientName: ingredients.ingredientName, ingreposition:ingredients.ingreposition
-            ingredients,
-        )
-        .then((res) => res);
+    return await axiosPrivate.post('ingredients/', ingredients).then((res) => res);
 }
 export async function createPostFoodTag(axiosPrivate, foodTag) {
     return await axiosPrivate.post('foodTags/', foodTag);
@@ -86,6 +80,22 @@ export async function createPostFood(axiosPrivate, food) {
             withCredentials: true,
         })
         .then((res) => res);
+}
+export async function createRestoreFood(axiosPrivate, id, param) {
+    const searchParams = param instanceof URLSearchParams ? Object.fromEntries(param) : param;
+
+    return axiosPrivate.post(
+        `foods/${id}/restore/`,
+        {},
+        {
+            params: searchParams,
+            paramsSerializer: (params) => {
+                return qs.stringify(params, { arrayFormat: 'repeat' });
+            },
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
+        }
+    );
 }
 
 export async function createPostLogin(login) {
@@ -112,11 +122,7 @@ export async function createPostImagefood(axiosPrivate, formdata) {
     });
 }
 
-export async function createPutImagefood(
-    axiosPrivate,
-    putFormdata,
-    controller,
-) {
+export async function createPutImagefood(axiosPrivate, putFormdata, controller) {
     return await axiosPrivate
         .patch(`imagefood/${putFormdata.id}/`, putFormdata.imageForm, {
             headers: {
@@ -134,16 +140,7 @@ export async function createPutImagefood(
 
 export async function createDeleteImagefood(axiosPrivate, formdata) {
     return await axiosPrivate
-        .delete(
-            `imagefood/${formdata.id}/`,
-            // formdata.imageForm,
-            // {
-            //     withCredentials: false,
-            //     headers: {
-            //         "X-CSRFToken": "csrftoken",
-            //     },
-            // }
-        )
+        .delete(`imagefood/${formdata.id}/`)
         .then((res) => {
             return {
                 status: res.status,
@@ -151,10 +148,8 @@ export async function createDeleteImagefood(axiosPrivate, formdata) {
         })
         .catch((err) => {
             if (err.response?.status === 404) {
-                console.warn(
-                    `Image ${formdata.id} už neexistuje (404), ignorujem.`,
-                );
-                return { status: 204, data: 'Already deleted' }; // Tvárime sa, že je to OK
+                console.warn(`Fotografia ${formdata.id} už neexistuje (404), ignorujem.`);
+                return { status: 204, data: 'Fotografia už neexistuje' };
             } else {
                 throw err;
             }
@@ -166,7 +161,6 @@ export async function createDeleteIngredients(axiosPrivate, id) {
 }
 
 export async function createPutIngredients(axiosPrivate, ingredients) {
-    //id,  units, quantity, ingredientName, ingreposition)
     return await axiosPrivate
         .put(`ingredients/${ingredients.id}/`, {
             id: ingredients.id,
@@ -185,16 +179,12 @@ export async function createPutUnits(axiosPrivate, units) {
 
 export async function putDataPrivate(axiosPrivate, controller, user) {
     try {
-        const res = await axiosPrivate.patch(
-            `users/${user.id}/`,
-            user.userForm,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                signal: controller.signal,
+        const res = await axiosPrivate.patch(`users/${user.id}/`, user.userForm, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
-        );
+            signal: controller.signal,
+        });
 
         return res;
     } catch (error) {

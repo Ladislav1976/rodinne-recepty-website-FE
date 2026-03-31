@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import style from '../assets/styles/Modals/ModalUserCard.module.css';
+import style from '../assets/styles/modals/ModalUserCard.module.css';
 import { createPortal } from 'react-dom';
 
 export default function ModalUserCard(props) {
@@ -18,7 +18,6 @@ export default function ModalUserCard(props) {
 
     function onModalClose(e) {
         e.stopPropagation();
-        // props.setModalFlag(false);
     }
 
     function onModalContentClick(event) {
@@ -31,6 +30,6 @@ export default function ModalUserCard(props) {
                 {props.children}
             </div>
         </div>,
-        document.body,
+        document.body
     );
 }

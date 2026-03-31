@@ -7,8 +7,7 @@ const RequireAuthUserEdit = ({ allowedRoles }) => {
     const location = useLocation();
     return !allowedRoles?.includes(auth?.userRes?.role) ? (
         <Navigate to="/unauthorized" state={{ from: location }} replace />
-    ) : auth?.userRes?.role === 'User_edit' &&
-      usercont[0].id !== auth?.userRes?.id ? (
+    ) : auth?.userRes?.role === 'User_edit' && usercont[0].id !== auth?.userRes?.id ? (
         <Navigate to="/unauthorized" state={{ from: location }} replace />
     ) : (
         <Outlet />

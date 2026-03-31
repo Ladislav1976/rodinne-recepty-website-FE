@@ -3,7 +3,6 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    border: 0px white transparent;
     width: 100%;
     font-size: 1rem;
     gap: 2rem;
@@ -11,8 +10,7 @@
 
 .stepBox {
     position: relative;
-    display: grid;
-    grid-template-columns: 1fr 3rem;
+    grid-template-columns: 1fr 2.5rem;
     grid-template-areas: 'overlay';
     justify-content: flex-start;
     align-items: center;
@@ -24,24 +22,27 @@
     display: inline-grid;
     background-color: white;
 }
+
 .stepContainerView {
     grid-template-columns: 1fr;
 }
+
 .stepContainer {
     grid-template-columns: 2.5rem 1fr 2.5rem 2.5rem;
     grid-template-areas: 'overlay';
 }
+
 .stepContainerView,
 .stepContainer {
     position: relative;
     display: grid;
     justify-content: flex-start;
     align-items: flex-start;
-
     width: 100%;
     flex-grow: 1;
     flex-shrink: 1;
 }
+
 .title {
     grid-row: 1/2;
     display: flex;
@@ -49,16 +50,22 @@
     align-items: center;
     width: 100%;
 }
+
 .title p {
     color: var(--orange);
     font-weight: bolder;
     margin: 0;
 }
+
 .stepTextView,
 .stepText {
     color: var(--greydark);
     border-radius: 15px;
     text-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .stepText,
@@ -82,14 +89,14 @@
 .stepText {
     grid-column: 2/3;
 }
+
 .stepid {
     grid-column: 1/2;
     text-align: center;
     align-content: center;
-    height: 1.6rem;
     font-weight: bold;
     flex-shrink: 0;
-    background-color: rgb(228, 227, 227);
+    background-color: rgb(228 227 227);
     border-radius: 50%;
     width: 1.5rem;
     height: 1.5rem;
@@ -101,6 +108,7 @@
     height: 30px;
     margin-bottom: 10px;
 }
+
 .iconBox {
     grid-column: 3/4;
     display: flex;
@@ -110,6 +118,7 @@
     flex-grow: 1;
     height: 100%;
 }
+
 .newStepIcon {
     grid-column: 2/3;
     grid-row: 2/3;
@@ -128,18 +137,41 @@
 .newStepIcon:hover {
     background-color: var(--orange);
 }
+
+.restoreIcon,
 .OKIcon,
 .cancelIcon,
 .deleteIcon,
 .editIcon {
     position: relative;
     justify-content: center;
-    border-color: rgb(233, 229, 229);
+    border-color: rgb(233 229 229);
     font-size: 1.2rem;
-    padding-left: 0px;
+    padding-left: 0;
     flex-shrink: 0;
 }
 
+.restoreIcon {
+    grid-row: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    width: 3rem;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.faXmark {
+    position: absolute;
+    top: 50%;
+    font-size: 1.2rem;
+    transform: translateY(-50%);
+}
+
+.restoreIcon,
 .cancelIcon,
 .deleteIcon,
 .editIcon {
@@ -151,6 +183,7 @@
     color: var(--greydark);
 }
 
+.restoreIcon:hover,
 .editIcon:hover,
 .cancelIcon:hover,
 .deleteIcon:hover {
@@ -162,6 +195,7 @@
 .editIcon::before,
 .editIcon::after {
     --scale: 0;
+
     position: absolute;
     font-size: 0.7rem;
     top: 0.1rem;
@@ -182,9 +216,9 @@
     border-radius: 0.3rem;
 }
 
-.cancelIcon:hover:before,
-.newStepIcon:hover:before,
-.editIcon:hover:before {
+.cancelIcon:hover::before,
+.newStepIcon:hover::before,
+.editIcon:hover::before {
     --scale: 1;
 }
 
@@ -199,9 +233,11 @@
 .up {
     transform: rotate(180deg);
 }
+
 .down {
     transform: rotate(0deg);
 }
+
 .up,
 .down {
     position: relative;
@@ -212,53 +248,58 @@
     color: var(--greydark);
     border-radius: 50%;
     user-select: none;
-    -webkit-user-select: none;
     font-size: 20px;
     width: 25px;
     height: 25px;
-    padding: auto;
 }
 
 .up:hover,
 .down:hover {
-    background-color: rgba(187, 185, 185, 0.8);
+    background-color: rgb(187 185 185 / 0.8);
     color: var(--orange);
     cursor: pointer;
 }
+
 .buttonForNewStepText,
 .buttonForStepText {
     display: none;
 }
+
 @media (width <= 768px) {
     .stepTextView {
         font-size: 1rem;
         line-height: 1.6rem;
     }
+
     .stepBox {
-        grid-template-columns: 1fr 4rem;
+        grid-template-columns: 1fr 3rem;
     }
 
     .stepBox,
     .stepContainer {
         margin: 0.5rem 0;
     }
+
     .stepContainer {
         grid-template-columns: 3rem 1fr 4rem 2.5rem;
         flex-direction: column;
         align-items: flex-start;
         row-gap: 1rem;
     }
+
     .stepid {
         grid-column: 1/2;
         grid-row: 1/2;
         font-weight: bold;
         margin-bottom: 0.2rem;
     }
+
     .stepText,
     .newStepText {
         min-width: 0;
         width: 100%;
     }
+
     .stepText,
     .buttonForStepText {
         grid-column: 1/4;
@@ -267,6 +308,7 @@
         height: 100%;
         box-sizing: border-box;
     }
+
     .newStepText,
     .buttonForNewStepText {
         grid-area: overlay;
@@ -280,8 +322,8 @@
     .newStepIcon {
         grid-column: 2/3;
         grid-row: 1/2;
-        margin-right: 2rem;
     }
+
     .iconBox {
         grid-column: 3/4;
         grid-row: 1/2;

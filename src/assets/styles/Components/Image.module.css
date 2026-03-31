@@ -13,8 +13,9 @@
     margin: 20px;
     cursor: pointer;
 }
+
 .imageinput {
-    margin: 10px 0 10px 0;
+    margin: 10px 0;
     cursor: pointer;
 }
 
@@ -25,8 +26,7 @@ input[type='file'] {
 .imageIcon {
     position: absolute;
     justify-content: center;
-    border-color: rgb(233, 229, 229);
-    /* rotate: 45deg; */
+    border-color: rgb(233 229 229);
     font-size: 1.5rem;
     color: var(--greydark);
     cursor: pointer;
@@ -43,16 +43,15 @@ input[type='file'] {
 
 .numOfFiles {
     text-align: center;
-    margin: 5px 0 5px 0;
+    margin: 5px 0;
     font-size: smaller;
 }
+
 .foodimage {
     width: 100%;
     aspect-ratio: 1 / 1;
-
     border-radius: 5px;
     object-fit: cover;
-    /* z-index: 1; */
 }
 
 .imageContainer {
@@ -76,10 +75,12 @@ input[type='file'] {
     rotate: 45deg;
     transition: all 0.3s ease-in-out;
 }
+
 .imageContainer:hover .imageclicker {
     rotate: 0deg;
     opacity: 0.25;
 }
+
 .imagecross {
     position: absolute;
     color: white;
@@ -90,7 +91,7 @@ input[type='file'] {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(45deg);
-    padding: 0 0 0 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -106,7 +107,7 @@ input[type='file'] {
 
 .deleteIcon {
     position: absolute;
-    right: 0px;
+    right: 0;
     top: 25px;
     color: var(--greydark);
     cursor: pointer;
@@ -123,6 +124,7 @@ input[type='file'] {
 .unvisible {
     visibility: hidden;
 }
+
 @media (width <= 1300px) {
     .imagebox {
         grid-column: 1 /4;
@@ -135,11 +137,11 @@ input[type='file'] {
         grid-column: 1 /9;
         grid-row: 5/6;
     }
+
     .imageIconBox {
-        border: 3px solid #ffffff;
+        border: 3px solid #fff;
         border-radius: 50%;
-        background-color: rgb(228, 227, 227);
-        /* background-color: #ccc; */
+        background-color: rgb(228 227 227);
     }
 }
 
@@ -147,6 +149,7 @@ input[type='file'] {
     .imageIcon::before,
     .imageIcon::after {
         --scale: 0;
+
         position: absolute;
         font-size: 0.7rem;
         top: -0.3rem;
@@ -165,7 +168,7 @@ input[type='file'] {
         border-radius: 0.3rem;
     }
 
-    .imageIcon:hover:before {
+    .imageIcon:hover::before {
         --scale: 1;
     }
 

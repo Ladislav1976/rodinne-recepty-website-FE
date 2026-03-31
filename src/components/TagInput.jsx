@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import style from '../assets/styles/Components/TagInput.module.css';
+import style from '../assets/styles/components/TagInput.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -7,10 +7,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 function Tag(props) {
     return (
         <div className={style.tag} onClick={props.onTagDelete}>
-            <FontAwesomeIcon
-                icon={faXmark}
-                onClick={props.onTagDelete}
-            ></FontAwesomeIcon>{' '}
+            <FontAwesomeIcon icon={faXmark} onClick={props.onTagDelete}></FontAwesomeIcon>{' '}
             {props.tag.foodTag}
         </div>
     );
@@ -52,7 +49,7 @@ export default function TagInput(props) {
                 tag={tag}
                 key={tag.id}
                 onTagDelete={() => handleTagDelete(tag)}
-            />,
+            />
         );
     }
 
@@ -62,10 +59,7 @@ export default function TagInput(props) {
                 <div className={style.searchList}>{tagListRender}</div>
 
                 <div className={style.searchBox}>
-                    <div
-                        className={style.searchonClickButton}
-                        onClick={openModal}
-                    ></div>{' '}
+                    <div className={style.searchonClickButton} onClick={openModal}></div>{' '}
                     <input
                         type="text"
                         className={style.searchInput}
@@ -75,10 +69,7 @@ export default function TagInput(props) {
                         onChange={handleChange}
                         onKeyDown={handleKeyPress}
                     />
-                    <div
-                        className={style.searchButton}
-                        onClick={addSearchTagToTagList}
-                    >
+                    <div className={style.searchButton} onClick={addSearchTagToTagList}>
                         <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
                     </div>
                 </div>

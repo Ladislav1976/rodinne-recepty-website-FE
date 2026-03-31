@@ -1,4 +1,4 @@
-import style from '../assets/styles/Reports/Message.module.css';
+import style from '../assets/styles/reports/Message.module.css';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Message(props) {
@@ -19,12 +19,8 @@ export default function Message(props) {
             <div className={`${style.box} ${isError ? style.isError : ''}`}>
                 <h3 ref={msgRef}>{props.item}</h3>
             </div>
-            <div
-                className={`${style.boxOverlay} ${isVisible ? style.active : ''}`}
-            >
-                <div
-                    className={`${style.boxMobile} ${isError ? style.isError : ''}`}
-                >
+            <div className={`${style.boxOverlay} ${isVisible ? style.active : ''}`}>
+                <div className={`${style.boxMobile} ${isError ? style.isError : ''}`}>
                     <p ref={msgRef}>{props.item}</p>
                 </div>
             </div>

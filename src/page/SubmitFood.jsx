@@ -1,4 +1,3 @@
-/* eslint-disable array-callback-return */
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -6,16 +5,11 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useAuth from '../hooks/useAuth';
 import useEmailFormSubmit from '../hooks/useEmailFormSubmit';
 import { useItemsDownload } from '../hooks/Queries/useItemsDownload';
-import style from '../assets/styles/Pages/SubmitFood.module.css';
+import style from '../assets/styles/pages/SubmitFood.module.css';
 
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faCheck,
-    faTimes,
-    faBackward,
-    faSpinner,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faBackward, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import Message from '../reports/Message';
 import ModalMessage from '../modals/ModalMessage';
@@ -46,10 +40,10 @@ export default function SubmitFood(props) {
     const [validEmail, setValidEmail] = useState(false);
 
     const [emailMessage, setEmailMessage] = useState(
-        `Dobrý deň,\n\nPodľa našej dohody Vám zasielam podrobný recept.\n\nS pozdravom\n${auth?.userRes?.first_name} ${auth?.userRes?.last_name}`,
+        `Dobrý deň,\n\nPodľa našej dohody Vám zasielam podrobný recept.\n\nS pozdravom\n${auth?.userRes?.first_name} ${auth?.userRes?.last_name}`
     );
-
-    const itemsDw = useItemsDownload(ID, axiosPrivate, isSaving);
+    const params = new URLSearchParams(window.location.search);
+    const itemsDw = useItemsDownload(ID, axiosPrivate, isSaving, params);
 
     useEffect(() => {
         emailRef.current.focus();
@@ -64,12 +58,7 @@ export default function SubmitFood(props) {
     const [ingredientsList, setIngredientsList] = useState([]);
     const [urlList, setUrlList] = useState([]);
 
-    const food_form = useEmailFormSubmit(
-        name,
-        stepsList,
-        ingredientsList,
-        urlList,
-    );
+    const food_form = useEmailFormSubmit(name, stepsList, ingredientsList, urlList);
 
     useEffect(() => {
         if (!itemsDw.isLoading && itemsDw.data) {
@@ -119,8 +108,6 @@ export default function SubmitFood(props) {
                 message: emailMessage,
                 food_form: food_form,
                 html: `<h1>Hello</h1><img src="cid:unique@image"/>`,
-
-                // food_form:'food_form'
             },
         };
 
@@ -137,10 +124,7 @@ export default function SubmitFood(props) {
             if (!err?.respons) {
                 showMessage('No Server Response', true);
             } else if (err.response?.status === 409) {
-                showMessage(
-                    err.response?.data?.message || 'Chyba pri odosielaní',
-                    true,
-                );
+                showMessage(err.response?.data?.message || 'Chyba pri odosielaní', true);
             }
         } finally {
             setIsLoading(false);
@@ -162,44 +146,19 @@ export default function SubmitFood(props) {
 
                 <>
                     <div className={style.submitContainer}>
-                        <form
-                            className={style.form}
-                            ref={form}
-                            onSubmit={sendEmail}
-                            id="food_form"
-                        >
-                            {/* <p
-                                ref={errRef}
-                                className={
-                                    errMsg
-                                        ? style.errmsg
-                                        : successMsg
-                                          ? style.succmsg
-                                          : style.offscreen
-                                }
-                                aria-live="assertive"
-                            >
-                                {errMsg}
-                                {successMsg}
-                            </p> */}
+                        <form className={style.form} ref={form} onSubmit={sendEmail} id="food_form">
                             <h2>Odoslať recept</h2>
                             <div className={style.inputContainer}>
                                 <label className={style.label} htmlFor="email">
                                     Email :
                                     <FontAwesomeIcon
                                         icon={faCheck}
-                                        className={
-                                            validEmail
-                                                ? style.valid
-                                                : style.hide
-                                        }
+                                        className={validEmail ? style.valid : style.hide}
                                     />
                                     <FontAwesomeIcon
                                         icon={faTimes}
                                         className={
-                                            validEmail || !email
-                                                ? style.offScreen
-                                                : style.invalid
+                                            validEmail || !email ? style.offScreen : style.invalid
                                         }
                                     />
                                 </label>
@@ -211,21 +170,13 @@ export default function SubmitFood(props) {
                                         ref={emailRef}
                                         placeholder="email@gmail.com"
                                         autoComplete="off"
-                                        onChange={(e) =>
-                                            setEmail(e.target.value)
-                                        }
+                                        onChange={(e) => setEmail(e.target.value)}
                                         value={email}
                                         required
-                                        aria-invalid={
-                                            validEmail ? 'false' : 'true'
-                                        }
-                                        // aria-describedby="uidnote"
+                                        aria-invalid={validEmail ? 'false' : 'true'}
                                     />
                                 </div>
-                                <label
-                                    className={style.label}
-                                    htmlFor="emailová správa"
-                                >
+                                <label className={style.label} htmlFor="emailová správa">
                                     Správa:
                                 </label>
                                 <div className={style.inputBox}>
@@ -233,13 +184,10 @@ export default function SubmitFood(props) {
                                         type="text"
                                         id="emailová správa"
                                         autoComplete="off"
-                                        onChange={(e) =>
-                                            setEmailMessage(e.target.value)
-                                        }
+                                        onChange={(e) => setEmailMessage(e.target.value)}
                                         value={emailMessage}
                                         rows="10"
                                         required
-                                        // aria-describedby="uidnote"
                                     />
                                 </div>
                             </div>
@@ -254,11 +202,7 @@ export default function SubmitFood(props) {
                             </button>
                         </form>
                     </div>
-                    <div
-                        className={
-                            isLoading ? style.loadingContainer : style.offScreen
-                        }
-                    >
+                    <div className={isLoading ? style.loadingContainer : style.offScreen}>
                         <FontAwesomeIcon
                             className={style.loadingIcon}
                             icon={faSpinner}
@@ -268,10 +212,7 @@ export default function SubmitFood(props) {
                     </div>
                 </>
             </div>
-            <ModalMessage
-                visible={modalMessageFlag}
-                setModalFlag={setModalMessageFlag}
-            >
+            <ModalMessage visible={modalMessageFlag} setModalFlag={setModalMessageFlag}>
                 <Message item={message} isError={isError}></Message>
             </ModalMessage>
         </>

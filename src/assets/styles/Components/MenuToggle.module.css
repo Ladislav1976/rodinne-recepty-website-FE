@@ -29,7 +29,6 @@
     background-color: var(--greydark);
     transition-duration: 0.25s;
     user-select: none;
-    -webkit-user-select: none;
     outline: none;
 }
 
@@ -37,6 +36,7 @@
     content: '';
     top: -6px;
 }
+
 .hamburger > span::after {
     content: '';
     top: 6px;
@@ -45,19 +45,20 @@
 .menutoggle.isactive .hamburger > span {
     transform: rotate(45deg);
 }
+
 .menutoggle.isactive .hamburger > span::before {
     top: 0;
     transform: rotate(0deg);
 }
+
 .menutoggle.isactive .hamburger > span::after {
     top: 0;
     transform: rotate(90deg);
 }
+
 @media (width <= 1300px) {
     .menutoggle {
         display: block;
         cursor: pointer;
     }
-}
-@media (max-width: 764px) {
 }

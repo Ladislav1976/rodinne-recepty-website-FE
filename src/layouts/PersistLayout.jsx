@@ -11,10 +11,7 @@ const Layout2 = (props) => {
     return (
         <div className={'pageLayout'}>
             <header>
-                <RenderHeader
-                    toggle={[toggle, setToggle]}
-                    setErrMsg={props.setErrMsg}
-                />
+                <RenderHeader toggle={[toggle, setToggle]} setErrMsg={props.setErrMsg} />
             </header>
             <main>
                 <Outlet />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import style from '../assets/styles/Components/StepsInput.module.css';
+import style from '../assets/styles/components/StepsInput.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faTrash,
@@ -8,28 +8,41 @@ import {
     faFloppyDisk,
     faPlus,
     faAngleDown,
+    faTrashCanArrowUp,
 } from '@fortawesome/free-solid-svg-icons';
 import ModalStep from '../modals/ModalStep';
 import StepInputMobile from './StepInputMobile';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import { usePutStep } from '../hooks/Mutations/usePutStep';
 
 function Step(props) {
     const [step, setStep] = useState(props.step);
     const [stepDefault, setStepDefault] = useState('');
     const [modalStepFlag, setModalStepFlag] = useState(false);
     const [isVisibleStep, setIsVisibleStep] = useState(false);
+    const axiosPrivate = useAxiosPrivate();
+
     const component = props.component;
 
-    function handleUpdateStep(step) {
+    const putStep = usePutStep(
+        axiosPrivate,
+
+        props.showMessage,
+        props.setIsSaving,
+        props.itemsDw
+    );
+
+    function handleUpdateStep(event) {
         if (stepDefault === '') {
-            setStepDefault(step);
+            setStepDefault(event.target.value);
             setStep({
                 ...step,
-                step: step,
+                step: event.target.value,
             });
         } else {
             setStep({
                 ...step,
-                step: step,
+                step: event.target.value,
             });
         }
     }
@@ -50,59 +63,86 @@ function Step(props) {
     function openModal() {
         setModalStepFlag(true);
     }
+    async function handlePutStep() {
+        props.setIsSaving(true);
+        putStep.mutate({ id: step.id, deleted_at: props.deleted_at });
+    }
     return (
         <>
             <div
                 className={
-                    component === 'viewcomponent'
-                        ? style.stepContainerView
-                        : style.stepContainer
+                    component === 'viewcomponent' ? style.stepContainerView : style.stepContainer
                 }
             >
                 <div className={style.stepid}>{props.index + 1}.</div>
-                {/* <div className={style.stepBox}> */}
+
                 {component === 'viewcomponent' && (
-                    <div className={style.stepTextView}>{step.step}</div>
-                )}
-                {(component === 'editcomponent' ||
-                    component === 'newcomponent') && (
                     <>
+                        {' '}
                         <div
-                            className={style.buttonForStepText}
-                            onClick={openModal}
-                        ></div>
+                            className={style.stepTextView}
+                            style={{
+                                fontWeight: !props.is_deleted
+                                    ? ''
+                                    : props.deleted_at === step.deleted_at
+                                      ? 'bold'
+                                      : '',
+
+                                textDecoration: !props.is_deleted
+                                    ? ''
+                                    : props.deleted_at === step.deleted_at
+                                      ? 'underline'
+                                      : '',
+                                color: !props.is_deleted
+                                    ? ''
+                                    : props.deleted_at === step.deleted_at
+                                      ? 'green'
+                                      : '',
+                            }}
+                        >
+                            {step.step}
+
+                            {props.is_deleted && props.deleted_at !== step.deleted_at && (
+                                <div
+                                    className={style.restoreIcon}
+                                    onClick={handlePutStep}
+                                    style={{
+                                        color: props.deleted_at === step.deleted_at ? 'red' : '',
+                                    }}
+                                >
+                                    <FontAwesomeIcon
+                                        className={style.faTrashCan}
+                                        icon={faTrashCanArrowUp}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
+                {(component === 'editcomponent' || component === 'newcomponent') && (
+                    <>
+                        <div className={style.buttonForStepText} onClick={openModal}></div>
                         <textarea
                             className={style.stepText}
                             type="text"
                             rows="10"
                             aria-label="Existujúci postup prípravy"
                             value={step.step}
-                            onChange={(event) =>
-                                handleUpdateStep(event.target.value)
-                            }
+                            onChange={handleUpdateStep}
                         />
                     </>
                 )}
 
-                {(component === 'editcomponent' ||
-                    component === 'newcomponent') && (
+                {(component === 'editcomponent' || component === 'newcomponent') && (
                     <div className={style.iconBox}>
                         <div
-                            className={
-                                stepDefault === ''
-                                    ? style.OKIcon
-                                    : style.editIcon
-                            }
+                            className={stepDefault === '' ? style.OKIcon : style.editIcon}
                             onClick={() => handleUpdateStepList(step)}
                             datatooltip={stepDefault === '' ? 'OK' : 'Uložiť'}
                         >
                             <FontAwesomeIcon
-                                color={
-                                    stepDefault === '' ? '#558113' : '#fd0000'
-                                }
-                                icon={
-                                    stepDefault === '' ? faCheck : faFloppyDisk
-                                }
+                                color={stepDefault === '' ? '#558113' : '#fd0000'}
+                                icon={stepDefault === '' ? faCheck : faFloppyDisk}
                             />
                         </div>
 
@@ -115,18 +155,14 @@ function Step(props) {
                             <FontAwesomeIcon icon={faTrash} />
                         </div>
                         {stepDefault !== '' && (
-                            <div
-                                className={style.cancelIcon}
-                                onClick={() => handleCancelStep()}
-                            >
+                            <div className={style.cancelIcon} onClick={() => handleCancelStep()}>
                                 <FontAwesomeIcon icon={faXmark} />
                             </div>
                         )}
                     </div>
                 )}
 
-                {(component === 'editcomponent' ||
-                    component === 'newcomponent') && (
+                {(component === 'editcomponent' || component === 'newcomponent') && (
                     <div className={style.upddownbox}>
                         <div
                             className={style.up}
@@ -176,6 +212,7 @@ export default function StepsInput(props) {
     const [addedStep, setAddedStep] = useState('');
     const [modalStepFlag, setModalStepFlag] = useState(false);
     const [isVisibleStep, setIsVisibleStep] = useState(false);
+    let uniqueID = new Date().toISOString();
     const component = props.component;
 
     function handleChangeStep(step) {
@@ -184,10 +221,7 @@ export default function StepsInput(props) {
 
     function addStep(addedStep) {
         if (addedStep === '') return;
-        props.handleAddStep(
-            { id: uniqueID, step: addedStep, statusDelete: false },
-            stepsList,
-        );
+        props.handleAddStep({ id: uniqueID, step: addedStep, statusDelete: false }, stepsList);
         setAddedStep('');
     }
 
@@ -199,72 +233,63 @@ export default function StepsInput(props) {
         setModalStepFlag(true);
     }
 
-    const proceduteListRender = [];
-
-    for (let i = 0; i < stepsList.length; i++) {
-        if (stepsList[i].statusDelete === false) {
-            proceduteListRender.push(
-                <Step
-                    step={stepsList[i]}
-                    index={i}
-                    key={stepsList[i].id}
-                    updateStepList={props.updateStepList}
-                    handleStepDelete={handleStepDelete}
-                    stepMove={props.stepMove}
-                    component={component}
-                />,
-            );
-        }
-    }
-
-    let uniqueID = new Date().toISOString();
-
-    if (component === 'viewcomponent')
-        return (
-            <div className={style.addedstep}>
-                {' '}
-                <div className={style.title}>
-                    <p>Postup :</p>
-                </div>
-                {proceduteListRender}
-            </div>
-        );
     return (
         <>
+            {' '}
             <div className={style.stepBox}>
                 <div className={style.title}>
                     <p>Postup :</p>
-                </div>{' '}
-                <div
-                    className={style.buttonForNewStepText}
-                    onClick={openModal}
-                ></div>{' '}
-                <textarea
-                    className={style.newStepText}
-                    onKeyDown={props.stepKeyDown}
-                    placeholder="Pridať postup prípravy..."
-                    aria-label="Nový postup prípravy"
-                    rows="10"
-                    value={addedStep}
-                    onChange={(e) => handleChangeStep(e.target.value)}
-                />{' '}
-                <div
-                    className={style.newStepIcon}
-                    datatooltip="Uložiť"
-                    onClick={() => {
-                        addStep(addedStep);
-                    }}
-                >
-                    <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
                 </div>
+                {(component === 'editcomponent' || component === 'newcomponent') && (
+                    <>
+                        <div className={style.buttonForNewStepText} onClick={openModal}></div>{' '}
+                        <textarea
+                            className={style.newStepText}
+                            onKeyDown={props.stepKeyDown}
+                            placeholder="Pridať postup prípravy..."
+                            aria-label="Nový postup prípravy"
+                            rows="10"
+                            value={addedStep}
+                            onChange={(e) => handleChangeStep(e.target.value)}
+                        />{' '}
+                        <div
+                            className={style.newStepIcon}
+                            datatooltip="Uložiť"
+                            onClick={() => {
+                                addStep(addedStep);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                        </div>
+                    </>
+                )}{' '}
             </div>
-            <div className={style.addedstep}>{proceduteListRender}</div>
+            <div className={style.addedstep}>
+                {stepsList
+                    .filter((a) => a.statusDelete === false)
+                    .map((res, index) => {
+                        return (
+                            <Step
+                                step={res}
+                                index={index}
+                                key={res.id}
+                                updateStepList={props.updateStepList}
+                                handleStepDelete={handleStepDelete}
+                                stepMove={props.stepMove}
+                                component={component}
+                                is_deleted={props.is_deleted}
+                                deleted_at={props.deleted_at}
+                                itemsDw={props.itemsDw}
+                                showMessage={props.showMessage}
+                                setIsSaving={props.setIsSaving}
+                            />
+                        );
+                    })}
+            </div>{' '}
             <ModalStep visible={modalStepFlag} setModalFlag={setModalStepFlag}>
                 <StepInputMobile
                     isVisibleEdit={[isVisibleStep, setIsVisibleStep]}
                     step={addedStep}
-                    // searchAddToTagList={searchAddToTagList}
-                    // removeFromTagList={removeFromTagSet}
                     index={'N'}
                     handleOnChange={handleChangeStep}
                     handleUpdateList={addStep}

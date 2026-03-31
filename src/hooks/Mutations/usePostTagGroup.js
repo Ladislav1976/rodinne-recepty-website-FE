@@ -24,15 +24,10 @@ export const usePostTagGroup = (axiosPrivate) => {
         onError: (err, newTag, context) => {
             console.error('Error Post tagGroup :', err);
             if (context?.previousTags) {
-                queryClient.setQueryData(
-                    context.queryKey,
-                    context.previousTags,
-                );
+                queryClient.setQueryData(context.queryKey, context.previousTags);
             } else {
                 queryClient.setQueryData(context.queryKey, (old) => {
-                    return Array.isArray(old)
-                        ? old.filter((u) => u.id !== context.tempId)
-                        : [];
+                    return Array.isArray(old) ? old.filter((u) => u.id !== context.tempId) : [];
                 });
             }
         },
@@ -40,9 +35,7 @@ export const usePostTagGroup = (axiosPrivate) => {
             if (data?.data) {
                 queryClient.setQueryData(context.queryKey, (old) => {
                     if (!Array.isArray(old)) return [data.data];
-                    return old.map((unit) =>
-                        unit.id === context.tempId ? data.data : unit,
-                    );
+                    return old.map((unit) => (unit.id === context.tempId ? data.data : unit));
                 });
             }
             queryClient.invalidateQueries(context.queryKey);

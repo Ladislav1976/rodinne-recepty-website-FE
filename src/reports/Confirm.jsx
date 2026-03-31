@@ -1,9 +1,10 @@
-import style from '../assets/styles/Reports/Delete.module.css';
+import style from '../assets/styles/reports/Delete.module.css';
 import { useRef, useEffect, useState } from 'react';
 
-export default function DeleteConfirm(props) {
+export default function Confirm(props) {
     const [isVisible, setIsVisible] = useState(false);
     const setIsSaving = props.setIsSaving;
+    const is_deleted = props.is_deleted;
     const deleteRef = useRef();
     const cancelRef = useRef();
     const errRef = useRef();
@@ -23,14 +24,16 @@ export default function DeleteConfirm(props) {
     async function handleDelete() {
         setIsSaving(true);
         try {
-            const res = await props.onDelete();
-            if (res.status === 204) {
+            const res = await props.do();
+
+            if (res && res.status >= 200 && res.status < 300) {
                 handleCloseShowMessage(
-                    `${props.item.charAt(0).toUpperCase() + props.item.slice(1)} bol vymazaný.`,
-                    false,
+                    is_deleted === 'true' ? 'Recept bol obnovený.' : 'Recept bol vymazaný.',
+                    false
                 );
             }
         } catch (err) {
+            console.error('err', err);
             if (err.status && err.response.data.detail) {
                 handleCloseShowMessage(err.response.data.detail, true);
             } else {
@@ -42,7 +45,7 @@ export default function DeleteConfirm(props) {
         setIsVisible(false);
 
         setTimeout(() => {
-            props.handlerFoodDeleteConfirmed(message, isError);
+            props.handleDoConfirmed(message, isError);
         }, 500);
     }
 
@@ -50,14 +53,14 @@ export default function DeleteConfirm(props) {
         setIsVisible(false);
 
         setTimeout(() => {
-            props.onDeleteCancel();
+            props.cancel();
         }, 500);
     }
     return (
         <>
             <div className={style.box}>
                 <h3>
-                    Tento {props.item} bude natrvalo vymazaný. <br />
+                    {props.message} <br />
                     Chcete pokračovať?
                 </h3>
 
@@ -72,7 +75,7 @@ export default function DeleteConfirm(props) {
                     <button
                         ref={cancelRef}
                         className={`${style.button} ${style.cancel}`}
-                        onClick={props.onDeleteCancel}
+                        onClick={props.cancel}
                     >
                         NIE
                     </button>
@@ -91,7 +94,7 @@ export default function DeleteConfirm(props) {
             >
                 <div className={style.boxMobile}>
                     <p>
-                        Tento {props.item} bude natrvalo vymazaný. <br />
+                        {props.message} <br />
                         Chcete pokračovať?
                     </p>
                     <div className={style.buttonContainer}>
@@ -101,10 +104,7 @@ export default function DeleteConfirm(props) {
                         >
                             ANO
                         </button>
-                        <button
-                            className={`${style.button} ${style.cancel}`}
-                            onClick={handleClose}
-                        >
+                        <button className={`${style.button} ${style.cancel}`} onClick={handleClose}>
                             NIE
                         </button>
                     </div>

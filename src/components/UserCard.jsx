@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import style from '../assets/styles/Components/UserCard.module.css';
+import style from '../assets/styles/components/UserCard.module.css';
 import { usePutUser } from '../hooks/Mutations/usePutUser';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import default_image from '../image/user_image.png';
@@ -120,11 +120,7 @@ export default function UserCard({ userCard, closeModal }) {
                                     <th> Stav účtu</th>
                                     <td>
                                         {
-                                            <div
-                                                className={
-                                                    style.status_container
-                                                }
-                                            >
+                                            <div className={style.status_container}>
                                                 <label className={style.switch}>
                                                     <input
                                                         type="checkbox"
@@ -133,17 +129,9 @@ export default function UserCard({ userCard, closeModal }) {
                                                                 ? 'Aktívny'
                                                                 : 'Neaktívny'
                                                         }
-                                                        checked={
-                                                            status === true
-                                                        }
-                                                        disabled={
-                                                            role === 'Admin'
-                                                        }
-                                                        onChange={(e) =>
-                                                            handleUpdateStatus(
-                                                                e,
-                                                            )
-                                                        }
+                                                        checked={status === true}
+                                                        disabled={role === 'Admin'}
+                                                        onChange={(e) => handleUpdateStatus(e)}
                                                     />
                                                     <span
                                                         className={style.slider}
@@ -156,9 +144,7 @@ export default function UserCard({ userCard, closeModal }) {
                                                     ></span>
                                                 </label>
                                                 <span
-                                                    className={
-                                                        style.status_text
-                                                    }
+                                                    className={style.status_text}
                                                     style={{
                                                         color:
                                                             status === true
@@ -166,9 +152,7 @@ export default function UserCard({ userCard, closeModal }) {
                                                                 : '#999',
                                                     }}
                                                 >
-                                                    {status === true
-                                                        ? 'Aktívny'
-                                                        : 'Neaktívny'}
+                                                    {status === true ? 'Aktívny' : 'Neaktívny'}
                                                 </span>
                                             </div>
                                         }
@@ -199,83 +183,52 @@ export default function UserCard({ userCard, closeModal }) {
                                             <th>{r.viewRole}</th>
                                             <td>
                                                 {
-                                                    <div
-                                                        className={
-                                                            style.status_container
-                                                        }
-                                                    >
-                                                        <label
-                                                            className={
-                                                                style.switch
-                                                            }
-                                                        >
+                                                    <div className={style.status_container}>
+                                                        <label className={style.switch}>
                                                             <input
                                                                 type="checkbox"
                                                                 aria-label={
-                                                                    role ===
-                                                                    r.role
+                                                                    role === r.role
                                                                         ? 'Aktívny'
                                                                         : 'Neaktívny'
                                                                 }
-                                                                checked={
-                                                                    role ===
-                                                                    r.role
-                                                                }
-                                                                disabled={
-                                                                    r.role ===
-                                                                    'Admin'
-                                                                }
+                                                                checked={role === r.role}
+                                                                disabled={r.role === 'Admin'}
                                                                 onChange={() =>
-                                                                    handleUpdateRole(
-                                                                        r.role,
-                                                                    )
+                                                                    handleUpdateRole(r.role)
                                                                 }
                                                             />
                                                             <span
-                                                                className={
-                                                                    style.slider
-                                                                }
-                                                                disabled={
-                                                                    r.role ===
-                                                                    'Admin'
-                                                                }
+                                                                className={style.slider}
+                                                                disabled={r.role === 'Admin'}
                                                                 style={{
                                                                     cursor:
-                                                                        role ===
-                                                                        'Admin'
+                                                                        role === 'Admin'
                                                                             ? 'context-menu'
                                                                             : 'pointer',
 
                                                                     backgroundColor:
-                                                                        role ===
-                                                                        r.role
-                                                                            ? role ===
-                                                                              'Admin'
+                                                                        role === r.role
+                                                                            ? role === 'Admin'
                                                                                 ? 'rgba(1, 168, 1, 0.36)'
                                                                                 : 'rgb(1, 168, 1)'
                                                                             : '#999' &&
-                                                                                r.role ===
-                                                                                    'Admin'
+                                                                                r.role === 'Admin'
                                                                               ? '#99999933'
                                                                               : '#999',
                                                                 }}
                                                             ></span>
                                                         </label>
                                                         <span
-                                                            className={
-                                                                style.status_text
-                                                            }
+                                                            className={style.status_text}
                                                             style={{
                                                                 color:
-                                                                    role ===
-                                                                    r.role
-                                                                        ? role ===
-                                                                          'Admin'
+                                                                    role === r.role
+                                                                        ? role === 'Admin'
                                                                             ? 'rgba(1, 168, 1, 0.36)'
                                                                             : 'rgb(1, 168, 1)'
                                                                         : '#999' &&
-                                                                            r.role ===
-                                                                                'Admin'
+                                                                            r.role === 'Admin'
                                                                           ? '#99999933'
                                                                           : '#999',
                                                             }}

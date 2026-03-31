@@ -1,13 +1,7 @@
-import style from '../assets/styles/Components/UrlInput.module.css';
+import style from '../assets/styles/components/UrlInput.module.css';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faTrash,
-    faCheck,
-    faXmark,
-    faFloppyDisk,
-    faPlus,
-} from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faCheck, faXmark, faFloppyDisk, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 function Url(props) {
     const [urlDefault, setUrlDefault] = useState('');
@@ -72,6 +66,18 @@ function Url(props) {
                                 href={props.url.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                style={{
+                                    fontWeight: !props.is_deleted
+                                        ? ''
+                                        : props.deleted_at === url.deleted_at
+                                          ? 'bold'
+                                          : '',
+                                    textDecoration: !props.is_deleted
+                                        ? ''
+                                        : props.deleted_at === url.deleted_at
+                                          ? 'underline'
+                                          : '',
+                                }}
                             >
                                 {props.url.urlname}
                             </a>{' '}
@@ -80,8 +86,7 @@ function Url(props) {
                 </>
             )}
 
-            {(props.component === 'editcomponent' ||
-                props.component === 'newcomponent') && (
+            {(props.component === 'editcomponent' || props.component === 'newcomponent') && (
                 <>
                     <div className={style.urlid}>{props.index + 1}.</div>
                     <div className={style.intContainer}>
@@ -100,8 +105,6 @@ function Url(props) {
                             value={url.url}
                             type="url"
                             id="url"
-                            // pattern="https://.*"
-
                             name="url"
                             aria-label="Existujúca url adresa webovej stránky"
                             size={1000}
@@ -109,12 +112,7 @@ function Url(props) {
                         />
                     </div>
                     <div className={style.iconBox}>
-                        <div
-                            className={
-                                isChanged ? style.editIcon : style.OKIcon
-                            }
-                            // datatooltip={urlDefault === '' ? 'OK' : 'Uložiť'}
-                        >
+                        <div className={isChanged ? style.editIcon : style.OKIcon}>
                             <FontAwesomeIcon
                                 color={isChanged ? '#fd0000' : '#558113'}
                                 icon={isChanged ? faFloppyDisk : faCheck}
@@ -133,14 +131,8 @@ function Url(props) {
                             />
                         </div>
                         {isChanged && (
-                            <div
-                                className={style.cancelIcon}
-                                datatooltip="Zrušiť"
-                            >
-                                <FontAwesomeIcon
-                                    icon={faXmark}
-                                    onClick={() => handleCancelUrl()}
-                                />
+                            <div className={style.cancelIcon} datatooltip="Zrušiť">
+                                <FontAwesomeIcon icon={faXmark} onClick={() => handleCancelUrl()} />
                             </div>
                         )}
                     </div>
@@ -157,6 +149,7 @@ export default function UrlInput(props) {
     const [addedUrl, setAddedUrl] = useState('');
     const [addedUrlName, setAddedUrlName] = useState('');
     const [validUrl, setValidUrl] = useState(false);
+    const [inputNewUrlIsVisible, setInputNewUrlIsVisible] = useState(false);
     let uniqueID = new Date().toISOString();
     const component = props.component;
 
@@ -171,9 +164,7 @@ export default function UrlInput(props) {
     function addURL() {
         if (!addedUrl || !addedUrlName) return;
         if (!validUrl) {
-            props.handlerSetModalErrorMissing(
-                'Neplatný formát! Adresa musí začínať s "https://',
-            );
+            props.handlerSetModalErrorMissing('Neplatný formát! Adresa musí začínať s "https://');
             return;
         }
 
@@ -185,7 +176,7 @@ export default function UrlInput(props) {
                 urlname: addedUrlName,
                 statusDelete: false,
             },
-            urlList,
+            urlList
         );
         setAddedUrl('');
         setAddedUrlName('');
@@ -197,79 +188,75 @@ export default function UrlInput(props) {
     function handleChangeUrlName(event) {
         setAddedUrlName(event.target.value);
     }
-    let urlListRender = [];
 
-    // eslint-disable-next-line array-callback-return
-    urlList?.map((url, index) => {
-        if (url.statusDelete === false) {
-            urlListRender.push(
-                <Url
-                    url={url}
-                    key={url.id}
-                    index={index}
-                    urlList={urlList}
-                    component={component}
-                    handleUrlDelete={handleUrlDelete}
-                    updateUrlList={props.updateUrlList}
-                />,
-            );
-        }
-    });
-    if (component === 'viewcomponent')
-        return (
+    return (
+        <>
             <div className={style.urlBox}>
-                {' '}
                 <div className={style.title}>
                     <p>URL :</p>
                 </div>{' '}
-                <div className={style.urlrender}> {urlListRender}</div>
+                {(component === 'editcomponent' || component === 'newcomponent') && (
+                    <>
+                        {component === 'editcomponent' && !inputNewUrlIsVisible && (
+                            <div
+                                className={style.newUrlInputVisible}
+                                onClick={() => setInputNewUrlIsVisible(true)}
+                            >
+                                <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                            </div>
+                        )}
+                        {(component === 'newcomponent' ||
+                            (component === 'editcomponent' && inputNewUrlIsVisible)) && (
+                            <>
+                                <div className={style.inputContainer}>
+                                    <input
+                                        className={style.newUrl}
+                                        value={addedUrlName}
+                                        type="text"
+                                        id="urlName"
+                                        name="urlName"
+                                        aria-label="Názov novej url adresy"
+                                        placeholder="Názov"
+                                        onChange={handleChangeUrlName}
+                                    />
+                                    <input
+                                        className={style.newUrl}
+                                        value={addedUrl}
+                                        type="url"
+                                        id="url"
+                                        name="url"
+                                        aria-label="Nová url adresa"
+                                        placeholder="https://example.com"
+                                        onChange={handleChangeUrl}
+                                    />
+                                </div>{' '}
+                                <div className={style.newUrlAdd} onClick={addURL}>
+                                    <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                                </div>
+                            </>
+                        )}
+                    </>
+                )}{' '}
             </div>
-        );
-    return (
-        <>
-            {(component === 'editcomponent' ||
-                component === 'newcomponent') && (
-                <>
-                    <div className={style.urlBox}>
-                        <div className={style.title}>
-                            <p>URL :</p>
-                        </div>
-
-                        <div className={style.inputContainer}>
-                            <input
-                                className={style.newUrl}
-                                value={addedUrlName}
-                                ref={props.urlRef}
-                                onKeyDown={props.urlKeyDown}
-                                type="text"
-                                id="urlName"
-                                name="urlName"
-                                aria-label="Názov novej url adresy"
-                                placeholder="Názov"
-                                onChange={handleChangeUrlName}
+            <div className={style.urlrender}>
+                {(urlList || [])
+                    .filter((a) => a.statusDelete === false)
+                    .map((url, index) => {
+                        return (
+                            <Url
+                                url={url}
+                                key={url.id}
+                                index={index}
+                                urlList={urlList}
+                                component={component}
+                                handleUrlDelete={handleUrlDelete}
+                                updateUrlList={props.updateUrlList}
+                                is_deleted={props.is_deleted}
+                                deleted_at={props.deleted_at}
                             />
-                            <input
-                                className={style.newUrl}
-                                value={addedUrl}
-                                ref={props.urlRef}
-                                onKeyDown={props.urlKeyDown}
-                                type="url"
-                                id="url"
-                                name="url"
-                                aria-label="Nová url adresa"
-                                placeholder="https://example.com"
-                                onChange={handleChangeUrl}
-                            />
-                        </div>
-                        {/* </div> */}
-
-                        <div className={style.newUrlIcon} onClick={addURL}>
-                            <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
-                        </div>
-                    </div>
-                </>
-            )}
-            <div className={style.urlrender}> {urlListRender}</div>
+                        );
+                    })}
+            </div>
         </>
     );
 }

@@ -10,6 +10,7 @@
     box-sizing: border-box;
     overflow-y: auto;
 }
+
 .form {
     display: flex;
     justify-content: flex-start;
@@ -24,17 +25,12 @@
     padding: 0;
     flex: 1 1 0;
     overflow-y: auto;
+
     & h4 {
         color: white;
     }
-    /* & h4:nth-last-of-type(1) {
-        color: var(--greydark);
-        display: none;
-    }
-    & h4:nth-last-of-type(2) {
-        color: white;
-    } */
 }
+
 .user_info {
     position: relative;
     display: flex;
@@ -44,14 +40,16 @@
     background-color: white;
     min-width: 100%;
 }
+
 .user_photo {
     position: relative;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: flex-end;
-    margin: 2rem 2rem 0 2rem;
+    margin: 2rem 2rem 0;
 }
+
 .user_photo img {
     display: block;
     width: 100%;
@@ -61,6 +59,7 @@
     border-radius: 1rem;
     padding: 0;
 }
+
 .user_details {
     position: relative;
     color: var(--greydark);
@@ -71,6 +70,7 @@
     width: 100%;
     padding: 2rem 2rem 1rem 0;
 }
+
 .user_details table {
     width: 100%;
     border-collapse: separate;
@@ -85,6 +85,7 @@
 .user_details tr:last-child > td {
     border-bottom: none;
 }
+
 .user_details th,
 .user_details td {
     border-bottom: 1px solid #eee;
@@ -131,16 +132,13 @@
 .slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-color: #ccc;
     transition: 0.4s;
     border-radius: 20px;
 }
 
-.slider:before {
+.slider::before {
     position: absolute;
     content: '';
     height: 14px;
@@ -153,9 +151,10 @@
 }
 
 input:checked + .slider {
-    background-color: rgb(1, 168, 1);
+    background-color: rgb(1 168 1);
 }
-input:checked + .slider:before {
+
+input:checked + .slider::before {
     transform: translateX(20px);
 }
 
@@ -188,15 +187,14 @@ input:checked + .slider:before {
     flex-direction: column;
     width: 100%;
 }
+
 .button_container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    /* gap: 8px; */
     width: 100%;
     background-color: white;
-
     padding: 0 2rem;
 }
 
@@ -206,23 +204,24 @@ input:checked + .slider:before {
     cursor: pointer;
     border-radius: 0.6rem;
     border: 1px solid #ccc;
-
     background-color: var(--greydark);
     color: white;
     font-size: 0.8rem;
     font-weight: 500;
     text-align: center;
     margin: 1rem;
+
     &:hover {
         background-color: var(--orange);
-
         color: white;
     }
 }
+
 .cancel {
     background-color: #f9f9f9;
     color: var(--greydark);
 }
+
 .imageLoadBox {
     display: flex;
     justify-content: center;
@@ -231,14 +230,17 @@ input:checked + .slider:before {
     height: 3rem;
     border-radius: 50%;
 }
+
 .imageIcon {
     font-size: 1.3rem;
     cursor: pointer;
     margin: 0;
 }
+
 .imageIcon:hover {
     color: var(--orange);
 }
+
 .buttonImage {
     width: 120px;
     padding: 0.4rem;
@@ -251,12 +253,13 @@ input:checked + .slider:before {
     font-weight: 400;
     text-align: center;
     margin: 0;
+
     &:hover {
         background-color: var(--orange);
-
         color: white;
     }
 }
+
 .errmsg {
     position: absolute;
     top: 0.2rem;
@@ -274,25 +277,28 @@ input:checked + .slider:before {
 .hiden {
     display: none;
 }
+
 .iconSave,
 .iconCancel {
     display: none;
 }
+
 @media (width <= 900px) {
     .user_info {
         grid-template-columns: auto;
         width: auto;
     }
 }
+
 @media (width >= 768px) {
     .button {
         &:hover {
             background-color: var(--orange);
-
             color: white;
         }
     }
 }
+
 @media (width <= 768px) {
     .user_info {
         flex-direction: column;
@@ -303,13 +309,14 @@ input:checked + .slider:before {
         width: 100%;
         height: 100%;
         border-radius: 0;
-
         background-color: white;
+
         & h4 {
             margin-top: 2rem;
             color: var(--greydark);
         }
     }
+
     .button_container {
         justify-content: space-between;
         margin-bottom: 2rem;
@@ -318,15 +325,18 @@ input:checked + .slider:before {
     .imageIcon:hover {
         color: var(--greydark);
     }
+
     .imageLoadBox {
-        border: 3px solid #ffffff;
+        border: 3px solid #fff;
         margin-top: 1rem;
-        background-color: rgb(228, 227, 227);
+        background-color: rgb(228 227 227);
     }
+
     .user_details {
         padding: 0 0.5rem;
     }
+
     .user_photo {
-        margin: 1rem 2rem 1rem;
+        margin: 1rem 2rem;
     }
 }

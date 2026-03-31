@@ -7,7 +7,7 @@
 
 .Appheader {
     width: 100%;
-    top: 0px;
+    top: 0;
     background-color: var(--greydark);
     display: flex;
     justify-content: center;
