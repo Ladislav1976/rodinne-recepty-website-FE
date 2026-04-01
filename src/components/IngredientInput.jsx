@@ -30,51 +30,11 @@ function Ing(props) {
     return (
         <>
             <div className={style.ingredientContent}>
-                <div
-                    className={style.qtUnit}
-                    style={{
-                        color: !props.is_deleted
-                            ? ''
-                            : props.deleted_at === props.ing.deleted_at
-                              ? 'green'
-                              : '',
-
-                        textDecoration: !props.is_deleted
-                            ? ''
-                            : props.deleted_at === props.ing.deleted_at
-                              ? 'underline'
-                              : '',
-                        fontWeight: !props.is_deleted
-                            ? ''
-                            : props.deleted_at === props.ing.deleted_at
-                              ? 'bold'
-                              : '',
-                    }}
-                >
+                <div className={style.qtUnit}>
                     <Quantity quantity={props.ing?.quantity} />
                     <Unit unit={props.ing?.unit?.unit} />
                 </div>
-                <div
-                    className={style.ingreUpDown}
-                    style={{
-                        textDecoration: !props.is_deleted
-                            ? ''
-                            : props.deleted_at === props.ing.deleted_at
-                              ? 'underline'
-                              : '',
-                        fontWeight: !props.is_deleted
-                            ? ''
-                            : props.deleted_at === props.ing.deleted_at
-                              ? 'bold'
-                              : '',
-
-                        color: !props.is_deleted
-                            ? ''
-                            : props.deleted_at === props.ing.deleted_at
-                              ? 'green'
-                              : '',
-                    }}
-                >
+                <div className={style.ingreUpDown}>
                     <Ingredient ing={props.ing?.ingredient?.ingredient} />
                     {(component === 'editcomponent' || component === 'newcomponent') && (
                         <>
@@ -168,25 +128,29 @@ function IngredientGroup(props) {
 
     return (
         <>
-            <div className={style.ingredientsbox}>
+            <div
+                className={style.ingredientsbox}
+                style={{
+                    backgroundColor: !props.is_deleted
+                        ? ''
+                        : props.deleted_at === group.deleted_at
+                          ? 'var(--grey)'
+                          : '',
+                }}
+            >
                 {component === 'viewcomponent' && (
-                    <div
-                        className={style.title}
-                        style={{
-                            color: !props.is_deleted
-                                ? ''
-                                : props.deleted_at === group.deleted_at
-                                  ? 'green'
-                                  : '',
-                            textDecoration: !props.is_deleted
-                                ? ''
-                                : props.deleted_at === group.deleted_at
-                                  ? 'underline'
-                                  : '',
-                            textDecorationColor: 'green',
-                        }}
-                    >
-                        <p>{group.groupName}</p>
+                    <div className={style.title}>
+                        <p
+                            style={{
+                                color: !props.is_deleted
+                                    ? ''
+                                    : props.deleted_at === group.deleted_at
+                                      ? 'var(--greydark)'
+                                      : '',
+                            }}
+                        >
+                            {group.groupName}
+                        </p>
                     </div>
                 )}
 

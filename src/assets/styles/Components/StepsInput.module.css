@@ -25,6 +25,7 @@
 
 .stepContainerView {
     grid-template-columns: 1fr;
+    border-radius: 5px;
 }
 
 .stepContainer {

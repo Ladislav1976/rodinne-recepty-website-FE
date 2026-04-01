@@ -19,10 +19,10 @@ import { faBackward, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 
 import useAuth from '../hooks/useAuth';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import { useUnit } from '../hooks/Queries/useUnit';
-import { useTagGroups } from '../hooks/Queries/useTagGroups';
-import { usePostFood } from '../hooks/Mutations/usePostFood';
-import { usePostImage } from '../hooks/Mutations/usePostImage';
+import { useUnit } from '../hooks/queries/useUnit';
+import { useTagGroups } from '../hooks/queries/useTagGroups';
+import { usePostFood } from '../hooks/mutations/usePostFood';
+import { usePostImage } from '../hooks/mutations/usePostImage';
 
 import { useQueryClient } from '@tanstack/react-query';
 import MenuToggle from '../components/MenuToggle';

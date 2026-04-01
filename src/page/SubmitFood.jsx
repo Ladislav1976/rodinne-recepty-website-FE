@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useAuth from '../hooks/useAuth';
 import useEmailFormSubmit from '../hooks/useEmailFormSubmit';
-import { useItemsDownload } from '../hooks/Queries/useItemsDownload';
+import { useItemsDownload } from '../hooks/queries/useItemsDownload';
 import style from '../assets/styles/pages/SubmitFood.module.css';
 
 import axios from 'axios';

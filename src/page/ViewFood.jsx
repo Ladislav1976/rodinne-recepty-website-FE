@@ -26,8 +26,8 @@ import {
 import { useParams } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import { useItemsDownload } from '../hooks/Queries/useItemsDownload';
-import { useRestoreFood } from '../hooks/Mutations/useRestoreFood';
+import { useItemsDownload } from '../hooks/queries/useItemsDownload';
+import { useRestoreFood } from '../hooks/mutations/useRestoreFood';
 import ModalMessage from '../modals/ModalMessage';
 import Message from '../reports/Message';
 import Confirm from '../reports/Confirm';

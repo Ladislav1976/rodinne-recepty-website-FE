@@ -3,7 +3,7 @@ import style from '../assets/styles/components/Tag.module.css';
 
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-import { usePostTag } from '../hooks/Mutations/usePostTag';
+import { usePostTag } from '../hooks/mutations/usePostTag';
 
 export default function Tag({ tagGroupQf }) {
     let tagRef = useRef();

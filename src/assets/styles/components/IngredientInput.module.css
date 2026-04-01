@@ -58,13 +58,17 @@ input {
     grid-row: 2/3;
     align-self: start;
     background-color: rgb(255 255 255);
-    border-radius: 10px;
+    border-radius: 5px;
     display: flex;
     flex-direction: column;
     margin: 0;
     width: 100%;
     height: auto;
     gap: 1rem;
+}
+
+.ingredientsbox .title p {
+    color: var(--orange);
 }
 
 .ingredientsGroupcontainer {

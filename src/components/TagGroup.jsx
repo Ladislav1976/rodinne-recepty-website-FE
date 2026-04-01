@@ -3,7 +3,7 @@ import style from '../assets/styles/components/TagGroup.module.css';
 
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-import { usePostTagGroup } from '../hooks/Mutations/usePostTagGroup';
+import { usePostTagGroup } from '../hooks/mutations/usePostTagGroup';
 
 export default function TagGroup() {
     const [errMsg, setErrMsg] = useState('');

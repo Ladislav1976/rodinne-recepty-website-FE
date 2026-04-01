@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import style from '../assets/styles/pages/Users.module.css';
-import { useUsers } from '../hooks/Queries/useUsers';
+import { useUsers } from '../hooks/queries/useUsers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import user_image from '../image/user_image.png';
 import { faSpinner, faCircle } from '@fortawesome/free-solid-svg-icons';

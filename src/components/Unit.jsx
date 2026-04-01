@@ -3,7 +3,7 @@ import style from '../assets/styles/components/Unit.module.css';
 
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-import { usePostUnit } from '../hooks/Mutations/usePostUnit';
+import { usePostUnit } from '../hooks/mutations/usePostUnit';
 
 export default function Unit() {
     const [errMsg, setErrMsg] = useState('');

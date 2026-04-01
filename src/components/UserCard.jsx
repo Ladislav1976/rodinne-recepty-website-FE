@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import style from '../assets/styles/components/UserCard.module.css';
-import { usePutUser } from '../hooks/Mutations/usePutUser';
+import { usePutUser } from '../hooks/mutations/usePutUser';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import default_image from '../image/user_image.png';
 export default function UserCard({ userCard, closeModal }) {

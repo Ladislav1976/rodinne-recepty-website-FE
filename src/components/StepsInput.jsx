@@ -13,7 +13,7 @@ import {
 import ModalStep from '../modals/ModalStep';
 import StepInputMobile from './StepInputMobile';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import { usePutStep } from '../hooks/Mutations/usePutStep';
+import { usePutStep } from '../hooks/mutations/usePutStep';
 
 function Step(props) {
     const [step, setStep] = useState(props.step);
@@ -73,33 +73,20 @@ function Step(props) {
                 className={
                     component === 'viewcomponent' ? style.stepContainerView : style.stepContainer
                 }
+                style={{
+                    backgroundColor: !props.is_deleted
+                        ? ''
+                        : props.deleted_at === step.deleted_at
+                          ? 'var(--grey)'
+                          : '',
+                }}
             >
                 <div className={style.stepid}>{props.index + 1}.</div>
 
                 {component === 'viewcomponent' && (
                     <>
                         {' '}
-                        <div
-                            className={style.stepTextView}
-                            style={{
-                                fontWeight: !props.is_deleted
-                                    ? ''
-                                    : props.deleted_at === step.deleted_at
-                                      ? 'bold'
-                                      : '',
-
-                                textDecoration: !props.is_deleted
-                                    ? ''
-                                    : props.deleted_at === step.deleted_at
-                                      ? 'underline'
-                                      : '',
-                                color: !props.is_deleted
-                                    ? ''
-                                    : props.deleted_at === step.deleted_at
-                                      ? 'green'
-                                      : '',
-                            }}
-                        >
+                        <div className={style.stepTextView} style={{}}>
                             {step.step}
 
                             {props.is_deleted && props.deleted_at !== step.deleted_at && (
