@@ -1,0 +1,18 @@
+.loadingContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+    flex: 1 1 0;
+    box-sizing: border-box;
+}
+
+.loadingIcon {
+    font-size: 100px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: grey;
+}

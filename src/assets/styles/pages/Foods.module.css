@@ -1,0 +1,174 @@
+.panel {
+    position: relative;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    height: 3rem;
+    padding: 5px;
+    border-bottom: 3px solid var(--greydark);
+    z-index: 5;
+}
+
+.foodButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    width: fit-content;
+    white-space: nowrap;
+    margin: 0 1rem;
+    padding: 0.5rem;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    width: 3rem;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.faXmark {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.foodsmain {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+}
+
+.main {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border-right: var(--border3px);
+    border-left: var(--border3px);
+    height: 100%;
+    flex: 1 1 0;
+    width: 100%;
+    max-width: 100rem;
+}
+
+.tags {
+    width: 150px;
+    font-size: small;
+}
+
+.ingredient {
+    display: flex;
+    flex-direction: row;
+    color: green;
+}
+
+.foodtypesbox {
+    display: flex;
+    flex-direction: column;
+    background-color: whitesmoke;
+    width: 150px;
+}
+
+.food {
+    margin: 0 0 10px 20px;
+}
+
+.image {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    border-radius: 50%;
+}
+
+.checkboxInput:checked + .label {
+    text-decoration: underline;
+    font-size: 12px;
+    color: var(--orange);
+    font-weight: bold;
+}
+
+.label {
+    font-size: 10px;
+    font-weight: bold;
+    vertical-align: baseline;
+    cursor: pointer;
+}
+
+.foodMaso {
+    margin: 0 0 10px 40px;
+}
+
+.label:hover {
+    text-decoration: underline;
+    font-size: 12px;
+    color: var(--orange);
+}
+
+.timesIngredient {
+    box-sizing: border-box;
+    text-align: right;
+    width: 50px;
+}
+
+.unitIngredient {
+    width: 55px;
+    padding-left: 5px;
+}
+
+.ingIngredient {
+    width: 110px;
+}
+
+.loadingContainer {
+    width: auto;
+    flex-grow: 1;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ordering {
+    width: 150px;
+}
+
+@media (width <= 1024px) {
+    .panel {
+        display: flex;
+        justify-content: space-between;
+        padding-right: 1rem;
+        height: 3rem;
+    }
+
+    .main {
+        width: 100%;
+        border-right: none;
+        border-left: none;
+    }
+}
+
+@media (width >= 1024px) {
+    .button {
+        cursor: pointer;
+
+        &&:hover {
+            color: var(--orange);
+        }
+    }
+}

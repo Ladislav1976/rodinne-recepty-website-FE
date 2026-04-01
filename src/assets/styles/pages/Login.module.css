@@ -1,0 +1,557 @@
+.main {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-grow: 1;
+    min-height: 100%;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
+    overflow-y: auto;
+}
+
+.layerMain {
+    background: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
+    border-radius: 2rem;
+    width: auto;
+    min-height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.photo {
+    width: 40rem;
+    aspect-ratio: 1/1;
+    background-image: url('../../../image/photokava.jpg');
+    background-repeat: no-repeat;
+    border-radius: 1rem;
+    background-position: center;
+    background-size: cover;
+}
+
+.mainbox {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+    border-radius: 2rem;
+    border: 1px solid rgb(255 255 255 / 0.3);
+    box-shadow: 0 8px 32px 0 rgb(31 38 135 / 0.37);
+    padding: 2rem;
+    height: 100%;
+    width: auto;
+}
+
+.bottomContainer {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    z-index: 100;
+
+    & p {
+        font-size: 0.8rem;
+        color: grey;
+        margin: 0;
+    }
+}
+
+.resetLink {
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: var(--greydark);
+    margin-left: 0.2rem;
+}
+
+.resetLink:hover {
+    color: var(--orange) !important;
+}
+
+.line {
+    display: inline-block;
+    justify-content: inherit;
+    align-items: inherit;
+}
+
+.line > a {
+    color: rgb(0 47 255);
+}
+
+.loginContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    flex-grow: 1;
+    margin: 0;
+    margin-right: 2rem;
+}
+
+.topbox {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 0 3.5rem;
+    width: 100%;
+
+    & h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0.3rem;
+        font-weight: normal;
+    }
+
+    & h5 {
+        font-size: 0.7rem;
+    }
+}
+
+.errmsg {
+    color: rgb(231 35 35);
+}
+
+.succmsg {
+    padding-bottom: 2rem;
+}
+
+.errmsg,
+.succmsg {
+    position: absolute;
+    top: -10%;
+    font-weight: bold;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 20rem;
+    text-wrap: wrap;
+    text-align: center;
+    visibility: visible;
+}
+
+.semafor {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.2rem;
+    width: 100%;
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+    min-height: 0.3rem;
+}
+
+.offscreen {
+    position: absolute;
+    left: -9999px;
+}
+
+.form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    color: var(--greydark);
+    padding: 0 3rem;
+    margin: 0;
+}
+
+.inputContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 20rem;
+    height: auto;
+    flex-shrink: 1;
+    box-sizing: border-box;
+    flex-basis: auto;
+}
+
+.inputBox {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 1.7rem;
+    flex: 1 0 auto;
+}
+
+.inputBox label {
+    top: -1.4rem;
+    position: absolute;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    margin: 0;
+    width: 100%;
+}
+
+.inputBox .input {
+    background-color: white;
+    font-size: 1rem;
+    border-radius: 0.6rem;
+    padding: 0.5rem;
+    padding-left: 3rem;
+    margin-bottom: 0.3rem;
+    height: 2.5rem;
+    width: 100%;
+    border: 1px var(--greydark) dotted;
+}
+
+.inputBox .input:-webkit-autofill,
+.inputBox .input:-webkit-autofill:hover,
+.inputBox .input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--greydark) !important;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: 0 0 0 1000px white inset !important;
+}
+
+.inputBox .input::-ms-reveal {
+    display: none;
+}
+
+.inputBox .input::-ms-clear {
+    display: none;
+}
+
+.inputBox .icon {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(124 124 124 / 0.623);
+    width: 2.5rem;
+    aspect-ratio: 1/1;
+    top: 0;
+    left: 0;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+.invalid {
+    color: red;
+    margin-left: 0.3rem;
+}
+
+.valid {
+    color: limegreen;
+    margin-left: 0.3rem;
+}
+
+.info {
+    width: 2rem;
+    height: 1rem;
+    aspect-ratio: 1/1;
+}
+
+@media (hover: hover) {
+    .info:hover + .instructions {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.instructions {
+    display: none;
+    position: absolute;
+    top: 5rem;
+    left: 0;
+    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: white;
+    backdrop-filter: blur(10px);
+    padding: 0.5rem;
+    width: 100%;
+    z-index: 1;
+}
+
+.showMobile {
+    display: block !important;
+}
+
+.hide {
+    display: none;
+}
+
+.persistCheck {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.instructions > svg {
+    margin-right: 0.25rem;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 2.5rem;
+    border-radius: 0.6rem;
+    margin-top: 0;
+    background-color: var(--greydark);
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--orange);
+        border: 1 px solid var(--greydark);
+        color: white;
+    }
+}
+
+.button span {
+    margin-left: 1rem;
+}
+
+.lineLogo {
+    display: none;
+}
+
+.receptyLogo {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--greydark);
+    width: 5rem;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    border-radius: 5rem;
+    z-index: 2;
+}
+
+.loadingContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+@media (width <= 1200px) {
+    .form {
+        padding: 0 2rem;
+    }
+
+    .mainbox {
+        min-height: 600px;
+    }
+
+    .inputContainer {
+        min-width: 0;
+    }
+
+    .loginContainer {
+        margin-right: 0;
+    }
+
+    .inputBox {
+        padding: 0 0 1rem;
+        margin: 0 1rem;
+    }
+
+    .inputBox input {
+        width: 100%;
+    }
+
+    .photo {
+        display: none;
+    }
+
+    .topbox {
+        align-items: center;
+
+        & h1 {
+            font-size: 1.5rem;
+            padding: 1rem 0;
+        }
+    }
+}
+
+@media (width <= 764px) {
+    .loginContainer {
+        height: auto;
+        z-index: 10;
+    }
+
+    .inputBox input {
+        width: 100%;
+    }
+}
+
+@media (width <= 450px) {
+    .layerMain {
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        height: 100dvh;
+        width: 100dvw;
+        display: flex;
+        flex-direction: column;
+        flex: none;
+    }
+
+    .loginContainer {
+        justify-content: flex-start;
+        align-items: center;
+        width: 75%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .inputContainer label {
+        font-size: 1rem;
+        padding: 0 0 0.5rem 0.5rem;
+    }
+
+    .form {
+        justify-content: flex-start;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .inputBox {
+        width: 100%;
+        padding: 0 0 1rem;
+    }
+
+    .button,
+    .inputBox .input {
+        font-size: 1.2rem;
+        border-radius: 1rem;
+        height: 3rem;
+        box-sizing: border-box;
+        margin: 0;
+    }
+
+    .inputBox .icon {
+        height: 3rem;
+    }
+
+    .button {
+        padding: 1rem;
+
+        &:hover {
+            background-color: var(--greydark);
+            border: 1 px solid var(--greydark);
+            color: white;
+        }
+    }
+
+    .topbox {
+        padding: 0;
+
+        & h1 {
+            font-size: 1.5rem;
+            padding: 0.5rem 0;
+        }
+
+        & h5 {
+            font-size: 1rem;
+        }
+
+        & h4 {
+            font-size: 1.2rem;
+        }
+    }
+
+    .mainbox {
+        background: linear-gradient(to bottom, #f5f2ed, #d1ccc0);
+        backdrop-filter: none;
+        border: none;
+        box-shadow: none;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .receptyLogo {
+        position: absolute;
+        top: 3%;
+        left: auto;
+        right: 2rem;
+        background-color: var(--orange);
+    }
+
+    .lineLogo {
+        position: relative;
+        top: 5%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-end;
+        width: 100%;
+        border: none;
+        z-index: 1;
+    }
+
+    .lineGrey {
+        position: relative;
+        min-height: 5rem;
+        background-color: var(--greydark);
+        width: 100%;
+        color: white;
+        text-align: left;
+        padding: 1.75rem 0 0 1rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        background-clip: padding-box;
+        border: none;
+    }
+
+    .lineTrans {
+        min-width: 100px;
+        aspect-ratio: 1/1;
+        margin-top: -1px;
+        background-color: var(--greydark);
+        mask-image: radial-gradient(circle at 0% 100%, transparent 100px, black 41px);
+        z-index: 20;
+    }
+
+    .instructions {
+        font-size: 1rem;
+    }
+}

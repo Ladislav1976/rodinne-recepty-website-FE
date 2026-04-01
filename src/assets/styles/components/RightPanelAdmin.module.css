@@ -1,0 +1,76 @@
+.sidebarAdmin {
+    position: fixed;
+    top: 0;
+    right: 0 !important;
+    width: 100%;
+    height: 100dvh;
+    display: flex;
+    justify-content: flex-end;
+    transform: translateX(100%);
+    transition:
+        transform 0.3s ease-in-out,
+        visibility var(--transDuration);
+    visibility: hidden;
+    background-color: rgb(26 25 25 / 0.911);
+    box-shadow: -5px 0 15px rgb(0 0 0 / 0.1);
+    z-index: 9999;
+}
+
+.cancelButton {
+    display: none;
+}
+
+@media (width <= 1300px) {
+    .sidebarAdmin.isActive {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .container {
+        position: relative;
+        height: 100dvh;
+        width: 17rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column;
+        overflow-y: auto;
+        background-color: white;
+        z-index: 16;
+    }
+
+    .container > .li {
+        display: flex;
+        position: relative;
+        justify-content: flex-end;
+        height: 3.5rem;
+        width: 80%;
+        flex-shrink: 0;
+        align-items: center;
+        border-bottom: solid 1px;
+        border-bottom: var(--border);
+        z-index: 10;
+    }
+
+    .container > .li a {
+        color: var(--darkgrey);
+        text-decoration: none;
+    }
+
+    .cancelButton {
+        height: 2.5rem;
+        width: 2.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        font-weight: lighter;
+        font-size: 1.5rem;
+        color: var(--orange);
+        background-color: white;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+}

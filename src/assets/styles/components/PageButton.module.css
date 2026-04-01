@@ -1,0 +1,26 @@
+.button,
+.buttoncurrentpage {
+    font-size: medium;
+    margin: 1px;
+    width: 2.5rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--orange);
+    }
+}
+
+.button {
+    background-color: transparent;
+}
+
+.buttoncurrentpage {
+    color: white;
+    background-color: rgb(26 25 25 / 0.651);
+}

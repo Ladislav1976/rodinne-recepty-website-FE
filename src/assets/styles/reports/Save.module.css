@@ -1,0 +1,64 @@
+.loadingIcon {
+    font-size: 3rem;
+    color: white;
+}
+
+.loadingBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(124 124 124 / 0);
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 500px;
+    min-height: 300px;
+    padding-top: 5rem;
+    background-color: white;
+}
+
+.box h3 {
+    text-align: center;
+    color: var(--greydark);
+}
+
+.box h3,
+.box p {
+    margin: 0.5rem 0;
+}
+
+.buttonContainer {
+    margin-top: 1rem;
+}
+
+.saveIcon {
+    font-size: 3rem;
+    color: #558113;
+}
+
+.errorIcon {
+    font-size: 70px;
+    color: red;
+}
+
+.errmsg {
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.offScreen {
+    display: none;
+}
+
+@media (width <= 768px) {
+    .box {
+        width: 100dvw;
+    }
+}

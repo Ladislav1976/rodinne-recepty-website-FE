@@ -1,0 +1,361 @@
+.sidebarFilter {
+    grid-column: 1 / 2;
+    grid-row: 1/4;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: white;
+    width: 18rem;
+    min-height: 100%;
+    overflow: hidden auto;
+    border-right: var(--border3px);
+}
+
+.totalFoodsCount {
+    color: var(--greydark);
+    position: relative;
+    margin: 0 0.5rem 0.5rem;
+}
+
+.sidebarFilter label {
+    font-weight: bold;
+}
+
+.displayNone {
+    display: none;
+}
+
+.food {
+    margin: 0;
+}
+
+.image {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    border-radius: 50%;
+}
+
+.buttonEdit {
+    cursor: pointer;
+}
+
+.buttonView,
+.buttonEdit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonView::before,
+.buttonEdit::before {
+    position: absolute;
+    content: '';
+    background-color: white;
+    border: 1px solid grey;
+    left: 30px;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+}
+
+.buttonView::after,
+.buttonEdit::after {
+    position: absolute;
+    content: '';
+    left: 30px;
+    width: 8px;
+    height: 8px;
+}
+
+.checkbox {
+    position: relative;
+    display: flex;
+}
+
+.checkboxInput:checked + .buttonView::after,
+.checkboxInput:checked + .buttonEdit::after {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    content: '\2713';
+    text-align: center;
+    color: white;
+    font-size: 0.7rem;
+    background-color: var(--orange);
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+}
+
+.categoryHeaderInteractive,
+.categoryHeader {
+    display: flex;
+    position: relative;
+    justify-content: flex-end;
+    height: 3rem;
+    flex-shrink: 0;
+    align-items: center;
+    background-color: white;
+    border-bottom: solid 1px;
+    border-bottom: var(--border);
+    z-index: 10;
+}
+
+.categoryHeader:nth-of-type(1),
+.categoryHeaderInteractive:nth-of-type(1) {
+    border-top: 1px solid #b8babb;
+}
+
+.categoryHeaderInteractive {
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgb(255 228 177);
+    }
+}
+
+.filterOption__clickable,
+.filterOption {
+    display: flex;
+    position: relative;
+    justify-content: flex-start;
+    height: 3rem;
+    align-items: center;
+    color: var(--greydark);
+    background-color: white;
+    opacity: 0;
+    transform: translateY(-100%);
+    transition:
+        transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        opacity 0.4s ease-out;
+}
+
+.filterOption__clickable.isActive,
+.filterOption.isActive {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        opacity 0.6s ease-out;
+}
+
+.filterOption.unChecked {
+    display: none;
+}
+
+.filterOption__clickable:hover {
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgb(255 246 228);
+        color: var(--orange);
+    }
+}
+
+.filterOption__clickable:nth-last-child(1),
+.filterOption:nth-last-child(1) {
+    border-bottom: solid 1px;
+    border-bottom: var(--border);
+}
+
+.labelView,
+.labelEdit,
+.labelFoods {
+    position: absolute;
+    font-size: 12px;
+    margin-top: 12px;
+    margin-left: 55px;
+    height: 26px;
+}
+
+.parentLabelActive,
+.parentLabelInactive {
+    position: absolute;
+    color: var(--greydark);
+    left: 0.5rem;
+    font-size: 1rem;
+}
+
+.parentLabelActive {
+    color: var(--orange);
+    font-weight: bold;
+}
+
+.arrowDown,
+.arrowUp {
+    position: relative;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    color: var(--greydark);
+    border-radius: 50%;
+    user-select: none;
+    font-size: 14px;
+    width: 25px;
+    height: 25px;
+}
+
+.arrowUp {
+    transform: rotate(-90deg);
+    transition: transform var(--transDuration) ease-in-out;
+}
+
+.arrowDown {
+    transform: rotate(90deg);
+    transition: transform var(--transDuration) ease-in-out;
+}
+
+.checkboxInput:checked ~ .labelEdit {
+    color: black;
+}
+
+.checkboxInput:checked ~ .labelView {
+    color: black;
+}
+
+.labelFoods {
+    color: var(--greydark);
+}
+
+.labelEdit,
+.labelView {
+    color: rgb(157 156 156);
+}
+
+.labelEdit,
+.labelFoods {
+    cursor: pointer;
+
+    &:hover {
+        color: var(--orange);
+    }
+}
+
+.checkboxInput {
+    display: none;
+}
+
+.tagQuantity {
+    font-size: 0.7rem;
+    font-weight: normal;
+}
+
+.select_body select option {
+    font-size: 0.8rem;
+}
+
+.selectContainer {
+    margin-bottom: 3rem;
+}
+
+.filterContainer label,
+.selectContainer label {
+    color: var(--greydark);
+    font-size: 1rem;
+    text-align: center;
+    font-weight: bold;
+    margin: 0;
+    height: 3rem;
+    line-height: 3;
+    margin-left: 0.5rem;
+}
+
+.selectIcon {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition-duration: var(--transDuration);
+    display: flex;
+    align-items: center;
+    text-align: right;
+    justify-content: center;
+    pointer-events: none;
+    font-size: 14px;
+    color: var(--greydark);
+}
+
+.icon_up {
+    transform: rotate(-90deg);
+    transition-duration: var(--transDuration);
+}
+
+.icon_down {
+    transform: rotate(90deg);
+    transition-duration: var(--transDuration);
+}
+
+.tagsContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-height: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease-in-out;
+}
+
+.tagsContainer.isActive {
+    position: relative;
+    height: fit-content;
+    z-index: 1;
+    top: 0;
+    max-height: 1000px;
+    transition: max-height 0.6s ease-in-out;
+}
+
+.cancelButton {
+    display: none;
+}
+
+@media (width <= 1300px) {
+    .container {
+        max-width: 17rem;
+        min-height: 100dvh;
+        background-color: white;
+        overflow: hidden auto;
+    }
+
+    .sidebarFilter {
+        position: fixed;
+        top: 0;
+        background-color: rgb(26 25 25 / 0.911);
+        left: 0;
+        height: 100dvh;
+        width: 100%;
+        transform: translateX(-100%);
+        transition:
+            transform var(--transDuration) linear,
+            visibility var(--transDuration);
+        visibility: hidden;
+        overflow: hidden;
+        z-index: 13;
+    }
+
+    .sidebarFilter.isActive {
+        transform: translateX(0);
+        visibility: visible;
+        min-width: 300px;
+    }
+
+    .cancelButton {
+        height: 2.5rem;
+        width: 2.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-weight: lighter;
+        font-size: 1.5rem;
+        color: var(--orange);
+        background-color: white;
+        border-radius: 1.5rem;
+        cursor: pointer;
+    }
+}

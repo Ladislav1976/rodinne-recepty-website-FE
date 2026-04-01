@@ -1,0 +1,178 @@
+.imagebox {
+    position: relative;
+    grid-column: 2 /5;
+    grid-row: 3/4;
+    align-self: start;
+}
+
+.imagerender {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    grid-template-rows: min-content 1fr;
+    margin: 20px;
+    cursor: pointer;
+}
+
+.imageinput {
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+input[type='file'] {
+    display: none;
+}
+
+.imageIcon {
+    position: absolute;
+    justify-content: center;
+    border-color: rgb(233 229 229);
+    font-size: 1.5rem;
+    color: var(--greydark);
+    cursor: pointer;
+}
+
+.imageIconBox {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    height: 3rem;
+}
+
+.numOfFiles {
+    text-align: center;
+    margin: 5px 0;
+    font-size: smaller;
+}
+
+.foodimage {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.imageContainer {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.2rem;
+}
+
+.imageclicker {
+    position: absolute;
+    background-color: black;
+    border-radius: 15px;
+    opacity: 0;
+    z-index: 2;
+    width: 40%;
+    aspect-ratio: 1/1;
+    rotate: 45deg;
+    transition: all 0.3s ease-in-out;
+}
+
+.imageContainer:hover .imageclicker {
+    rotate: 0deg;
+    opacity: 0.25;
+}
+
+.imagecross {
+    position: absolute;
+    color: white;
+    z-index: 3;
+    width: 3.5rem;
+    aspect-ratio: 1/1;
+    font-size: 3rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imageclicker:hover {
+    opacity: 0.25;
+}
+
+.checkboxInput {
+    display: none;
+}
+
+.deleteIcon {
+    position: absolute;
+    right: 0;
+    top: 25px;
+    color: var(--greydark);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--orange);
+    }
+}
+
+.displayNone {
+    display: none;
+}
+
+.unvisible {
+    visibility: hidden;
+}
+
+@media (width <= 1300px) {
+    .imagebox {
+        grid-column: 1 /4;
+        grid-row: 3/4;
+    }
+}
+
+@media (width <= 768px) {
+    .imagebox {
+        grid-column: 1 /9;
+        grid-row: 5/6;
+    }
+
+    .imageIconBox {
+        border: 3px solid #fff;
+        border-radius: 50%;
+        background-color: rgb(228 227 227);
+    }
+}
+
+@media (width >= 768px) {
+    .imageIcon::before,
+    .imageIcon::after {
+        --scale: 0;
+
+        position: absolute;
+        font-size: 0.7rem;
+        top: -0.3rem;
+        left: 2.5rem;
+        transform: translateX(-50%) scale(var(--scale));
+        transition: 150ms tranform;
+    }
+
+    .imageIcon::before {
+        content: attr(datatooltip);
+        padding: 0.3rem;
+        margin-left: 30px;
+        color: var(--greydark);
+        background-color: white;
+        font-weight: bold;
+        border-radius: 0.3rem;
+    }
+
+    .imageIcon:hover::before {
+        --scale: 1;
+    }
+
+    .imageIcon:hover {
+        color: var(--orange);
+    }
+}
