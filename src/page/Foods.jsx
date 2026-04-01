@@ -12,7 +12,7 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
-import { useFoodsDownload } from '../hooks/Queries/useFoodsDownload';
+import { useFoodsDownload } from '../hooks/queries/useFoodsDownload';
 import useAuth from '../hooks/useAuth';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useInView } from 'react-intersection-observer';

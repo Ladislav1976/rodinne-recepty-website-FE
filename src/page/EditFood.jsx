@@ -21,13 +21,13 @@ import { useParams } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useItemsDownload } from '../hooks/Queries/useItemsDownload';
+import { useItemsDownload } from '../hooks/queries/useItemsDownload';
 
-import { usePutFood } from '../hooks/Mutations/usePutFood';
-import { useDeleteFood } from '../hooks/Mutations/useDeleteFood';
-import { usePostImage } from '../hooks/Mutations/usePostImage';
-import { usePutImage } from '../hooks/Mutations/usePutImage';
-import { useDeleteImage } from '../hooks/Mutations/useDeleteImage';
+import { usePutFood } from '../hooks/mutations/usePutFood';
+import { useDeleteFood } from '../hooks/mutations/useDeleteFood';
+import { usePostImage } from '../hooks/mutations/usePostImage';
+import { usePutImage } from '../hooks/mutations/usePutImage';
+import { useDeleteImage } from '../hooks/mutations/useDeleteImage';
 import useAuth from '../hooks/useAuth';
 import MenuToggle from '../components/MenuToggle';
 import ModalMessage from '../modals/ModalMessage';
