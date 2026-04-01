@@ -1,0 +1,93 @@
+* {
+    box-sizing: border-box;
+}
+
+.foodItemBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    flex-grow: 1;
+    width: 100%;
+    padding: 20px;
+}
+
+.foodItemList {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100px, 100%), 1fr));
+    gap: 1rem;
+    width: 100%;
+}
+
+.unvisible {
+    visibility: hidden;
+}
+
+#buttonenabled:hover {
+    background-color: var(--orange);
+}
+
+#buttondisabled,
+#buttonenabled {
+    font-size: 1.5rem;
+    border-radius: 50%;
+    border: solid 0.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    margin: 1px;
+}
+
+#buttonenabled {
+    cursor: pointer;
+}
+
+.navigationbar {
+    display: flex;
+    justify-content: center;
+}
+
+.paginationBox {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.pageSize {
+    width: auto;
+    margin-left: 10px;
+    padding: 1px;
+    border-radius: 5px;
+}
+
+.button {
+    width: 40px;
+    color: #b8babb;
+}
+
+.navdisplay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: small;
+    margin: 5px 0;
+    border-left: var();
+}
+
+@media (width <= 768px) {
+    .paginationBox {
+        display: none !important;
+    }
+
+    .foodItemList {
+        grid-template-columns: repeat(auto-fill, minmax(min(100px, 100%), 1fr));
+    }
+
+    .foodItemBox {
+        border-left: none;
+    }
+}

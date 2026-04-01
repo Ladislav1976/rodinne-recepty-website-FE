@@ -1,0 +1,33 @@
+.containerUser {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: auto;
+    flex: 1 1 0;
+    overflow: hidden;
+}
+
+.imgage {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 5px;
+    border-radius: 2rem;
+}
+
+.name {
+    color: var(--greydark);
+    font-size: 0.8rem;
+    margin: 0 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+@media (width <= 768px) {
+    .containerUser .name {
+        display: none;
+    }
+}

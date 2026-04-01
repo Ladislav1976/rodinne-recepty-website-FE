@@ -1,0 +1,35 @@
+.foodcontainer {
+    position: relative;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.foodcontainer:hover {
+    text-decoration: underline;
+    color: var(--orange);
+}
+
+.image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.foodName {
+    box-sizing: border-box;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 0.3rem 0.8rem;
+}
+
+@media (width <= 764px) {
+    .foodName {
+        font-size: 1rem;
+        font-weight: normal;
+    }
+}

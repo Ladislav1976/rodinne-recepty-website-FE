@@ -1,0 +1,253 @@
+.main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+    flex: 1 1 0;
+    box-sizing: border-box;
+}
+
+.submitContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 1 1 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.registerContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    flex: 1 1 0;
+    box-sizing: border-box;
+}
+
+.form {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 100rem;
+    height: 100%;
+    background-color: white;
+    border-left: var(--border3px);
+    border-right: var(--border3px);
+    margin: 0;
+    padding-top: 2rem;
+    flex: 1 1 0;
+
+    & p {
+        margin: 2rem 0 1rem;
+        text-wrap: wrap;
+
+        & span {
+            margin: 0.5rem 0;
+        }
+    }
+}
+
+.inputContainer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 25rem;
+    height: auto;
+    flex-shrink: 1;
+    box-sizing: border-box;
+    padding: 0 1rem;
+    flex-basis: auto;
+}
+
+.inputBox {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    flex: 1 0 auto;
+}
+
+.inputBox label {
+    top: -1.4rem;
+    position: absolute;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    padding-bottom: 0.5rem;
+    margin: 0;
+    width: 100%;
+}
+
+.inputBox .input {
+    background-color: rgb(248 245 245);
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    height: 3rem;
+    width: 100%;
+    border: 1px var(--greydark) dotted;
+}
+
+.inputBox .valid {
+    position: absolute;
+    color: rgb(124 124 124 / 0.623);
+    right: 0.4rem;
+    cursor: pointer;
+}
+
+.errmsg {
+    background-color: lightpink;
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.invalid {
+    color: red;
+    margin-left: 0.25rem;
+}
+
+.valid {
+    color: limegreen;
+    margin-left: 0.25rem;
+}
+
+.hide {
+    display: none;
+}
+
+.offScreen {
+    display: none;
+}
+
+.instructions {
+    position: absolute;
+    top: 38px;
+    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    background: #000;
+    color: #fff;
+    padding: 0.25rem;
+    width: 280px;
+    z-index: 1;
+}
+
+.instructions > svg {
+    margin-right: 0.25rem;
+}
+
+.line {
+    display: inline-block;
+    justify-content: inherit;
+    align-items: inherit;
+}
+
+.line > a {
+    color: rgb(0 47 255);
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 10rem;
+    height: 3rem;
+    border-radius: 5px;
+    margin-top: 2rem;
+    background-color: var(--greydark);
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--orange);
+        color: white;
+    }
+}
+
+.button span {
+    margin-left: 1rem;
+}
+
+.loadingContainer {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.loadingIcon {
+    font-size: 3rem;
+}
+
+.offscreen {
+    position: absolute;
+    left: -9999px;
+}
+
+.onscreen > h5:first-child {
+    margin: 35px 0 5px;
+}
+
+.onscreen > h5:nth-child(3) {
+    margin: 5px 0 55px;
+}
+
+.panel {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--greydark);
+    align-items: center;
+    z-index: 5;
+    background-color: white;
+    width: 100dvw;
+    height: 3rem;
+}
+
+.messagebox {
+    margin-left: var(--marginLeft);
+    left: 0;
+    top: 0;
+    color: red;
+}
+
+@media (width <= 768px) {
+    .form {
+        padding-top: 3rem;
+        height: 100%;
+        justify-content: flex-start;
+    }
+
+    .inputBox input {
+        width: 100%;
+    }
+
+    .inputBox textarea {
+        height: 15rem;
+    }
+
+    .form h1 {
+        font-size: 1.5rem;
+    }
+}

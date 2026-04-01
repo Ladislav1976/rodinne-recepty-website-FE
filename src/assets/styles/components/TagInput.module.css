@@ -1,0 +1,140 @@
+.searchMain {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.searchonClickButton {
+    display: none;
+}
+
+.searchBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-flow: row wrap;
+    height: 100%;
+    width: auto;
+}
+
+.searchInput {
+    display: block;
+    border: 1px solid rgb(236 236 236);
+    background-color: rgb(236 236 236);
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    width: 10rem;
+    height: 100%;
+    font-size: 1rem;
+    padding-left: 10px;
+    outline: none !important;
+}
+
+.searchButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(236 236 236);
+    border-color: rgb(233 229 229);
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    height: 100%;
+    width: 3rem;
+    padding-left: 0;
+    cursor: pointer;
+}
+
+.searchList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
+    justify-content: end;
+    align-items: end;
+    direction: rtl;
+    color: rgb(95 93 93);
+    flex-grow: 1;
+}
+
+.searchList > div {
+    direction: ltr;
+}
+
+.tag {
+    padding: 0.2rem;
+    color: rgb(95 93 93);
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    gap: 0.2rem;
+    cursor: pointer;
+}
+
+@media (width <= 764px) {
+    .tag {
+        font-size: 0.6rem;
+    }
+
+    .searchInput {
+        display: none;
+    }
+
+    .searchonClickButton {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        flex-grow: 1;
+        height: 100%;
+        width: 3rem;
+    }
+
+    .searchBoxMobile {
+        position: absolute;
+        top: 5rem;
+        left: 0;
+        width: 100dvw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 1rem;
+    }
+
+    .searchInputMobile {
+        border: 1px solid whitesmoke;
+        background-color: whitesmoke;
+        border-top-left-radius: 3rem;
+        border-bottom-left-radius: 3rem;
+        height: 3rem;
+        width: 100%;
+        font-size: 1.2rem;
+        padding-left: 10px;
+        outline: none !important;
+    }
+
+    .searchButton {
+        background-color: white;
+        font-size: 1.2rem;
+    }
+
+    .searchButtonMobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: whitesmoke;
+        border-color: rgb(233 229 229);
+        border-top-right-radius: 1.5rem;
+        border-bottom-right-radius: 1.5rem;
+        height: 3rem;
+        width: 3rem;
+        color: rgb(95 93 93);
+        font-size: 1rem;
+        padding-left: 0;
+    }
+}
